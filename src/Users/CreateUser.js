@@ -1,15 +1,14 @@
-import { AppBar, Box, Button, Checkbox, CircularProgress, Container, Grid, InputAdornment, TextField, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, Button, Checkbox, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, InputAdornment, useScrollTrigger } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
+import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useForm, Controller } from "react-hook-form";
+import UserContext from '../UserContext';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import axios from 'axios';
-import { Form, Formik } from 'formik';
-import { useSnackbar } from 'notistack';
-import React, { useContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import * as Yup from 'yup';
-import UserContext from '../UserContext';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -46,49 +45,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function getFieldErrors(id, formik) {
-    if (formik.touched[id] && formik.errors[id]) {
-        return ({ error: true, helperText: formik.errors[id] });
-    } else {
-        return null;
-    }
-}
-
 function CreateUser() {
     document.title = "Create User";
     const classes = useStyles();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { control, register, handleSubmit, watch, reset, getValues, setValue, errors, trigger } = useForm({ mode: 'onBlur' });
+
+    let history = useHistory();
 
     const [loading, setLoading] = useState(false);
     const userContext = useContext(UserContext);
-    const tenantId = "@".concat(userContext.currentUser ? userContext.currentUser.tenantId : "");
-    let history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
-    const [roles, setRoles] = useState([]);
-    const [rolesError, setRolesError] = useState(false);
-    const [rolesTouched, setRolesTouched] = useState(false);
-    const [rolesHelperText, setRolesHelperText] = useState('');
-
-    function validateRoles(selectedRoles) {
-        const roleYupSchema = Yup.object({
-            roles: Yup.array()
-                .min(1, "Please select a role!")
-        });
-
-        setRolesTouched(true);
-        return roleYupSchema.validate({ roles: selectedRoles })
-            .then(function () {
-                setRolesError(false);
-                setRolesHelperText("");
-                return true;
-            })
-            .catch(function (err) {
-                // console.log(err);
-                setRolesError(true);
-                setRolesHelperText(err.message);
-                return false;
-            });
-    }
+    const tenantId = "@".concat(userContext.currentUser?.tenantId);
 
     const roleOptions = [
         { 'value': 'ROLE_USER', 'label': 'USER' },
@@ -97,200 +64,214 @@ function CreateUser() {
         { 'value': 'ROLE_TENANT_ADMIN', 'label': 'TENANT ADMIN' }
     ];
 
+    const { roles } = watch();
 
-return (
-    <Container maxWidth="xl" disableGutters className={classes.container}>
-        <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
-            <Toolbar variant="dense">
-                <Typography variant="h6" color="inherit">Create User</Typography>
-                {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
-            </Toolbar>
-        </AppBar>
-        <Grid container>
-            <Grid item md={9} lg={6} xl={5}>
-                <Box m={2}>
-                    <Formik
-                        initialValues={{ userName: '', password: '', displayName: '', firstName: '', lastName: '', email: '' }}
-                        validationSchema={Yup.object({
-                            userName: Yup.string()
-                                .max(50, 'Invalid Username, should be less than 50 in length!')
-                                .required('Please provide a valid Username!'),
-                            password: Yup.string()
-                                .min(8, 'Please provide a valid password, should be minimum 8 in length, mix of capital letters, small letters, numbers and a special character!')
-                                .max(50, 'Please provide a valid password, maximum length allowed is 50!')
-                                .required('Required'),
-                            displayName: Yup.string()
-                                .max(50, 'Must be 15 characters or less')
-                                .required('Required'),
-                            firstName: Yup.string()
-                                .max(50, 'Must be 15 characters or less'),
-                            lastName: Yup.string()
-                                .max(50, 'Must be 20 characters or less'),
-                            email: Yup.string()
-                                .max(50, 'Must be 15 characters or less')
-                                .email('Invalid email address'),
-                            roles: Yup.array()
-                                .min(1, "Please select a role!")
+    useEffect(() => {
+        console.log(roles);
+        console.log(errors);
+    }, [roles]);
 
-                        })}
-                        onSubmit={(values, { setSubmitting }) => {
-                            setLoading(true);
-                            if (validateRoles(roles) === false) {
-                                setLoading(false);
-                                return;
-                            }
-                            let selectedRoles = roles.map((role)=> role.value);
-                            let data = {
-                                'userName': values.userName.concat(tenantId),
-                                'password': values.password,
-                                'enabled': true,
-                                'displayName': values.displayName,
-                                'firstName': values.firstName,
-                                'lastName': values.lastName,
-                                'email': values.email,
-                                'roles': selectedRoles,
-                            };
-                            // alert(JSON.stringify(data, null, 2));
-                            axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/user/`, data)
-                                .then((response) => {
-                                    console.log(response);
-                                    setLoading(false);
-                                    setSubmitting(false);
-                                    enqueueSnackbar('User created successfully.', {variant: 'success'});
-                                    history.push("/app/manage-users");
-                                })
-                                .catch(() => {
-                                    setLoading(false);
-                                    setSubmitting(false);
-                                });
-                        }}
-                    >
-                        {formik =>
-                            <Form onSubmit={formik.handleSubmit}>
-                                <TextField
-                                    variant="outlined" size="small" fullWidth margin="normal" 
-                                    InputLabelProps={{ shrink: true, }} 
-                                    InputProps={{
-                                        classes: {input: classes.textField}, 
-                                        endAdornment: <InputAdornment position="end">{tenantId}</InputAdornment>
-                                    }}
-                                    id="userName"
-                                    label="User Name"
-                                    required
-                                    {...formik.getFieldProps('userName')}
-                                    {...getFieldErrors('userName', formik)}
-                                />
-                                <TextField
-                                    variant="outlined" size="small" fullWidth margin="normal" 
-                                    InputLabelProps={{ shrink: true, }} 
-                                    InputProps={{classes: {input: classes.textField}}}
-                                    id="displayName"
-                                    label="Display Name"
-                                    required
-                                    {...formik.getFieldProps('displayName')}
-                                    {...getFieldErrors('displayName', formik)}
-                                />
-                                <TextField
-                                    variant="outlined" size="small" fullWidth margin="normal" 
-                                    InputLabelProps={{ shrink: true, }} 
-                                    InputProps={{classes: {input: classes.textField}}}
-                                    id="password"
-                                    label="Password"
-                                    required
-                                    type="password"
-                                    {...formik.getFieldProps('password')}
-                                    {...getFieldErrors('password', formik)}
-                                />
-                                <TextField
-                                    variant="outlined" size="small" fullWidth margin="normal" 
-                                    InputLabelProps={{ shrink: true, }} 
-                                    InputProps={{classes: {input: classes.textField}}}
-                                    id="firstName"
-                                    label="First Name"
-                                    {...formik.getFieldProps('firstName')}
-                                    {...getFieldErrors('firstName', formik)}
-                                />
-                                <TextField
-                                    variant="outlined" size="small" fullWidth margin="normal" 
-                                    InputLabelProps={{ shrink: true, }} 
-                                    InputProps={{classes: {input: classes.textField}}}
-                                    id="lastName"
-                                    label="Last Name"
-                                    {...formik.getFieldProps('lastName')}
-                                    {...getFieldErrors('lastName', formik)}
-                                />
-                                <TextField
-                                    variant="outlined" size="small" fullWidth margin="normal" 
-                                    InputLabelProps={{ shrink: true, }} 
-                                    InputProps={{classes: {input: classes.textField}}}
-                                    id="email"
-                                    label="Email"
-                                    {...formik.getFieldProps('email')}
-                                    {...getFieldErrors('email', formik)}
-                                />
-                                <Autocomplete
-                                    size="small"
-                                    fullWidth
-                                    multiple
-                                    limitTags={3}
-                                    disableCloseOnSelect
-                                    id="roles"
-                                    options={roleOptions}
-                                    getOptionLabel={(option) => option.label}
-                                    getOptionSelected={(option, value) => option.value === value.value}
-                                    value={roles}
-                                    onChange={(event, newValue) => {
-                                        setRoles(newValue);
-                                        validateRoles(newValue);
-                                    }}
-                                    onBlur={() => validateRoles(roles)}
-                                    renderOption={(option, { selected }) => (
-                                        <React.Fragment>
-                                            <Checkbox
-                                                icon={icon}
-                                                checkedIcon={checkedIcon}
-                                                style={{ marginRight: 8 }}
-                                                checked={selected}
+
+    function onSubmit(formValues) {
+        console.log(formValues);
+        setLoading(true);
+
+        let selectedRoles = formValues.roles.map((role) => role.value);
+        let data = {
+            'userName': formValues.userName.concat(tenantId),
+            'password': formValues.password,
+            'enabled': true,
+            'displayName': formValues.displayName,
+            'firstName': formValues.firstName,
+            'lastName': formValues.lastName,
+            'email': formValues.email,
+            'roles': selectedRoles,
+        };
+        //  alert(JSON.stringify(data, null, 2));
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/user/`, data)
+            .then((response) => {
+                console.log(response);
+                setLoading(false);
+                enqueueSnackbar('User created successfully.', { variant: 'success' });
+                history.push("/app/manage-users");
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
+
+    return (
+        <Container maxWidth="xl" disableGutters className={classes.container}>
+            <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
+                <Toolbar variant="dense">
+                    <Typography variant="h6" color="inherit">Create User</Typography>
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                </Toolbar>
+            </AppBar>
+            <Grid container>
+                <Grid item md={9} lg={6} xl={5}>
+                    <Box m={2}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                    endAdornment: <InputAdornment position="end">{tenantId}</InputAdornment>
+                                }}
+                                name="userName"
+                                label="User Name"
+                                required
+                                inputRef={register({
+                                    required: "Required.",
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.userName ? true : false}
+                                helperText={errors.userName?.message}
+                            />
+
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="displayName"
+                                label="Display Name"
+                                required
+                                inputRef={register({
+                                    required: "Required.",
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.displayName ? true : false}
+                                helperText={errors.displayName?.message}
+                            />
+
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{ classes: { input: classes.textField } }}
+                                name="password"
+                                label="Password"
+                                required
+                                type="password"
+                                inputRef={register({
+                                    required: "Required.",
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.password ? true : false}
+                                helperText={errors.password?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="firstName"
+                                label="First Name"
+                                required
+                                inputRef={register({
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.firstName ? true : false}
+                                helperText={errors.firstName?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="lastName"
+                                label="Last Name"
+                                required
+                                inputRef={register({
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.lastName ? true : false}
+                                helperText={errors.lastName?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="email"
+                                label="Email"
+                                required
+                                inputRef={register({
+                                    pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" },
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.email ? true : false}
+                                helperText={errors.email?.message}
+                            />
+                            <Controller
+                                name="roles"
+                                control={control}
+                                defaultValue={[roleOptions[0]]}
+                                rules={{
+                                    validate: value => value.length > 0 || "Required.",
+                                }}
+                                render={({ onChange, onBlur, name, value }) => {
+                                    return <Autocomplete
+                                        name={name}
+                                        onChange={(event, value) => { onChange(value) }}
+                                        // onBlur={() => {trigger('roles')}} 
+                                        size="small" fullWidth
+                                        value={value}
+                                        multiple limitTags={3} disableCloseOnSelect
+                                        options={roleOptions}
+                                        getOptionLabel={(option) => option.label}
+                                        getOptionSelected={(option, value) => option.value === value.value}
+                                        renderOption={(option, { selected }) => (
+                                            <React.Fragment>
+                                                <Checkbox
+                                                    icon={icon}
+                                                    checkedIcon={checkedIcon}
+                                                    style={{ marginRight: 8 }}
+                                                    checked={selected}
+                                                />
+                                                {option.label}
+                                            </React.Fragment>
+                                        )}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                variant="outlined"
+                                                margin="normal"
+                                                InputLabelProps={{ shrink: true, }}
+                                                label="Roles"
+                                                error={errors.roles ? true : false}
+                                                helperText={errors.roles?.message}
                                             />
-                                            {option.label}
-                                        </React.Fragment>
-                                    )}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant="outlined" 
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true, }}
-                                            label="Roles"
-                                            
-                                            error={rolesTouched && rolesError}
-                                            helperText={(rolesTouched && rolesError) ? rolesHelperText : ""}
-                                        />
-                                    )}
-                                />
-                                <Grid container>
-                                    <Button 
-                                        className={classes.button} 
-                                        size="small" 
-                                        variant="outlined" 
-                                        color="primary" 
-                                        type="submit" 
-                                        disabled={loading}>Create</Button>
-                                    <Button 
-                                        className={classes.button} 
-                                        size="small" 
-                                        variant="outlined"
-                                        onClick={(e)=>history.goBack()}
-                                        >Cancel</Button>
-                                </Grid>
-                            </Form>
-                        }
-                    </Formik>
-                </Box>
+                                        )}
+                                    />
+                                }}
+                            />
+                            <Grid container>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
+                                    type="submit"
+                                    disabled={loading}>Add</Button>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={(e) => history.goBack()}
+                                >Cancel</Button>
+                            </Grid>
+                        </form>
+                    </Box>
+                </Grid>
             </Grid>
-        </Grid>
-    </Container>
-)
+        </Container >
+    )
 
 }
 export default CreateUser;
