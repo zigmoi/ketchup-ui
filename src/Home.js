@@ -65,7 +65,6 @@ import LoadProject from './Projects/LoadProject';
 import CreateProject from './Projects/CreateProject';
 import CreateTenant from './Tenants/CreateTenant';
 import AddContainerRegistry from './ContainerRegistries/AddContainerRegistry';
-import AddContainerRegistry1 from './ContainerRegistries/AddContainerRegistry1';
 
 const drawerWidth = 220;
 
@@ -425,7 +424,7 @@ function Home() {
         <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/kubernetes-cluster/add" render={() => <ProtectedRoute component={AddK8sCluster} />} />
         <Route path="/app/project/:projectResourceId/kubernetes-clusters" render={() => <ProtectedRoute component={ManageK8sClusters} />} />
-        <Route path="/app/project/:projectResourceId/container-registry/add" render={() => <ProtectedRoute component={AddContainerRegistry1} />} />
+        <Route path="/app/project/:projectResourceId/container-registry/add" render={() => <ProtectedRoute component={AddContainerRegistry} />} />
         <Route path="/app/project/:projectResourceId/container-registries" render={() => <ProtectedRoute component={ManageContainerRegistries} />} />
         <Route path="/app/project/:projectResourceId/build-tool/add" render={() => <ProtectedRoute component={AddBuildTool} />} />
         <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} />} />

@@ -1,11 +1,11 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem } from '@material-ui/core';
+import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import { Form, Formik } from 'formik';
 import { useSnackbar } from 'notistack';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
+import { useForm, Controller } from "react-hook-form";
+
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -39,143 +39,213 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function getFieldErrors(id, formik) {
-    if (formik.touched[id] && formik.errors[id]) {
-        return ({ error: true, helperText: formik.errors[id] });
-    } else {
-        return null;
-    }
-}
-
-function AddContainerRegistry() {
+function AddContainerRegistry1() {
     document.title = "Add Container Registry";
     const classes = useStyles();
+    const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
+
     let { projectResourceId } = useParams();
 
     const [loading, setLoading] = useState(false);
     let history = useHistory();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { type } = watch();
 
-
-    function showFields(formik) {
-        let details;
-        let registryType = formik.values.type;
-        if (registryType === "local") {
-            details = (
-                <React.Fragment>
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{ classes: { input: classes.textField } }}
-                        id="registryUrl"
-                        label="Registry URL"
-                        required
-                        {...formik.getFieldProps('registryUrl')}
-                        {...getFieldErrors('registryUrl', formik)}
-                    />
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{ classes: { input: classes.textField } }}
-                        id="repository"
-                        label="Repository"
-                        {...formik.getFieldProps('repository')}
-                        {...getFieldErrors('repository', formik)}
-                    />
-                </React.Fragment>);
-        } else if (registryType === "docker-hub") {
-            details = (
-                <React.Fragment>
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{
-                            classes: { input: classes.textField },
-                            readOnly: true,
-                            value: 'index.docker.io'
-                        }}
-                        id="registryUrl"
-                        label="Registry URL"
-                        required
-                        {...formik.getFieldProps('registryUrl')}
-                        {...getFieldErrors('registryUrl', formik)}
-                    />
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{ classes: { input: classes.textField } }}
-                        id="username"
-                        label="User Name"
-                        required
-                        {...formik.getFieldProps('username')}
-                        {...getFieldErrors('username', formik)}
-                    />
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{ classes: { input: classes.textField } }}
-                        id="password"
-                        label="Password"
-                        required
-                        type="password"
-                        {...formik.getFieldProps('password')}
-                        {...getFieldErrors('password', formik)}
-                    />
-                </React.Fragment>);
-        } else if (registryType === "gcr") {
-            details = (
-                <React.Fragment>
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{
-                            classes: { input: classes.textField },
-                            readOnly: true,
-                            value: 'gcr.io'
-                        }}
-                        id="registryUrl"
-                        label="Registry URL"
-                        required
-                        {...formik.getFieldProps('registryUrl')}
-                        {...getFieldErrors('registryUrl', formik)}
-                    />
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{ classes: { input: classes.textField } }}
-                        id="repository"
-                        label="Project ID"
-                        required
-                        {...formik.getFieldProps('repository')}
-                        {...getFieldErrors('repository', formik)}
-                    />
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{ classes: { input: classes.textField } }}
-                        id="username"
-                        label="User Name"
-                        required
-                        {...formik.getFieldProps('username')}
-                        {...getFieldErrors('username', formik)}
-                    />
-                    <TextField
-                        variant="outlined" size="small" fullWidth margin="normal"
-                        InputLabelProps={{ shrink: true, }}
-                        InputProps={{ classes: { input: classes.textField } }}
-                        id="password"
-                        label="Password"
-                        required
-                        type="password"
-                        {...formik.getFieldProps('password')}
-                        {...getFieldErrors('password', formik)}
-                    />
-                </React.Fragment>);
-        } else {
-            details = null;
-            enqueueSnackbar('Unsupported Registry Type!', { variant: 'error' });
+    useEffect(() => {
+        if(type === "docker-hub"){
+            setValue("registryUrl", "index.docker.io");
+        }else if(type === "gcr"){
+            setValue("registryUrl", "gcr.io");
+        }else{
+            setValue("registryUrl", "");
         }
-        return details;
+    }, [type]);
+
+    let dependentFields;
+    let registryType = type;
+    if (registryType === "local") {
+        dependentFields = (
+            <React.Fragment>
+                <Controller
+                    name="registryUrl"
+                    label="Registry URL"
+                    as={<TextField />}
+                    control={control}
+                    defaultValue=""
+                    required
+                    rules={{ 
+                        required: "Required.",
+                        maxLength: {value: 250, message: "Maximum 250 characters are allowed." } 
+                    }}
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    error={errors.registryUrl ? true : false}
+                    helperText={errors.registryUrl?.message}
+                >
+                </Controller>
+                <TextField
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    name="repository"
+                    label="Repository"
+                    inputRef={register({ 
+                        required: "Required.",
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                    })}
+                    error={errors.repository ? true : false}
+                    helperText={errors.repository?.message}
+                />
+            </React.Fragment>);
+    } else if (registryType === "docker-hub") {
+        dependentFields = (
+            <React.Fragment>
+                <Controller
+                    name="registryUrl"
+                    label="Registry URL"
+                    as={<TextField />}
+                    control={control}
+                    defaultValue=""
+                    required
+                    rules={{ 
+                        required: "Required.",
+                        maxLength: {value: 250, message: "Maximum 250 characters are allowed." }
+                     }}
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{
+                        classes: { input: classes.textField },
+                        readOnly: true,
+                    }}
+                    error={errors.registryUrl ? true : false}
+                    helperText={errors.registryUrl?.message}
+                ></Controller>
+                <TextField
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    name="username"
+                    label="User Name"
+                    required
+                    inputRef={register({ 
+                        required: "Required.",
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                    })}
+                    error={errors.username ? true : false}
+                    helperText={errors.username?.message}
+                />
+                <TextField
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    name="password"
+                    label="Password"
+                    required
+                    type="password"
+                    inputRef={register({ 
+                        required: "Required.",
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                    })}
+                    error={errors.password ? true : false}
+                    helperText={errors.password?.message}
+                />
+            </React.Fragment>);
+    } else if (registryType === "gcr") {
+        dependentFields = (
+            <React.Fragment>
+                <Controller
+                    name="registryUrl"
+                    label="Registry URL"
+                    as={<TextField />}
+                    control={control}
+                    defaultValue=""
+                    required
+                    rules={{ 
+                        required: "Required.",
+                        maxLength: {value: 250, message: "Maximum 250 characters are allowed." }
+                     }}
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{
+                        classes: { input: classes.textField },
+                        readOnly: true,
+                    }}
+                    error={errors.registryUrl ? true : false}
+                    helperText={errors.registryUrl?.message}
+                ></Controller>
+                <TextField
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    name="repository"
+                    label="Project ID"
+                    required
+                    inputRef={register({ 
+                        required: "Required.",
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                    })}
+                    error={errors.repository ? true : false}
+                    helperText={errors.repository?.message}
+                />
+                <TextField
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    name="username"
+                    label="User Name"
+                    required
+                    inputRef={register({ 
+                        required: "Required.",
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                    })}
+                    error={errors.username ? true : false}
+                    helperText={errors.username?.message}
+                />
+                <TextField
+                    variant="outlined" size="small" fullWidth margin="normal"
+                    InputLabelProps={{ shrink: true, }}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    name="password"
+                    label="Password"
+                    required
+                    type="password"
+                    inputRef={register({ 
+                        required: "Required.",
+                        maxLength: {value: 5000, message: "Maximum 5000 characters are allowed." }
+                    })}
+                    error={errors.password ? true : false}
+                    helperText={errors.password?.message}
+                />
+            </React.Fragment>);
+    } else {
+        dependentFields = null;
+    }
+
+    function onSubmit(formValues) {
+        console.log(formValues);
+        setLoading(true);
+
+        let data = {
+            'projectId': projectResourceId,
+            'displayName': formValues.displayName,
+            'type': formValues.type,
+            'registryUrl': formValues.registryUrl,
+            'repository': formValues.repository ? formValues.repository : "",
+            'registryUsername': formValues.username ? formValues.username : "",
+            'registryPassword': formValues.password ? formValues.password : "",
+        };
+        //alert(JSON.stringify(data, null, 2));
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/container-registry`, data)
+            .then((response) => {
+                console.log(response);
+                setLoading(false);
+                enqueueSnackbar('Container registry added successfully.', { variant: 'success' });
+                history.push(`/app/project/${projectResourceId}/container-registries`);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }
 
     return (
@@ -189,131 +259,71 @@ function AddContainerRegistry() {
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
-                        <Formik
-                            initialValues={{ displayName: '', type: 'local', registryUrl: '', repository: '', username: '', password: '' }}
-                            validationSchema={Yup.object({
-                                displayName: Yup.string()
-                                    .max(50, 'Must be 50 characters or less')
-                                    .required('Required'),
-                                type: Yup.string()
-                                    .required('Required')
-                                    .oneOf(
-                                        ['local', 'docker-hub', 'gcr'],
-                                        'Invalid Registry Type!'
-                                    ),
-                                registryUrl: Yup.string()
-                                    .when('type', {
-                                        is: 'local',
-                                        then: Yup.string()
-                                                 .required("Required")
-                                                 .max(200, 'Must be 200 characters or less')
-                                    }),
-                                repository: Yup.string()
-                                    .max(100, 'Must be 100 characters or less')
-                                    .when('type', {
-                                        is: 'gcr',
-                                        then: Yup.string().required("Required")
-                                    }),
-                                username: Yup.string()
-                                    .max(100, 'Must be 100 characters or less')
-                                    .when('type', {
-                                        is: 'gcr' || 'docker-hub',
-                                        then: Yup.string().required("Required")
-                                    }),
-                                password: Yup.string()
-                                    .max(5000, 'Must be 5000 characters or less')
-                                    .when('type', {
-                                        is: 'gcr' || 'docker-hub',
-                                        then: Yup.string().required("Required")
-                                    }),
-                            })}
-                            onSubmit={(values, { setSubmitting }) => {
-                                setLoading(true);
-                                
-                                let registryUrl = "";
-                                if(values.type === "docker-hub"){
-                                    registryUrl = "index.docker.io";
-                                }else if(values.type === "gcr"){
-                                    registryUrl = "gcr.io";
-                                }else{
-                                    registryUrl = values.registryUrl ? values.registryUrl : "";
-                                }
-
-                                let data = {
-                                    'projectId': projectResourceId,
-                                    'displayName': values.displayName,
-                                    'type': values.type,
-                                    'registryUrl': registryUrl,
-                                    'repository': values.repository ? values.repository : "",
-                                    'registryUsername': values.username ? values.username : "",
-                                    'registryPassword': values.password ? values.password : "",
-                                };
-                                //  alert(JSON.stringify(data, null, 2));
-                                axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/container-registry`, data)
-                                    .then((response) => {
-                                        console.log(response);
-                                        setLoading(false);
-                                        setSubmitting(false);
-                                        enqueueSnackbar('Container registry added successfully.', { variant: 'success' });
-                                        history.push(`/app/project/${projectResourceId}/container-registries`);
-                                    })
-                                    .catch(() => {
-                                        setLoading(false);
-                                        setSubmitting(false);
-                                    });
-                            }}
-                        >
-                            {formik =>
-                                <Form onSubmit={formik.handleSubmit}>
-                                    <TextField
-                                        variant="outlined" size="small" fullWidth margin="normal"
-                                        InputLabelProps={{ shrink: true, }}
-                                        InputProps={{ classes: { input: classes.textField } }}
-                                        id="displayName"
-                                        label="Display Name"
-                                        required
-                                        {...formik.getFieldProps('displayName')}
-                                        {...getFieldErrors('displayName', formik)}
-                                    />
-                                    <TextField
-                                        variant="outlined" size="small" fullWidth margin="normal"
-                                        InputLabelProps={{ shrink: true, }}
-                                        InputProps={{ classes: { input: classes.textField } }}
-                                        id="type"
-                                        label="Type"
-                                        required
-                                        select
-                                        {...formik.getFieldProps('type')}
-                                        {...getFieldErrors('type', formik)}
-                                    >
-                                        <MenuItem key="local" value="local">Local</MenuItem>
-                                        <MenuItem key="docker-hub" value="docker-hub">Docker Hub</MenuItem>
-                                        <MenuItem key="gcr" value="gcr">GCR</MenuItem>
-                                    </TextField>
-                                    {showFields(formik)}
-                                    <Grid container>
-                                        <Button
-                                            className={classes.button}
-                                            size="small"
-                                            variant="outlined"
-                                            color="primary"
-                                            type="submit"
-                                            disabled={loading}>Add</Button>
-                                        <Button
-                                            className={classes.button}
-                                            size="small"
-                                            variant="outlined"
-                                            onClick={(e) => history.goBack()}
-                                        >Cancel</Button>
-                                    </Grid>
-                                </Form>
-                            }
-                        </Formik>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="displayName"
+                                label="Display Name"
+                                required
+                                inputRef={register({ 
+                                    required: "Required.",
+                                    maxLength: {value: 50, message: "Maximum 50 characters are allowed." }
+                                })}
+                                error={errors.displayName ? true : false}
+                                helperText={errors.displayName?.message}
+                            />
+                            <FormControl
+                                variant="outlined" size="small"
+                                fullWidth margin="normal"
+                                required
+                                error={Boolean(errors.type)}
+                            >
+                                <InputLabel shrink>Type</InputLabel>
+                                <Controller
+                                    name="type"
+                                    rules={{ required: "this is required" }}
+                                    defaultValue="local"
+                                    label="Type"
+                                    control={control}
+                                    as={
+                                        <Select>
+                                            <MenuItem key="local" value="local">Local</MenuItem>
+                                            <MenuItem key="docker-hub" value="docker-hub">Docker Hub</MenuItem>
+                                            <MenuItem key="gcr" value="gcr">GCR</MenuItem>
+                                        </Select>
+                                    }
+                                >
+                                </Controller>
+                                <FormHelperText>
+                                    {errors.type && errors.type.message}
+                                </FormHelperText>
+                            </FormControl>
+                            {dependentFields}
+                            <Grid container>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
+                                    type="submit"
+                                    disabled={loading}>Add</Button>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={(e) => history.goBack()}
+                                >Cancel</Button>
+                            </Grid>
+                        </form>
                     </Box>
                 </Grid>
             </Grid>
-        </Container>
+        </Container >
     )
 
 }
-export default AddContainerRegistry;
+export default AddContainerRegistry1;
