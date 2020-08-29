@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Checkbox, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, InputAdornment, useScrollTrigger } from '@material-ui/core';
+import { AppBar, Box, Button, Checkbox, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, InputAdornment, useScrollTrigger, Chip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
@@ -213,16 +213,22 @@ function CreateUser() {
                                 control={control}
                                 defaultValue={[roleOptions[0]]}
                                 rules={{
-                                    validate: value => value.length > 0 || "Required.",
+                                    validate: value => {
+                                        console.log("value:", value);
+                                        return value.length > 0 || "Required."},
                                 }}
                                 render={({ onChange, onBlur, name, value }) => {
                                     return <Autocomplete
                                         name={name}
                                         onChange={(event, value) => { onChange(value) }}
-                                        // onBlur={() => {trigger('roles')}} 
+                                        onBlur={()=> onBlur()} 
+                                       // onBlur={() => {trigger('roles')}} 
+                                        // onblur doesnt work when value is removed using chip close button, because focus is already lost.
+                                        // either use change form validation mode or manaully call trigger to initiate validation on onchange.
+                                        //or make chip non deletable.
                                         size="small" fullWidth
                                         value={value}
-                                        multiple limitTags={3} disableCloseOnSelect
+                                        multiple limitTags={3} disableCloseOnSelect openOnFocus
                                         options={roleOptions}
                                         getOptionLabel={(option) => option.label}
                                         getOptionSelected={(option, value) => option.value === value.value}
@@ -237,6 +243,11 @@ function CreateUser() {
                                                 {option.label}
                                             </React.Fragment>
                                         )}
+                                        renderTags={(value, getTagProps) =>
+                                            value.map((option, index) => (
+                                              <Chip size="small" label={option.label} />
+                                            ))
+                                          }
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
