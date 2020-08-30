@@ -425,9 +425,9 @@ function Home() {
         <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard} />} />
         <Route path="/app/create-tenant" render={() => <ProtectedRoute component={CreateTenant} roles={['ROLE_SUPER_ADMIN']} />} />
         <Route path="/app/manage-tenants" render={() => <ProtectedRoute component={ManageTenants} roles={['ROLE_SUPER_ADMIN']} />} />
-        <Route path="/app/manage-users" render={() => <ProtectedRoute component={ManageUsers} />} />
         <Route path="/app/create-user" render={() => <ProtectedRoute component={CreateUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
         <Route path="/app/user/:userName/edit" render={() => <ProtectedRoute component={EditUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
+        <Route path="/app/manage-users" render={() => <ProtectedRoute component={ManageUsers} />} />
         <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/kubernetes-cluster/add" render={() => <ProtectedRoute component={AddK8sCluster} />} />
         <Route path="/app/project/:projectResourceId/kubernetes-cluster/:settingId/edit" render={() => <ProtectedRoute component={EditK8sCluster} />} />
@@ -444,50 +444,6 @@ function Home() {
       </Switch>
       <LoadProject activeProjectId={projectId} open={openProjectLoader} onClose={handleClose} />
     </div >
-
-
-    //     <Layout style={{
-    //       borderLeft: '1px solid #e9e9e9',
-    //       height: 'calc(100vh- 48px)',
-    //       backgroundColor: '#fff',
-    //       paddingLeft: '5px, 5px, 0px,0px',
-    //       overflow: 'auto'
-    //     }}>
-    //       <Content style={{ backgroundColor: '#fff' }}>
-    //         <Row>
-    //           <Col span={24}>
-    //             <Switch>
-    //               <Route path="/" exact render={() => <ProtectedRoute component={Dashboard} />} />
-    //               <Route path="/app" exact render={() => <ProtectedRoute component={Dashboard} />} />
-    //               <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard} />} />
-    //               {/* <Route path="/app/create-tenant" render={() => <ProtectedRoute component={CreateTenant} roles={['ROLE_SUPER_ADMIN']} />} />
-    //               <Route path="/app/manage-tenants" render={() => <ProtectedRoute component={ManageTenants} roles={['ROLE_SUPER_ADMIN']} />} />
-    //               <Route path="/app/create-user" render={() => <ProtectedRoute component={CreateUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
-    //               <Route path="/app/manage-users" render={() => <ProtectedRoute component={ManageUsers} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER']} />} />
-    //               <Route path="/app/user/:userName/view" render={() => <ProtectedRoute component={ViewUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/user/:userName/edit" render={() => <ProtectedRoute component={EditUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
-    //               <Route path="/app/user/:userName/roles" render={() => <ProtectedRoute component={ManageRoles} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
-    //               <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/projects" render={() => <ProtectedRoute component={ManageProjects} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/view" render={() => <ProtectedRoute component={ViewProject} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/edit" render={() => <ProtectedRoute component={EditProject} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/members" render={() => <ProtectedRoute component={ManageProjectMembers} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/permissions/:userId?" render={() => <ProtectedRoute component={ManageProjectPermissions} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/settings/:settingId" render={() => <ProtectedRoute component={ManageSettings} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/deployments" render={() => <ProtectedRoute component={ManageDeployments} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/deployment/select-type" render={() => <ProtectedRoute component={DeploymentTypes} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/deployment/create" render={() => <ProtectedRoute component={CreateDeployment} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/deployment/:deploymentResourceId/releases" render={() => <ProtectedRoute component={ManageReleases} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/deployment/:deploymentResourceId/release/:releaseResourceId/view" render={() => <ProtectedRoute component={ViewRelease} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-    //               <Route path="/app/project/:projectResourceId/deployment/:deploymentResourceId/release/:releaseResourceId/pipeline" render={() => <ProtectedRoute component={ViewReleasePipeline} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} /> */}
-    //               <Route render={() => <ProtectedRoute component={Nomatch} />} />
-    //             </Switch>
-    //           </Col>
-    //         </Row>
-    //       </Content>
-    //     </Layout>
-    //   </Layout>
-    // </Layout>
   );
 }
 

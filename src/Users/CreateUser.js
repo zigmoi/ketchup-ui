@@ -269,7 +269,7 @@ function CreateUser() {
                                     variant="outlined"
                                     color="primary"
                                     type="submit"
-                                    disabled={loading}>Add</Button>
+                                    disabled={loading}>Create</Button>
                                 <Button
                                     className={classes.button}
                                     size="small"

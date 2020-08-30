@@ -17,9 +17,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
+import { useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -41,17 +40,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getFieldErrors(id, formik) {
-  if (formik.touched[id] && formik.errors[id]) {
-    return ({ error: true, helperText: formik.errors[id] });
-  } else {
-    return null;
-  }
-}
-
 function Login() {
   console.log("login");
   const classes = useStyles();
+  const { register, handleSubmit, errors } = useForm({ mode: 'onBlur' });
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [isUserLoggingIn, setIsUserLoggingIn] = useState(false);
@@ -83,13 +75,13 @@ function Login() {
   }, [loginStatus]);
 
 
-  function submitRequest(values, setSubmitting) {
+  function onSubmit(formValues) {
     setLoading(true);
 
     var params = {
       "grant_type": "password",
-      'username': values.username,
-      'password': values.password
+      'username': formValues.username,
+      'password': formValues.password
     };
 
     var authHeader = {
@@ -108,10 +100,9 @@ function Login() {
     }).then((response) => {
       console.log(response);
       setLoading(false);
-      setSubmitting(false);
       // var decoded_token = jwt_decode(response.data.access_token);
       // console.log(decoded_token);
-      getUserInfo(values.username, response.data.access_token);
+      getUserInfo(formValues.username, response.data.access_token);
     })
       .catch((error) => {
         setLoading(false);
@@ -146,7 +137,7 @@ function Login() {
                       return <li key={index}>{value.field} : {value.message}</li>
                     })}
                   </ul>);
-                  enqueueSnackbar(errorView, { variant: 'error' });
+                enqueueSnackbar(errorView, { variant: 'error' });
               } else {
                 enqueueSnackbar('Invalid request, ' + errorMessage, { variant: 'error' });
               }
@@ -215,62 +206,57 @@ function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Formik
-          initialValues={{ username: '', password: '' }}
-          validationSchema={Yup.object({
-            username: Yup.string()
-              .max(50, 'Must be 50 characters or less')
-              .required('Required'),
-            password: Yup.string()
-              .max(50, 'Must be 50 characters or less')
-              .required('Required'),
-
-          })}
-          onSubmit={(values, { setSubmitting }) => {
-            submitRequest(values, setSubmitting);
-          }}
-        >
-          {formik =>
-            <Form onSubmit={formik.handleSubmit} className={classes.form}>
-              <TextField
-                variant="outlined" margin="normal" required fullWidth
-                id="username" label="User Name" autoFocus
-                {...formik.getFieldProps('username')}
-                {...getFieldErrors('username', formik)}
-              />
-              <TextField
-                variant="outlined" margin="normal" required fullWidth
-                label="Password" type="password" id="password"
-                {...formik.getFieldProps('password')}
-                {...getFieldErrors('password', formik)}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-              <Button
-                fullWidth variant="contained" color="primary"
-                className={classes.submit}
-                type="submit"
-                disabled={loading}
-              >
-                Sign In
+        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+          <TextField
+            variant="outlined" fullWidth margin="normal"
+            name="username"
+            label="User Name"
+            required
+            inputRef={register({
+              required: "Required.",
+              maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+            })}
+            error={errors.username ? true : false}
+            helperText={errors.username?.message}
+          />
+          <TextField
+            variant="outlined" fullWidth margin="normal"
+            name="password"
+            label="Password"
+            type="password"
+            required
+            inputRef={register({
+              required: "Required.",
+              maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+            })}
+            error={errors.password ? true : false}
+            helperText={errors.password?.message}
+          />
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
+          <Button
+            fullWidth variant="contained" color="primary"
+            className={classes.submit}
+            type="submit"
+            disabled={loading}
+          >
+            Sign In
           </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
               </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
-            </Form>
-          }
-        </Formik>
+            </Grid>
+            <Grid item>
+              <Link href="#" variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
       </div>
     </Container>
   );

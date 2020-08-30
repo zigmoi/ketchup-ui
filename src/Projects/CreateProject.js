@@ -1,11 +1,10 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem } from '@material-ui/core';
+import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import { Form, Formik } from 'formik';
 import { useSnackbar } from 'notistack';
 import React, { useState, useContext } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom';
+import { useForm } from "react-hook-form";
 import ProjectContext from '../ProjectContext';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,23 +39,37 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function getFieldErrors(id, formik) {
-    if (formik.touched[id] && formik.errors[id]) {
-        return ({ error: true, helperText: formik.errors[id] });
-    } else {
-        return null;
-    }
-}
-
 function CreateProject() {
-    document.title = "Create Project";
+    document.title = "Create User";
     const classes = useStyles();
-    const projectContext = useContext(ProjectContext);
+    const { enqueueSnackbar } = useSnackbar();
+    const { register, handleSubmit, errors } = useForm({ mode: 'onBlur' });
 
-    const [loading, setLoading] = useState(false);
     let history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const projectContext = useContext(ProjectContext);
+    const [loading, setLoading] = useState(false);
 
+    function onSubmit(formValues) {
+        console.log(formValues);
+        setLoading(true);
+
+        let data = {
+            'projectResourceId': formValues.projectName,
+            'description': formValues.description,
+        };
+        //  alert(JSON.stringify(data, null, 2));
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/project/`, data)
+            .then((response) => {
+                console.log(response);
+                setLoading(false);
+                enqueueSnackbar('Project created successfully.', { variant: 'success' });
+                projectContext.setCurrentProject({ "projectId": formValues.projectName });
+                history.push(`/app/project/${formValues.projectName}/applications`);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
 
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
@@ -69,82 +82,59 @@ function CreateProject() {
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
-                        <Formik
-                            initialValues={{ projectName: '', description: '' }}
-                            validationSchema={Yup.object({
-                                projectName: Yup.string()
-                                    .max(50, 'Must be 50 characters or less')
-                                    .required('Required'),
-                                description: Yup.string()
-                                    .max(100, 'Must be 100 characters or less'),
-
-                            })}
-                            onSubmit={(values, { setSubmitting }) => {
-                                setLoading(true);
-                                let data = {
-                                    'projectResourceId': values.projectName,
-                                    'description': values.description,
-                                };
-                                axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/project`, data)
-                                    .then((response) => {
-                                        console.log(response);
-                                        setLoading(false);
-                                        setSubmitting(false);
-                                        enqueueSnackbar('Project created successfully.', { variant: 'success' });
-                                        projectContext.setCurrentProject({ "projectId": values.projectName });
-                                        history.push(`/app/project/${values.projectName}/applications`);
-                                    })
-                                    .catch(() => {
-                                        setLoading(false);
-                                        setSubmitting(false);
-                                    });
-                            }}
-                        >
-                            {formik =>
-                                <Form onSubmit={formik.handleSubmit}>
-                                    <TextField
-                                        variant="outlined" size="small" fullWidth margin="normal"
-                                        InputLabelProps={{ shrink: true, }}
-                                        InputProps={{ classes: { input: classes.textField } }}
-                                        id="projectName"
-                                        label="Project Name"
-                                        required
-                                        {...formik.getFieldProps('projectName')}
-                                        {...getFieldErrors('projectName', formik)}
-                                    />
-                                    <TextField
-                                        variant="outlined" size="small" fullWidth margin="normal"
-                                        InputLabelProps={{ shrink: true, }}
-                                        InputProps={{ classes: { input: classes.textField } }}
-                                        id="description"
-                                        label="Description"
-                                        multiline
-                                        rows={3}
-                                        {...formik.getFieldProps('description')}
-                                        {...getFieldErrors('description', formik)}
-                                    />
-                                    <Grid container>
-                                        <Button
-                                            className={classes.button}
-                                            size="small"
-                                            variant="outlined"
-                                            color="primary"
-                                            type="submit"
-                                            disabled={loading}>Create</Button>
-                                        <Button
-                                            className={classes.button}
-                                            size="small"
-                                            variant="outlined"
-                                            onClick={(e) => history.goBack()}
-                                        >Cancel</Button>
-                                    </Grid>
-                                </Form>
-                            }
-                        </Formik>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="projectName"
+                                label="Name"
+                                required
+                                inputRef={register({
+                                    required: "Required.",
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.projectName ? true : false}
+                                helperText={errors.projectName?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="description"
+                                label="Description"
+                                multiline
+                                rows={3}
+                                inputRef={register({
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.description ? true : false}
+                                helperText={errors.description?.message}
+                            />
+                            <Grid container>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
+                                    type="submit"
+                                    disabled={loading}>Create</Button>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={() => history.goBack()}
+                                >Cancel</Button>
+                            </Grid>
+                        </form>
                     </Box>
                 </Grid>
             </Grid>
-        </Container>
+        </Container >
     )
 
 }
