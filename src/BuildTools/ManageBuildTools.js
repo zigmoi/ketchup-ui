@@ -94,7 +94,7 @@ function ManageBuildTools() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Build Tool',
-                                    onClick: (event, rowData) => alert("You saved " + rowData.name)
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/build-tool/${rowData.settingId}/edit`)
                                 },
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,

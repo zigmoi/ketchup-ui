@@ -54,6 +54,7 @@ import CreateTenant from './Tenants/CreateTenant';
 import ManageTenants from './Tenants/ManageTenants';
 
 import AddK8sCluster from './K8sClusters/AddK8sCluster';
+import EditK8sCluster from './K8sClusters/EditK8sCluster';
 import ManageK8sClusters from './K8sClusters/ManageK8sClusters';
 
 import AddContainerRegistry from './ContainerRegistries/AddContainerRegistry';
@@ -61,6 +62,7 @@ import EditContainerRegistry from './ContainerRegistries/EditContainerRegistry';
 import ManageContainerRegistries from './ContainerRegistries/ManageContainerRegistries';
 
 import AddBuildTool from './BuildTools/AddBuildTool';
+import EditBuildTool from './BuildTools/EditBuildTool';
 import ManageBuildTools from './BuildTools/ManageBuildTools';
 
 import ManageApplications from './Applications/ManageApplications';
@@ -428,11 +430,13 @@ function Home() {
         <Route path="/app/user/:userName/edit" render={() => <ProtectedRoute component={EditUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
         <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/kubernetes-cluster/add" render={() => <ProtectedRoute component={AddK8sCluster} />} />
+        <Route path="/app/project/:projectResourceId/kubernetes-cluster/:settingId/edit" render={() => <ProtectedRoute component={EditK8sCluster} />} />
         <Route path="/app/project/:projectResourceId/kubernetes-clusters" render={() => <ProtectedRoute component={ManageK8sClusters} />} />
         <Route path="/app/project/:projectResourceId/container-registry/add" render={() => <ProtectedRoute component={AddContainerRegistry} />} />
         <Route path="/app/project/:projectResourceId/container-registry/:settingId/edit" render={() => <ProtectedRoute component={EditContainerRegistry} />} />
         <Route path="/app/project/:projectResourceId/container-registries" render={() => <ProtectedRoute component={ManageContainerRegistries} />} />
         <Route path="/app/project/:projectResourceId/build-tool/add" render={() => <ProtectedRoute component={AddBuildTool} />} />
+        <Route path="/app/project/:projectResourceId/build-tool/:settingId/edit" render={() => <ProtectedRoute component={EditBuildTool} />} />
         <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} />} />
         <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} />} />

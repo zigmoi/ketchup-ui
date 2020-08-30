@@ -39,16 +39,36 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function AddBuildTool() {
-    document.title = "Add Build Tool";
+function EditK8sCluster() {
+    document.title = "Edit Kubernetes Cluster";
     const classes = useStyles();
     const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
 
-    let { projectResourceId } = useParams();
+    let { projectResourceId, settingId } = useParams();
 
     const [loading, setLoading] = useState(false);
     let history = useHistory();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        loadDetails();
+    }, [projectResourceId, settingId]);
+
+
+    function loadDetails() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/kubernetes-cluster/${projectResourceId}/${settingId}`)
+            .then((response) => {
+                setLoading(false);
+                setValue("displayName",response.data.displayName);
+                setValue("kubeconfig",atob(response.data.fileData));
+                // setLastUpdatedBy(response.data.lastUpdatedBy);
+                // setLastUpdatedOn(response.data.lastUpdatedOn);
+            })
+            .catch((error) => {
+                setLoading(false);
+            });
+    }
 
 
     function onSubmit(formValues) {
@@ -58,16 +78,15 @@ function AddBuildTool() {
         let data = {
             'projectId': projectResourceId,
             'displayName': formValues.displayName,
-            'type': formValues.type,
-            'fileData': btoa(formValues.buildconfig),
+            'fileData': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/build-tool`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/kubernetes-cluster/${projectResourceId}/${settingId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Build tool added successfully.', { variant: 'success' });
-                history.push(`/app/project/${projectResourceId}/build-tools`);
+                enqueueSnackbar('Kubernetes cluster updated successfully.', { variant: 'success' });
+                history.push(`/app/project/${projectResourceId}/kubernetes-clusters`);
             })
             .catch(() => {
                 setLoading(false);
@@ -78,7 +97,11 @@ function AddBuildTool() {
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
-                    <Typography variant="h6" color="inherit">Add Build Tool</Typography>
+                    <Typography variant="h6" color="inherit">Edit Kubernetes Cluster
+                    <Typography variant="caption" >
+                            &nbsp; {settingId}
+                        </Typography>
+                    </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
                 </Toolbar>
             </AppBar>
@@ -102,37 +125,14 @@ function AddBuildTool() {
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
                             />
-                            <Controller
-                                name="type"
-                                control={control}
-                                defaultValue={'maven-3.3'}
-                                rules={{
-                                    required: "Required"
-                                }}
-                                as={<TextField
-                                    variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
-                                    InputProps={{
-                                        classes: { input: classes.textField },
-                                    }}
-                                    label="Type"
-                                    required
-                                    select
-                                    error={errors.type ? true : false}
-                                    helperText={errors.type?.message}
-                                >
-                                    <MenuItem key="maven-3.3" value="maven-3.3">Maven 3.3</MenuItem>
-                                    <MenuItem key="gradle-5.5" value="gradle-5.5">Gradle 5.5</MenuItem>
-                                </TextField>}
-                            />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
                                 InputLabelProps={{ shrink: true, }}
                                 InputProps={{
                                     classes: { input: classes.textField },
                                 }}
-                                name="buildconfig"
-                                label="Build Configuration"
+                                name="kubeconfig"
+                                label="Kubeconfig"
                                 required
                                 multiline
                                 rows={20}
@@ -140,8 +140,8 @@ function AddBuildTool() {
                                     required: "Required.",
                                     maxLength: { value: 65536, message: "Maximum 65536 characters are allowed." }
                                 })}
-                                error={errors.buildconfig ? true : false}
-                                helperText={errors.buildconfig?.message}
+                                error={errors.kubeconfig ? true : false}
+                                helperText={errors.kubeconfig?.message}
                             />
 
                             <Grid container>
@@ -151,7 +151,7 @@ function AddBuildTool() {
                                     variant="outlined"
                                     color="primary"
                                     type="submit"
-                                    disabled={loading}>Add</Button>
+                                    disabled={loading}>Save</Button>
                                 <Button
                                     className={classes.button}
                                     size="small"
@@ -167,4 +167,4 @@ function AddBuildTool() {
     )
 
 }
-export default AddBuildTool;
+export default EditK8sCluster;

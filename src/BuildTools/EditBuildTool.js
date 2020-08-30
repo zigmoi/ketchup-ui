@@ -39,16 +39,37 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function AddBuildTool() {
-    document.title = "Add Build Tool";
+function EditBuildTool() {
+    document.title = "Edit Build Tool";
     const classes = useStyles();
     const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
 
-    let { projectResourceId } = useParams();
+    let { projectResourceId, settingId } = useParams();
 
     const [loading, setLoading] = useState(false);
     let history = useHistory();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        loadDetails();
+    }, [projectResourceId, settingId]);
+
+
+    function loadDetails() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/build-tool/${projectResourceId}/${settingId}`)
+            .then((response) => {
+                setLoading(false);
+                setValue("displayName", response.data.displayName);
+                setValue("type", response.data.type);
+                setValue("buildconfig", atob(response.data.fileData));
+                // setLastUpdatedBy(response.data.lastUpdatedBy);
+                // setLastUpdatedOn(response.data.lastUpdatedOn);
+            })
+            .catch((error) => {
+                setLoading(false);
+            });
+    }
 
 
     function onSubmit(formValues) {
@@ -62,11 +83,11 @@ function AddBuildTool() {
             'fileData': btoa(formValues.buildconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/build-tool`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/build-tool/${projectResourceId}/${settingId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Build tool added successfully.', { variant: 'success' });
+                enqueueSnackbar('Build tool updated successfully.', { variant: 'success' });
                 history.push(`/app/project/${projectResourceId}/build-tools`);
             })
             .catch(() => {
@@ -78,7 +99,11 @@ function AddBuildTool() {
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
-                    <Typography variant="h6" color="inherit">Add Build Tool</Typography>
+                    <Typography variant="h6" color="inherit">Edit Build Tool
+                    <Typography variant="caption" >
+                            &nbsp; {settingId}
+                        </Typography>
+                    </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
                 </Toolbar>
             </AppBar>
@@ -105,7 +130,7 @@ function AddBuildTool() {
                             <Controller
                                 name="type"
                                 control={control}
-                                defaultValue={'maven-3.3'}
+                                defaultValue={''}
                                 rules={{
                                     required: "Required"
                                 }}
@@ -151,7 +176,7 @@ function AddBuildTool() {
                                     variant="outlined"
                                     color="primary"
                                     type="submit"
-                                    disabled={loading}>Add</Button>
+                                    disabled={loading}>Save</Button>
                                 <Button
                                     className={classes.button}
                                     size="small"
@@ -167,4 +192,4 @@ function AddBuildTool() {
     )
 
 }
-export default AddBuildTool;
+export default EditBuildTool;

@@ -1,11 +1,11 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import { Form, Formik } from 'formik';
 import { useSnackbar } from 'notistack';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
+import { useForm, Controller } from "react-hook-form";
+
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -39,23 +39,39 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function getFieldErrors(id, formik) {
-    if (formik.touched[id] && formik.errors[id]) {
-        return ({ error: true, helperText: formik.errors[id] });
-    } else {
-        return null;
-    }
-}
-
 function AddK8sCluster() {
     document.title = "Add Kubernetes Cluster";
     const classes = useStyles();
+    const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
+
     let { projectResourceId } = useParams();
 
     const [loading, setLoading] = useState(false);
     let history = useHistory();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+
+    function onSubmit(formValues) {
+        console.log(formValues);
+        setLoading(true);
+
+        let data = {
+            'projectId': projectResourceId,
+            'displayName': formValues.displayName,
+            'fileData': btoa(formValues.kubeconfig),
+        };
+        // alert(JSON.stringify(data, null, 2));
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/kubernetes-cluster`, data)
+            .then((response) => {
+                console.log(response);
+                setLoading(false);
+                enqueueSnackbar('Kubernetes cluster added successfully.', { variant: 'success' });
+                history.push(`/app/project/${projectResourceId}/kubernetes-clusters`);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
 
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
@@ -68,84 +84,62 @@ function AddK8sCluster() {
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
-                        <Formik
-                            initialValues={{ displayName: '', kubeconfig: '' }}
-                            validationSchema={Yup.object({
-                                displayName: Yup.string()
-                                    .max(50, 'Must be 50 characters or less')
-                                    .required('Required'),
-                                kubeconfig: Yup.string()
-                                    .max(65536, 'Must be 65536 characters or less')
-                                    .required('Required'),
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="displayName"
+                                label="Display Name"
+                                required
+                                inputRef={register({
+                                    required: "Required.",
+                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.displayName ? true : false}
+                                helperText={errors.displayName?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="kubeconfig"
+                                label="Kubeconfig"
+                                required
+                                multiline
+                                rows={20}
+                                inputRef={register({
+                                    required: "Required.",
+                                    maxLength: { value: 65536, message: "Maximum 65536 characters are allowed." }
+                                })}
+                                error={errors.kubeconfig ? true : false}
+                                helperText={errors.kubeconfig?.message}
+                            />
 
-                            })}
-                            onSubmit={(values, { setSubmitting }) => {
-                                setLoading(true);
-                                let data = {
-                                    'projectId': projectResourceId,
-                                    'fileData': btoa(values.kubeconfig),
-                                    'displayName': values.displayName,
-                                };
-                                axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/kubernetes-cluster`, data)
-                                    .then((response) => {
-                                        console.log(response);
-                                        setLoading(false);
-                                        setSubmitting(false);
-                                        enqueueSnackbar('Kubernetes cluster added successfully.', { variant: 'success' });
-                                        history.push(`/app/project/${projectResourceId}/kubernetes-clusters`);
-                                    })
-                                    .catch(() => {
-                                        setLoading(false);
-                                        setSubmitting(false);
-                                    });
-                            }}
-                        >
-                            {formik =>
-                                <Form onSubmit={formik.handleSubmit}>
-                                    <TextField
-                                        variant="outlined" size="small" fullWidth margin="normal"
-                                        InputLabelProps={{ shrink: true, }}
-                                        InputProps={{ classes: { input: classes.textField } }}
-                                        id="displayName"
-                                        label="Display Name"
-                                        required
-                                        {...formik.getFieldProps('displayName')}
-                                        {...getFieldErrors('displayName', formik)}
-                                    />
-                                    <TextField
-                                        variant="outlined" size="small" fullWidth margin="normal"
-                                        InputLabelProps={{ shrink: true, }}
-                                        InputProps={{ classes: { input: classes.textField } }}
-                                        id="kubeconfig"
-                                        label="Kubeconfig"
-                                        required
-                                        multiline
-                                        rows={20}
-                                        {...formik.getFieldProps('kubeconfig')}
-                                        {...getFieldErrors('kubeconfig', formik)}
-                                    />
-                                    <Grid container>
-                                        <Button
-                                            className={classes.button}
-                                            size="small"
-                                            variant="outlined"
-                                            color="primary"
-                                            type="submit"
-                                            disabled={loading}>Add</Button>
-                                        <Button
-                                            className={classes.button}
-                                            size="small"
-                                            variant="outlined"
-                                            onClick={(e) => history.goBack()}
-                                        >Cancel</Button>
-                                    </Grid>
-                                </Form>
-                            }
-                        </Formik>
+                            <Grid container>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
+                                    type="submit"
+                                    disabled={loading}>Add</Button>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={(e) => history.goBack()}
+                                >Cancel</Button>
+                            </Grid>
+                        </form>
                     </Box>
                 </Grid>
             </Grid>
-        </Container>
+        </Container >
     )
 
 }

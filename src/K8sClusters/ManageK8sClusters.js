@@ -94,7 +94,7 @@ function ManageK8sCusters() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Cluster',
-                                    onClick: (event, rowData) => alert("You saved " + rowData.name)
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/kubernetes-cluster/${rowData.settingId}/edit`)
                                 },
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,
