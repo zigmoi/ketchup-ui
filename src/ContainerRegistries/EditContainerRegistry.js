@@ -39,17 +39,41 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function AddContainerRegistry() {
-    document.title = "Add Container Registry";
+function EditContainerRegistry() {
+    document.title = "Edit Container Registry";
     const classes = useStyles();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
 
-    let { projectResourceId } = useParams();
+    let history = useHistory();
+    let { projectResourceId, settingId } = useParams();
 
     const [loading, setLoading] = useState(false);
-    let history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { type } = watch();
+
+    useEffect(() => {
+        loadDetails();
+    }, [projectResourceId, settingId]);
+
+
+    function loadDetails() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/container-registry/${projectResourceId}/${settingId}`)
+            .then((response) => {
+                setLoading(false);
+                setValue("displayName",response.data.displayName);
+                setValue("type",response.data.type);
+                setValue("registryUrl",response.data.registryUrl);
+                setValue("repository",response.data.repository);
+                setValue("username",response.data.registryUsername);
+                setValue("password",response.data.registryPassword);
+                // setLastUpdatedBy(response.data.lastUpdatedBy);
+                // setLastUpdatedOn(response.data.lastUpdatedOn);
+            })
+            .catch((error) => {
+                setLoading(false);
+            });
+    }
 
     useEffect(() => {
         if(type === "docker-hub"){
@@ -236,11 +260,11 @@ function AddContainerRegistry() {
             'registryPassword': formValues.password ? formValues.password : "",
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/container-registry`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/container-registry/${projectResourceId}/${settingId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Container registry added successfully.', { variant: 'success' });
+                enqueueSnackbar('Container registry updated successfully.', { variant: 'success' });
                 history.push(`/app/project/${projectResourceId}/container-registries`);
             })
             .catch(() => {
@@ -252,7 +276,11 @@ function AddContainerRegistry() {
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
-                    <Typography variant="h6" color="inherit">Add Container Registry</Typography>
+                    <Typography variant="h6" color="inherit">Edit Container Registry
+                    <Typography variant="caption" >
+                            &nbsp; {settingId}
+                        </Typography>
+                    </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
                 </Toolbar>
             </AppBar>
@@ -310,7 +338,7 @@ function AddContainerRegistry() {
                                     variant="outlined"
                                     color="primary"
                                     type="submit"
-                                    disabled={loading}>Add</Button>
+                                    disabled={loading}>Save</Button>
                                 <Button
                                     className={classes.button}
                                     size="small"
@@ -326,4 +354,4 @@ function AddContainerRegistry() {
     )
 
 }
-export default AddContainerRegistry;
+export default EditContainerRegistry;

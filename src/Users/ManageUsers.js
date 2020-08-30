@@ -125,7 +125,7 @@ function ManageUsers() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit User',
-                                    onClick: (event, rowData) => alert("You saved " + rowData.name)
+                                    onClick: (event, rowData) => history.push(`/app/user/${rowData.userName}/edit`)
                                 },
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,

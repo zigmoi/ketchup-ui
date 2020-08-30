@@ -99,7 +99,7 @@ function ManageContainerRegistries() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Registry',
-                                    onClick: (event, rowData) => alert("You saved " + rowData.name)
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/container-registry/${rowData.settingId}/edit`)
                                 },
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,
