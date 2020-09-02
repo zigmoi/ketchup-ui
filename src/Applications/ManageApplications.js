@@ -95,7 +95,7 @@ function ManageApplications() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Application',
-                                    onClick: (event, rowData) => alert("You saved " + rowData.name)
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/create`)
                                 },
                                 {
                                     icon: () => <DateRangeIcon color="action" fontSize="small" />,
@@ -111,7 +111,7 @@ function ManageApplications() {
                                     icon: () => <AddIcon color="action" fontSize="small" />,
                                     tooltip: 'Add Application',
                                     isFreeAction: true,
-                                    onClick: () => history.push('/app/create-user')
+                                    onClick: () => history.push(`/app/project/${projectResourceId}/application/create`)
                                 },
                                 {
                                     icon: () => <RefreshIcon color="action" fontSize="small" />,

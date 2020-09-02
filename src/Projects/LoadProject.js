@@ -67,7 +67,7 @@ export default function LoadProject(props) {
     <Dialog
       open={open}
       onClose={handleClose}
-      fullWidth="true"
+      fullWidth={true}
       maxWidth="md">
       <Container maxWidth="xl" className={classes.container}>
         <Grid>

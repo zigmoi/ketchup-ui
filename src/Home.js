@@ -65,6 +65,7 @@ import AddBuildTool from './BuildTools/AddBuildTool';
 import EditBuildTool from './BuildTools/EditBuildTool';
 import ManageBuildTools from './BuildTools/ManageBuildTools';
 
+import CreateApplication from './Applications/CreateApplication';
 import ManageApplications from './Applications/ManageApplications';
 import ManageApplicationHistory from './Applications/ManageApplicationHistory';
 
@@ -438,8 +439,9 @@ function Home() {
         <Route path="/app/project/:projectResourceId/build-tool/add" render={() => <ProtectedRoute component={AddBuildTool} />} />
         <Route path="/app/project/:projectResourceId/build-tool/:settingId/edit" render={() => <ProtectedRoute component={EditBuildTool} />} />
         <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} />} />
-        <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} />} />
+        <Route path="/app/project/:projectResourceId/application/create" render={() => <ProtectedRoute component={CreateApplication} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} />} />
+        <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} />} />
         <Route render={() => <ProtectedRoute component={Nomatch} />} />
       </Switch>
       <LoadProject activeProjectId={projectId} open={openProjectLoader} onClose={handleClose} />
