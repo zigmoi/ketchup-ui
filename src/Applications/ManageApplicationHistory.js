@@ -10,6 +10,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+import LoopIcon from '@material-ui/icons/Loop';
+import LowPriorityIcon from '@material-ui/icons/LowPriority';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import tableIcons from '../tableIcons';
 import { useHistory, useParams } from 'react-router-dom';
@@ -120,6 +122,11 @@ function ManageApplicationHistory() {
                     ]}
                     data={dataSource}
                     actions={[
+                        {
+                            icon: () => <LowPriorityIcon color="action" fontSize="small" />,
+                            tooltip: 'Pipeline',
+                            onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
+                        },
                         {
                             icon: () => <PlayCircleOutlineIcon color="action" fontSize="small" />,
                             tooltip: 'Deploy Now',

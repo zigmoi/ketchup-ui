@@ -71,6 +71,7 @@ import ManageApplicationHistory from './Applications/ManageApplicationHistory';
 
 import CreateProject from './Projects/CreateProject';
 import LoadProject from './Projects/LoadProject';
+import ViewReleasePipeline from './Applications/ViewReleasePipeline';
 
 
 const drawerWidth = 220;
@@ -441,6 +442,7 @@ function Home() {
         <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} />} />
         <Route path="/app/project/:projectResourceId/application/create" render={() => <ProtectedRoute component={CreateApplication} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/release/:releaseResourceId" render={() => <ProtectedRoute component={ViewReleasePipeline} />} />
         <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} />} />
         <Route render={() => <ProtectedRoute component={Nomatch} />} />
       </Switch>
