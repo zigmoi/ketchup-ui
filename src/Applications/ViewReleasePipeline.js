@@ -4,11 +4,12 @@ import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
 import UserContext from '../UserContext';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
-
+import PipelineStepStatusView from './PipelineStepStatusView';
+import PipelineTaskStatusView from './PipelineTaskStatusView';
+ 
 const useStyles = makeStyles((theme) => ({
     content: {
         fontSize: '12px',
@@ -111,7 +112,7 @@ function ViewReleasePipeline() {
             statusSource.close();
         }
     }
- 
+
 
     let pipelineStatusView;
     if (statusJson?.status === "True") {
@@ -127,6 +128,8 @@ function ViewReleasePipeline() {
     } else {
         pipelineStatusView = (<Chip label="Unknown" />);
     }
+
+
 
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
@@ -159,72 +162,75 @@ function ViewReleasePipeline() {
                         <br />
 
 
-                        {statusJson?.tasks?.map((task, taskIndex) => {
-                            return(
-                            <Accordion style={{ backgroundColor: 'rgba(0, 0, 0, 0.04)' }}  >
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    id="panel1bh-header"
-                                >
-                                    <Typography className={classes.heading} ><CircularProgress size={15} className={classes.pipelineProgress} /> {task.baseName}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Start Time: {task?.startTime}</Typography>
-                                 &nbsp;
-                                 <Typography className={classes.secondaryHeading}> Completion Time: {task?.completionTime}</Typography>
-                                 &nbsp;
-                                 <Typography className={classes.secondaryHeading}> {task?.message}</Typography>
-                                 &nbsp;
-
-                             </AccordionSummary>
-                                <AccordionDetails>
-                                    <Grid container>
-                                        <Grid item md={9} lg={12} xl={8}>
-                                            {task?.steps.map((step, stepIndex) => {
-                                                return (
-                                                <Accordion   >
-                                                    <AccordionSummary
-                                                        expandIcon={<ExpandMoreIcon />}
-                                                        aria-controls="panel1bh-content"
-                                                        id="panel1bh-header1"
-                                                    >
-                                                        <Typography className={classes.heading} ><CircularProgress size={15} className={classes.pipelineProgress} /> {step.stepName}</Typography>
-                                                        <Typography className={classes.secondaryHeading}> Completion Time: {step?.completionTime}</Typography>
-                                                        &nbsp;
-                                                        <Typography className={classes.secondaryHeading}> {step?.reason}</Typography>
-                                                        &nbsp;
-                                                    </AccordionSummary>
-                                                    <AccordionDetails>
-                                                        <Box width="100%">
-                                                            <Box width="100%">
-                                                                <Typography variant="caption">Message: {step?.reason}</Typography>
-                                                                <Button style={{ display: startLogStream ? 'none' : 'block' }} variant="outlined" size="small" color="primary" onClick={() => setStartLogStream(true)}>Logs</Button>
-                                                            </Box>
-                                                            {startLogStream && step?.containerName ?
-                                                                <Box width="100%">
-                                                                    <ScrollFollow
-                                                                        startFollowing={true}
-                                                                        render={({ follow, onScroll }) => (
-                                                                            <LazyLog
-                                                                                url={`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/logs/stream/direct?releaseId=${releaseResourceId}&podName=${step.podName}&containerName=${step.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
-                                                                                height={logViewerHeight}
-                                                                                // width={logViewerWidth}
-                                                                                stream
-                                                                                follow={follow}
-                                                                                onScroll={onScroll}
-                                                                                enableSearch />
-                                                                        )}
-                                                                    />
-                                                                </Box> : null}
-                                                        </Box>
-
-                                                    </AccordionDetails>
-                                                </Accordion>
-                                            )})}
+                        {statusJson?.tasks?.sort((a,b) => a.order - b.order).map((task, taskIndex) => {
+                            return (
+                                <Accordion style={{ backgroundColor: 'rgba(0, 0, 0, 0.04)' }}  >
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        id="panel1bh-header"
+                                    >
+                                        <PipelineTaskStatusView statusJson={task} />
+                                        <Typography className={classes.heading} > {task?.baseName}</Typography>
+                                        <Typography className={classes.secondaryHeading}> Start Time: {task?.startTime}</Typography>
+                                        &nbsp;
+                                        <Typography className={classes.secondaryHeading}> Completion Time: {task?.completionTime}</Typography>
+                                        &nbsp;
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Grid container>
+                                            <Grid item md={9} lg={12} xl={8}>
+                                                {task?.steps.sort((a,b) => a.order - b.order).map((step, stepIndex) => {
+                                                    return (
+                                                        <React.Fragment>
+                                                            <Typography variant="caption"> {task?.reason}: &nbsp; {task?.message}</Typography>
+                                                            &nbsp;
+                                                            <Accordion>
+                                                                <AccordionSummary
+                                                                    expandIcon={<ExpandMoreIcon />}
+                                                                    aria-controls="panel1bh-content"
+                                                                    id="panel1bh-header1"
+                                                                >
+                                                                    <PipelineStepStatusView statusJson={step} />
+                                                                    <Typography className={classes.heading} > {step?.stepName}</Typography>
+                                                                    <Typography className={classes.secondaryHeading}> Start Time: {step?.startTime}</Typography>
+                                                                    &nbsp;
+                                                                    <Typography className={classes.secondaryHeading}> Completion Time: {step?.completionTime}</Typography>
+                                                                    &nbsp;
+                                                                </AccordionSummary>
+                                                                <AccordionDetails>
+                                                                    <Box width="100%">
+                                                                        <Box width="100%">
+                                                                            <Typography variant="caption">{step?.reason}: {step?.message}</Typography>
+                                                                            <Button style={{ display: startLogStream ? 'none' : 'block' }} variant="outlined" size="small" color="primary" onClick={() => setStartLogStream(true)}>Logs</Button>
+                                                                        </Box>
+                                                                        {startLogStream && step?.containerName ?
+                                                                            <Box width="100%">
+                                                                                <ScrollFollow
+                                                                                    startFollowing={true}
+                                                                                    render={({ follow, onScroll }) => (
+                                                                                        <LazyLog
+                                                                                            url={`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/logs/stream/direct?releaseId=${releaseResourceId}&podName=${step.podName}&containerName=${step.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
+                                                                                            height={logViewerHeight}
+                                                                                            // width={logViewerWidth}
+                                                                                            stream
+                                                                                            follow={follow}
+                                                                                            onScroll={onScroll}
+                                                                                            enableSearch />
+                                                                                    )}
+                                                                                />
+                                                                            </Box> : null}
+                                                                    </Box>
+                                                                </AccordionDetails>
+                                                            </Accordion>
+                                                        </React.Fragment>
+                                                    )
+                                                })}
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                </AccordionDetails>
-
-                            </Accordion>
-                        )})}
+                                    </AccordionDetails>
+                                </Accordion>
+                            )
+                        })}
                     </Box>
                 </Grid>
             </Grid>
