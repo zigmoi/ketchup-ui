@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, Chip, Accordion, AccordionSummary, AccordionDetails, Divider } from '@material-ui/core';
+import { AppBar, Box, Button, CircularProgress, Container, Grid, Toolbar, Typography, Chip, Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
@@ -6,9 +6,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import UserContext from '../UserContext';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { LazyLog, ScrollFollow } from 'react-lazylog';
-import PipelineStepStatusView from './PipelineStepStatusView';
 import PipelineTaskStatusView from './PipelineTaskStatusView';
+import PipelineStepView from './PipelineStepView';
  
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -66,7 +65,6 @@ function ViewReleasePipeline() {
 
     const [loading, setLoading] = useState(false);
     const [statusJson, setStatusJson] = useState("");
-    const [startLogStream, setStartLogStream] = useState(false);
 
 
     let statusSource;
@@ -184,44 +182,7 @@ function ViewReleasePipeline() {
                                                         <React.Fragment>
                                                             <Typography variant="caption"> {task?.reason}: &nbsp; {task?.message}</Typography>
                                                             &nbsp;
-                                                            <Accordion>
-                                                                <AccordionSummary
-                                                                    expandIcon={<ExpandMoreIcon />}
-                                                                    aria-controls="panel1bh-content"
-                                                                    id="panel1bh-header1"
-                                                                >
-                                                                    <PipelineStepStatusView statusJson={step} />
-                                                                    <Typography className={classes.heading} > {step?.stepName}</Typography>
-                                                                    <Typography className={classes.secondaryHeading}> Start Time: {step?.startTime}</Typography>
-                                                                    &nbsp;
-                                                                    <Typography className={classes.secondaryHeading}> Completion Time: {step?.completionTime}</Typography>
-                                                                    &nbsp;
-                                                                </AccordionSummary>
-                                                                <AccordionDetails>
-                                                                    <Box width="100%">
-                                                                        <Box width="100%">
-                                                                            <Typography variant="caption">{step?.reason}: {step?.message}</Typography>
-                                                                            <Button style={{ display: startLogStream ? 'none' : 'block' }} variant="outlined" size="small" color="primary" onClick={() => setStartLogStream(true)}>Logs</Button>
-                                                                        </Box>
-                                                                        {startLogStream && step?.containerName ?
-                                                                            <Box width="100%">
-                                                                                <ScrollFollow
-                                                                                    startFollowing={true}
-                                                                                    render={({ follow, onScroll }) => (
-                                                                                        <LazyLog
-                                                                                            url={`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/logs/stream/direct?releaseId=${releaseResourceId}&podName=${step.podName}&containerName=${step.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
-                                                                                            height={logViewerHeight}
-                                                                                            // width={logViewerWidth}
-                                                                                            stream
-                                                                                            follow={follow}
-                                                                                            onScroll={onScroll}
-                                                                                            enableSearch />
-                                                                                    )}
-                                                                                />
-                                                                            </Box> : null}
-                                                                    </Box>
-                                                                </AccordionDetails>
-                                                            </Accordion>
+                                                            <PipelineStepView step={step} />
                                                         </React.Fragment>
                                                     )
                                                 })}
