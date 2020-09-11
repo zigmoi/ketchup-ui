@@ -155,7 +155,7 @@ function ViewReleasePipeline() {
                         </Typography>
                         <br />
                         <Typography variant="caption" >
-                            Reason: &nbsp; {statusJson?.reason + ", " + statusJson?.message}
+                            Message: &nbsp; {statusJson?.reason}{statusJson?.message ? "," : ""} {statusJson?.message}
                         </Typography>
                         <br />
 
@@ -180,7 +180,7 @@ function ViewReleasePipeline() {
                                                 {task?.steps.sort((a,b) => a.order - b.order).map((step, stepIndex) => {
                                                     return (
                                                         <React.Fragment>
-                                                            <Typography variant="caption"> {task?.reason}: &nbsp; {task?.message}</Typography>
+                                                            <Typography variant="caption">Message: {task?.reason}{task?.message ? "," : ""} {task?.message}</Typography>
                                                             &nbsp;
                                                             <PipelineStepView step={step} />
                                                         </React.Fragment>

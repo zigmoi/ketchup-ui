@@ -51,13 +51,14 @@ export default function PipelineStepView(props) {
             <AccordionDetails>
                 <Box width="100%">
                     <Box width="100%">
-                        <Typography variant="caption">{props.step?.reason}: {props.step?.message}</Typography>
+                        <Typography variant="caption">Message: {props.step?.reason}{props?.step?.message ? "," : ""} {props.step?.message}</Typography>
                         <br />
                         <Button style={{ display: startLogStream ? 'none' : 'block' }} variant="outlined" size="small" color="primary" onClick={() => { setStartLogStream(true); setShowLogs(true) }}>Show Logs</Button>
                         <br />
                         {
                             startLogStream === false ? null :
-                                <Button variant="outlined" size="small" color="primary" 
+                                <Button variant="outlined" size="small" color="primary"
+                                    style={{ display: 'block' }} 
                                     onClick={() => toggleShowLogs()}>
                                     {showLogs ? "Hide Logs" : "Show Logs"}
                                 </Button>
@@ -72,6 +73,7 @@ export default function PipelineStepView(props) {
                                         url={`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/logs/stream/direct?releaseId=${releaseResourceId}&podName=${props.step?.podName}&containerName=${props.step?.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
                                         height={logViewerHeight}
                                         // width={logViewerWidth}
+                                        style={{textAlign: 'left'}}
                                         stream
                                         follow={follow}
                                         onScroll={onScroll}
