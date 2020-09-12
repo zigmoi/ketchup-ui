@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, Toolbar, Typography, Chip, Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
+import { AppBar, Box, Button, CircularProgress, Container, Grid, Toolbar, Typography, Chip, Accordion, AccordionSummary, AccordionDetails, Paper, Icon, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
@@ -8,7 +8,9 @@ import UserContext from '../UserContext';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PipelineTaskStatusView from './PipelineTaskStatusView';
 import PipelineStepView from './PipelineStepView';
- 
+import CancelIcon from '@material-ui/icons/Cancel';
+import { green, red } from '@material-ui/core/colors';
+
 const useStyles = makeStyles((theme) => ({
     content: {
         fontSize: '12px',
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     secondaryHeading: {
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
-    },
+    }
 }));
 
 function ViewReleasePipeline() {
@@ -58,7 +60,7 @@ function ViewReleasePipeline() {
     const classes = useStyles();
     const logViewerHeight = 350;
 
-    let { projectResourceId, releaseResourceId } = useParams();
+    let { projectResourceId, deploymentResourceId, releaseResourceId } = useParams();
     let history = useHistory();
     const userContext = useContext(UserContext);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -114,17 +116,21 @@ function ViewReleasePipeline() {
 
     let pipelineStatusView;
     if (statusJson?.status === "True") {
-        pipelineStatusView = (<Chip label="Success" color="primary" />);
+        pipelineStatusView = (<Chip label="SUCCESS" style={{backgroundColor: 'green', color: 'white'}} />);
     } else if (statusJson?.status === "Unknown" && statusJson?.reason === "Running") {
         pipelineStatusView = (
             <React.Fragment>
-                <Chip label="In Progress" color="primary" />&nbsp;
-                <CircularProgress size={15} className={classes.circularProgress} />
+                <Chip label="IN PROGRESS" style={{backgroundColor: 'teal', color: 'white'}} />&nbsp;
+                <IconButton color="secondary"><CancelIcon /></IconButton>
             </React.Fragment>);
     } else if (statusJson?.status === "False") {
-        pipelineStatusView = (<Chip label="Failed" color="secondary" />);
+        pipelineStatusView = (<Chip label="FAILED" style={{backgroundColor: '#f44336', color: 'white'}} />);
     } else {
-        pipelineStatusView = (<Chip label="Unknown" />);
+        pipelineStatusView = (
+            <React.Fragment>
+                <Chip label="UNKNOWN" style={{backgroundColor: '#00bcd4', color: 'white'}} />&nbsp;
+                <IconButton color="secondary"><CancelIcon /></IconButton>
+            </React.Fragment>);
     }
 
 
@@ -143,53 +149,109 @@ function ViewReleasePipeline() {
             </AppBar>
             <Grid container>
                 <Grid item md={9} lg={12} xl={8}>
+                    <Box m={1}>
+                        <Paper>
+                            <Box width="100%" display="flex" alignItems="center">
+                                <Box width="80%" m={2} textAlign="left">
+                                    <Typography variant="subtitle2" >
+                                        Application ID: &nbsp;
+                                        <Typography variant="caption" >
+                                            {deploymentResourceId}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2" >
+                                        Release ID: &nbsp;
+                                        <Typography variant="caption" >
+                                            {releaseResourceId}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2" >
+                                        Start Time: &nbsp;
+                                        <Typography variant="caption" >
+                                            {statusJson?.startTime}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2" >
+                                        Completion Time: &nbsp;
+                                        <Typography variant="caption" >
+                                            {statusJson?.completionTime}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2" >
+                                        Message: &nbsp;
+                                        <Typography variant="caption" >
+                                            {statusJson?.reason}{statusJson?.message ? "," : ""} {statusJson?.message}
+                                        </Typography>
+                                    </Typography>
+                                </Box>
+                                <Box width="20%">
+                                    {pipelineStatusView}
+                                </Box>
+                            </Box>
+                        </Paper>
+                    </Box>
                     <Box m={2}>
-                        {pipelineStatusView}
                         <br />
-                        <Typography variant="caption" >
-                            Start Time: &nbsp; {statusJson?.startTime}
-                        </Typography>
-                        &nbsp;
-                        <Typography variant="caption" >
-                            Completion Time: &nbsp; {statusJson?.completionTime}
-                        </Typography>
-                        <br />
-                        <Typography variant="caption" >
-                            Message: &nbsp; {statusJson?.reason}{statusJson?.message ? "," : ""} {statusJson?.message}
-                        </Typography>
-                        <br />
-
-
-                        {statusJson?.tasks?.sort((a,b) => a.order - b.order).map((task, taskIndex) => {
+                        {statusJson?.tasks?.sort((a, b) => a.order - b.order).map((task, taskIndex) => {
                             return (
-                                <Accordion style={{ backgroundColor: 'rgba(0, 0, 0, 0.04)' }}  >
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        id="panel1bh-header"
-                                    >
-                                        <PipelineTaskStatusView statusJson={task} />
-                                        <Typography className={classes.heading} > {task?.baseName}</Typography>
-                                        <Typography className={classes.secondaryHeading}> Start Time: {task?.startTime}</Typography>
-                                        &nbsp;
-                                        <Typography className={classes.secondaryHeading}> Completion Time: {task?.completionTime}</Typography>
-                                        &nbsp;
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <Grid container>
-                                            <Grid item md={9} lg={12} xl={8}>
-                                                {task?.steps.sort((a,b) => a.order - b.order).map((step, stepIndex) => {
-                                                    return (
-                                                        <React.Fragment>
-                                                            <Typography variant="caption">Message: {task?.reason}{task?.message ? "," : ""} {task?.message}</Typography>
-                                                            &nbsp;
-                                                            <PipelineStepView step={step} />
-                                                        </React.Fragment>
-                                                    )
-                                                })}
+                                <React.Fragment key={taskIndex}>
+                                    <Accordion style={{ backgroundColor: 'rgba(0, 0, 0, 0.04)' }}  >
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            id="panel1bh-header"
+                                        >
+                                            <Box width="100%" display="flex" alignItems="center" textAlign="left">
+                                                <Box m={1} width="25%">
+                                                    <Typography variant="subtitle2" >
+                                                        Name: &nbsp;
+                                                        <Typography variant="caption" >
+                                                            {task?.baseName}
+                                                        </Typography>
+                                                    </Typography>
+                                                </Box>
+                                                <Box m={1} width="35%">
+                                                    <Typography variant="subtitle2" >
+                                                        Start Time: &nbsp;
+                                                        <Typography variant="caption" >
+                                                            {task?.startTime}
+                                                        </Typography>
+                                                    </Typography>
+                                                </Box>
+                                                <Box m={1} width="35%">
+                                                    <Typography variant="subtitle2" >
+                                                        Completion Time: &nbsp;
+                                                        <Typography variant="caption" >
+                                                            {task?.completionTime}
+                                                        </Typography>
+                                                    </Typography>
+                                                </Box>
+                                                <Box m={1} width="5%">
+                                                    <PipelineTaskStatusView statusJson={task} />
+                                                </Box>
+                                            </Box>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Grid container>
+                                                <Grid item md={9} lg={12} xl={8}>
+                                                    {task?.steps.sort((a, b) => a.order - b.order).map((step, stepIndex) => {
+                                                        return (
+                                                            <React.Fragment key={stepIndex}>
+                                                                <Typography variant="subtitle2" >
+                                                                    Message: &nbsp;
+                                                                    <Typography variant="caption" >
+                                                                        {task?.reason}{task?.message ? "," : ""} {task?.message}
+                                                                    </Typography>
+                                                                </Typography>
+                                                                <PipelineStepView step={step} />
+                                                            </React.Fragment>
+                                                        )
+                                                    })}
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </AccordionDetails>
-                                </Accordion>
+                                        </AccordionDetails>
+                                    </Accordion>
+                                    <br />
+                                </React.Fragment>
                             )
                         })}
                     </Box>

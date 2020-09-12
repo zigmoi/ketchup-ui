@@ -30,12 +30,12 @@ export default function PipelineTaskStatusView(props) {
     if (props.statusJson?.status === "Unknown" && (props.statusJson?.reason === "Started" || props.statusJson?.reason === "Pending")) {
         return statusView = (<HourglassEmptyIcon />);
     } else if (props.statusJson?.status === "Unknown") {
-        return statusView = (<CircularProgress size={15} />);
+        return statusView = (<CircularProgress size={23} />);
     } else if (props.statusJson?.status === "True") {
         return statusView = (<CheckIcon style={{ color: green[500] }} />);
     } else if (props.statusJson?.state === "False") {
         if(!props.statusJson?.completionTime){
-            return statusView = (<CircularProgress size={15} />);
+            return statusView = (<CircularProgress size={23} />);
         }else{
             if(props.statusJson?.reason === "TaskRunCancelled"){
                 return statusView = (<CloseIcon style={{ color: red[500] }} />);

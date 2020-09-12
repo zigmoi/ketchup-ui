@@ -34,7 +34,7 @@ export default function PipelineStepStatusView(props) {
     } else if (props.statusJson?.state === "Waiting") {
         statusView = (<HourglassEmptyIcon />);
     } else if (props.statusJson?.state === "Running") {
-        statusView = (<CircularProgress size={15} />);
+        statusView = (<CircularProgress size={23} />);
     }else{
         statusView = (<HourglassEmptyIcon />);
     }
