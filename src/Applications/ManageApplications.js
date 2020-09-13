@@ -9,8 +9,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, NavLink, useHistory, useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -86,12 +87,17 @@ function ManageApplications() {
                             components={{ Container: props => props.children }}
                             columns={[
                                 { title: 'Display Name', field: 'displayName' },
-                                { title: 'ID', field: 'id.deploymentResourceId' , width: 280 },
+                                { title: 'ID', field: 'id.deploymentResourceId', width: 280},
                                 { title: 'Type', field: 'type' },
                                 { title: 'Updation Date', field: 'lastUpdatedOn', type: 'datetime'}
                             ]}
                             data={dataSource}
                             actions={[
+                                {
+                                    icon: () => <LaunchIcon color="action" fontSize="small" />,
+                                    tooltip: 'View Application',
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/view`)
+                                },
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Application',

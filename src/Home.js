@@ -66,6 +66,7 @@ import EditBuildTool from './BuildTools/EditBuildTool';
 import ManageBuildTools from './BuildTools/ManageBuildTools';
 
 import CreateApplication from './Applications/CreateApplication';
+import ViewApplication from './Applications/ViewApplication';
 import ManageApplications from './Applications/ManageApplications';
 import ManageApplicationHistory from './Applications/ManageApplicationHistory';
 
@@ -442,6 +443,7 @@ function Home() {
         <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} />} />
         <Route path="/app/project/:projectResourceId/application/create" render={() => <ProtectedRoute component={CreateApplication} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/view" render={() => <ProtectedRoute component={ViewApplication} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/release/:releaseResourceId" render={() => <ProtectedRoute component={ViewReleasePipeline} />} />
         <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} />} />
         <Route render={() => <ProtectedRoute component={Nomatch} />} />

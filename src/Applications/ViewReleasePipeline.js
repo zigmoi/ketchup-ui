@@ -9,7 +9,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PipelineTaskStatusView from './PipelineTaskStatusView';
 import PipelineStepView from './PipelineStepView';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { green, red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     content: {
