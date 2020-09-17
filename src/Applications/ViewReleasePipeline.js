@@ -65,6 +65,7 @@ function ViewReleasePipeline() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState(false);
+    const [cancellingPipeline, setCancellingPipeline] = useState(false);
     const [statusJson, setStatusJson] = useState("");
 
 
@@ -120,7 +121,8 @@ function ViewReleasePipeline() {
         pipelineStatusView = (
             <React.Fragment>
                 <Chip label="IN PROGRESS" style={{backgroundColor: 'teal', color: 'white'}} />&nbsp;
-                <IconButton color="secondary"><CancelIcon /></IconButton>
+                {cancellingPipeline? <Typography variant="subtitle2" >Cancelling &nbsp;<CircularProgress size={12} /></Typography>:
+                <IconButton color="secondary" onClick={stopPipeline}><CancelIcon /></IconButton>}
             </React.Fragment>);
     } else if (statusJson?.status === "False") {
         pipelineStatusView = (<Chip label="FAILED" style={{backgroundColor: '#f44336', color: 'white'}} />);
@@ -128,8 +130,20 @@ function ViewReleasePipeline() {
         pipelineStatusView = (
             <React.Fragment>
                 <Chip label="UNKNOWN" style={{backgroundColor: '#00bcd4', color: 'white'}} />&nbsp;
-                <IconButton color="secondary"><CancelIcon /></IconButton>
+                <IconButton color="secondary" onClick={stopPipeline}><CancelIcon /></IconButton>
             </React.Fragment>);
+    }
+
+    function stopPipeline(){
+        setCancellingPipeline(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/stop?releaseResourceId=${releaseResourceId}`)
+            .then((response) => {
+                setCancellingPipeline(false);
+                enqueueSnackbar('Pipeline cancelled successfully.', { variant: 'success' });
+            })
+            .catch((error) => {
+                setCancellingPipeline(false);
+            });
     }
 
 
