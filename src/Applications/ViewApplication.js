@@ -47,9 +47,11 @@ function ViewApplication() {
 
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
+    const [instances, setInstances] = useState([]);
 
     useEffect(() => {
         loadDetails();
+        getInstances();
     }, [projectResourceId, deploymentResourceId]);
 
 
@@ -63,6 +65,18 @@ function ViewApplication() {
                 // setValue("buildconfig", atob(response.data.fileData));
                 // setLastUpdatedBy(response.data.lastUpdatedBy);
                 // setLastUpdatedOn(response.data.lastUpdatedOn);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
+
+    function getInstances() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/${deploymentResourceId}/instances`)
+            .then((response) => {
+                setLoading(false);
+                setInstances(response.data);
             })
             .catch(() => {
                 setLoading(false);
@@ -210,6 +224,7 @@ function ViewApplication() {
                                     size="small"
                                     variant="outlined"
                                     color="primary"
+                                    onClick={() => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/logs`)}
                                 >Logs</Button>
                                 <Button
                                     className={classes.button}

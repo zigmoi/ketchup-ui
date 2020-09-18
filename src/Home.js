@@ -67,6 +67,7 @@ import ManageBuildTools from './BuildTools/ManageBuildTools';
 
 import CreateApplication from './Applications/CreateApplication';
 import ViewApplication from './Applications/ViewApplication';
+import ViewApplicationLogs from './Applications/ViewApplicationLogs';
 import ManageApplications from './Applications/ManageApplications';
 import ManageApplicationHistory from './Applications/ManageApplicationHistory';
 
@@ -348,7 +349,7 @@ function Home() {
             </ListItemIcon>
             <ListItemText primary="Build Jobs" />
           </ListItem>
-          <ListItem button>
+          <ListItem button component={Link} to={`/app/project/${projectId}/application/logs`}>
             <ListItemIcon>
               <DvrIcon className={classes.drawerMenuIcon}  />
             </ListItemIcon>
@@ -444,6 +445,7 @@ function Home() {
         <Route path="/app/project/:projectResourceId/application/create" render={() => <ProtectedRoute component={CreateApplication} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/view" render={() => <ProtectedRoute component={ViewApplication} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId?/logs" render={() => <ProtectedRoute component={ViewApplicationLogs} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/release/:releaseResourceId" render={() => <ProtectedRoute component={ViewReleasePipeline} />} />
         <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} />} />
         <Route render={() => <ProtectedRoute component={Nomatch} />} />
