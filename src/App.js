@@ -11,7 +11,7 @@ import { SnackbarProvider } from 'notistack';
 
 function App() {
   return (
-    <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'right', }}>
+    <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }} autoHideDuration={4000} >
       <UserProvider>
         <ProjectProvider>
           <div className="App">

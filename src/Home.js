@@ -7,6 +7,9 @@ import ProjectContext from './ProjectContext';
 import useCurrentProject from './useCurrentProject';
 import ProtectedRoute from './ProtectedRoute';
 
+import useValidateUserHasAnyRole from './useValidateUserHasAnyRole';
+import useValidateUserHasAllRoles from './useValidateUserHasAllRoles';
+
 import Nomatch from './Nomatch';
 import Dashboard from './Dashboard';
 
@@ -36,15 +39,15 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
 import AppsIcon from '@material-ui/icons/Apps';
 import TimerIcon from '@material-ui/icons/Timer';
-import SettingsIcon from '@material-ui/icons/Settings';
-import LoopIcon from '@material-ui/icons/Loop';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import DvrIcon from '@material-ui/icons/Dvr';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import BuildIcon from '@material-ui/icons/Build';
 import CloudIcon from '@material-ui/icons/Cloud';
 import WallpaperIcon from '@material-ui/icons/Wallpaper';
+import BugReportIcon from '@material-ui/icons/BugReport';
+import LineWeightIcon from '@material-ui/icons/LineWeight';
+import MemoryIcon from '@material-ui/icons/Memory';
 
 import CreateUser from './Users/CreateUser';
 import EditUser from './Users/EditUser';
@@ -74,6 +77,7 @@ import ManageApplicationHistory from './Applications/ManageApplicationHistory';
 import CreateProject from './Projects/CreateProject';
 import LoadProject from './Projects/LoadProject';
 import ViewReleasePipeline from './Applications/ViewReleasePipeline';
+import { validateHasAllRoles } from './Util';
 
 
 const drawerWidth = 220;
@@ -337,79 +341,60 @@ function Home() {
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
-          <ListItem button component={Link} to={`/app/project/${projectId}/applications`}>
-            <ListItemIcon>
-              <AppsIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Applications" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <LoopIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Build Jobs" />
-          </ListItem>
-          <ListItem button component={Link} to={`/app/project/${projectId}/application/logs`}>
-            <ListItemIcon>
-              <DvrIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Logs" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <TimerIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Alerts" />
-          </ListItem>
-          <ListItem button component={Link} to={`/app/project/${projectId}/kubernetes-clusters`}>
-            <ListItemIcon>
-              <CloudIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Kubernetes Clusters" />
-          </ListItem>
-          <ListItem button component={Link} to={`/app/project/${projectId}/container-registries`}>
-            <ListItemIcon>
-              <WallpaperIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Container Registries" />
-          </ListItem>
-          <ListItem button component={Link} to={`/app/project/${projectId}/build-tools`}>
-            <ListItemIcon>
-              <BuildIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Build Tools" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <LayersIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="CI/CD Pipelines" />
-          </ListItem>
-          {/* <ListItem button>
-            <ListItemIcon>
-              <AppsIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Host Aliases" />
-          </ListItem> */}
-          <ListItem button component={Link} to="/app/manage-tenants">
-            <ListItemIcon>
-              <AccountTreeIcon className={classes.drawerMenuIcon} />
-            </ListItemIcon>
-            <ListItemText primary="Tenants" />
-          </ListItem>
-          <ListItem button component={Link} to="/app/manage-users">
-            <ListItemIcon>
-              <PeopleIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Users" />
-          </ListItem>
+          {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']) === false ? null :
+            <React.Fragment>
+              <ListItem button component={Link} to={`/app/project/${projectId}/applications`}>
+                <ListItemIcon>
+                  <AppsIcon className={classes.drawerMenuIcon} />
+                </ListItemIcon>
+                <ListItemText primary="Applications" />
+              </ListItem>
+              <ListItem button component={Link} to={`/app/project/${projectId}/application/logs`}>
+                <ListItemIcon>
+                  <BugReportIcon className={classes.drawerMenuIcon} />
+                </ListItemIcon>
+                <ListItemText primary="Logs" />
+              </ListItem>
+              <ListItem button component={Link} to={`/app/project/${projectId}/kubernetes-clusters`}>
+                <ListItemIcon>
+                  <CloudIcon className={classes.drawerMenuIcon} />
+                </ListItemIcon>
+                <ListItemText primary="Kubernetes Clusters" />
+              </ListItem>
+              <ListItem button component={Link} to={`/app/project/${projectId}/container-registries`}>
+                <ListItemIcon>
+                  <LineWeightIcon className={classes.drawerMenuIcon} />
+                </ListItemIcon>
+                <ListItemText primary="Container Registries" />
+              </ListItem>
+              <ListItem button component={Link} to={`/app/project/${projectId}/build-tools`}>
+                <ListItemIcon>
+                  <MemoryIcon className={classes.drawerMenuIcon} />
+                </ListItemIcon>
+                <ListItemText primary="Build Tools" />
+              </ListItem>
+            </React.Fragment>}
+          {useValidateUserHasAllRoles(['ROLE_SUPER_ADMIN']) === false ? null :
+            <ListItem button component={Link} to="/app/manage-tenants">
+              <ListItemIcon>
+                <AccountTreeIcon className={classes.drawerMenuIcon} />
+              </ListItemIcon>
+              <ListItemText primary="Tenants" />
+            </ListItem>}
+          {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER']) === false ? null :
+            <ListItem button component={Link} to="/app/manage-users">
+              <ListItemIcon>
+                <PeopleIcon className={classes.drawerMenuIcon} />
+              </ListItemIcon>
+              <ListItemText primary="Users" />
+            </ListItem>}
           {/* <ListItem button>
             <ListItemIcon>
               <PortraitIcon className={classes.drawerMenuIcon}  />
             </ListItemIcon>
             <ListItemText primary="Members" />
           </ListItem> */}
-          <ListItem button>
+          {/* <ListItem button>
             <ListItemIcon>
               <VpnKeyIcon className={classes.drawerMenuIcon}  />
             </ListItemIcon>
@@ -420,34 +405,58 @@ function Home() {
               <SettingsIcon className={classes.drawerMenuIcon}  />
             </ListItemIcon>
             <ListItemText primary="Settings" />
-          </ListItem>
+          </ListItem> */}
+          {/* <ListItem button>
+            <ListItemIcon>
+              <LoopIcon className={classes.drawerMenuIcon}  />
+            </ListItemIcon>
+            <ListItemText primary="Build Jobs" />
+          </ListItem> */}
+          {/* <ListItem button>
+            <ListItemIcon>
+              <LayersIcon className={classes.drawerMenuIcon}  />
+            </ListItemIcon>
+            <ListItemText primary="CI/CD Pipelines" />
+          </ListItem> */}
+          {/* <ListItem button>
+            <ListItemIcon>
+              <AppsIcon className={classes.drawerMenuIcon}  />
+            </ListItemIcon>
+            <ListItemText primary="Host Aliases" />
+          </ListItem> */}
+          {/* <ListItem button>
+            <ListItemIcon>
+              <TimerIcon className={classes.drawerMenuIcon}  />
+            </ListItemIcon>
+            <ListItemText primary="Alerts" />
+          </ListItem> */}
         </List>
       </Drawer>
       <Switch>
-        <Route path="/" exact render={() => <ProtectedRoute component={Dashboard} />} />
-        <Route path="/app" exact render={() => <ProtectedRoute component={Dashboard} />} />
-        <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard} />} />
+        <Route path="/" exact render={() => <ProtectedRoute component={Dashboard} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app" exact render={() => <ProtectedRoute component={Dashboard} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/create-tenant" render={() => <ProtectedRoute component={CreateTenant} roles={['ROLE_SUPER_ADMIN']} />} />
         <Route path="/app/manage-tenants" render={() => <ProtectedRoute component={ManageTenants} roles={['ROLE_SUPER_ADMIN']} />} />
         <Route path="/app/create-user" render={() => <ProtectedRoute component={CreateUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
         <Route path="/app/user/:userName/edit" render={() => <ProtectedRoute component={EditUser} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
-        <Route path="/app/manage-users" render={() => <ProtectedRoute component={ManageUsers} />} />
+        <Route path="/app/manage-users" render={() => <ProtectedRoute component={ManageUsers} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']} />} />
         <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
-        <Route path="/app/project/:projectResourceId/kubernetes-cluster/add" render={() => <ProtectedRoute component={AddK8sCluster} />} />
-        <Route path="/app/project/:projectResourceId/kubernetes-cluster/:settingId/edit" render={() => <ProtectedRoute component={EditK8sCluster} />} />
-        <Route path="/app/project/:projectResourceId/kubernetes-clusters" render={() => <ProtectedRoute component={ManageK8sClusters} />} />
-        <Route path="/app/project/:projectResourceId/container-registry/add" render={() => <ProtectedRoute component={AddContainerRegistry} />} />
-        <Route path="/app/project/:projectResourceId/container-registry/:settingId/edit" render={() => <ProtectedRoute component={EditContainerRegistry} />} />
-        <Route path="/app/project/:projectResourceId/container-registries" render={() => <ProtectedRoute component={ManageContainerRegistries} />} />
-        <Route path="/app/project/:projectResourceId/build-tool/add" render={() => <ProtectedRoute component={AddBuildTool} />} />
-        <Route path="/app/project/:projectResourceId/build-tool/:settingId/edit" render={() => <ProtectedRoute component={EditBuildTool} />} />
-        <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} />} />
-        <Route path="/app/project/:projectResourceId/application/create" render={() => <ProtectedRoute component={CreateApplication} />} />
-        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} />} />
-        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/view" render={() => <ProtectedRoute component={ViewApplication} />} />
-        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId?/logs" render={() => <ProtectedRoute component={ViewApplicationLogs} />} />
-        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/release/:releaseResourceId" render={() => <ProtectedRoute component={ViewReleasePipeline} />} />
-        <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} />} />
+        <Route path="/app/project/:projectResourceId/kubernetes-cluster/add" render={() => <ProtectedRoute component={AddK8sCluster} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/kubernetes-cluster/:settingId/edit" render={() => <ProtectedRoute component={EditK8sCluster} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/kubernetes-clusters" render={() => <ProtectedRoute component={ManageK8sClusters} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/container-registry/add" render={() => <ProtectedRoute component={AddContainerRegistry} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/container-registry/:settingId/edit" render={() => <ProtectedRoute component={EditContainerRegistry} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/container-registries" render={() => <ProtectedRoute component={ManageContainerRegistries} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/build-tool/add" render={() => <ProtectedRoute component={AddBuildTool} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/build-tool/:settingId/edit" render={() => <ProtectedRoute component={EditBuildTool} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/application/create" render={() => <ProtectedRoute component={CreateApplication} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/view" render={() => <ProtectedRoute component={ViewApplication} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId?/logs" render={() => <ProtectedRoute component={ViewApplicationLogs} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/release/:releaseResourceId" render={() => <ProtectedRoute component={ViewReleasePipeline} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/applications" render={() => <ProtectedRoute component={ManageApplications} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route render={() => <ProtectedRoute component={Nomatch} />} />
       </Switch>
       <LoadProject activeProjectId={projectId} open={openProjectLoader} onClose={handleClose} />
