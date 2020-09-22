@@ -96,8 +96,18 @@ function ManageApplicationHistory() {
             });
     }
 
-
-
+    function cleanupPipelineResource(releaseResourceId) {
+        setIconLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/cleanup?releaseId=${releaseResourceId}`)
+            .then((response) => {
+                setIconLoading(false);
+                enqueueSnackbar('Pipeline resources successfully cleaned up!', {variant: 'success'});
+            })
+            .catch((error) => {
+                setIconLoading(false);
+                enqueueSnackbar('Pipeline resources cleaned up failed!', {variant: 'error'});
+            });
+    }
 
     return (
         <Container maxWidth="xl" className={classes.container}>
@@ -126,6 +136,11 @@ function ManageApplicationHistory() {
                             icon: () => <LowPriorityIcon color="action" fontSize="small" />,
                             tooltip: 'Pipeline',
                             onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
+                        },
+                        {
+                            icon: () => <DeleteIcon color="action" fontSize="small" />,
+                            tooltip: 'Cleanup Pipeline Resources',
+                            onClick: (event, rowData) => cleanupPipelineResource(rowData.id.releaseResourceId)
                         },
                         {
                             icon: () => <PlayCircleOutlineIcon color="action" fontSize="small" />,
