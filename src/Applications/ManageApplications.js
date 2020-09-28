@@ -101,7 +101,7 @@ function ManageApplications() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Application',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/create`)
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/edit`)
                                 },
                                 {
                                     icon: () => <DateRangeIcon color="action" fontSize="small" />,

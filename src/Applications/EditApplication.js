@@ -44,7 +44,7 @@ function EditApplication() {
     const classes = useStyles();
     const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
 
-    let { projectResourceId } = useParams();
+    let { projectResourceId, deploymentResourceId } = useParams();
 
     let history = useHistory();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -55,10 +55,44 @@ function EditApplication() {
     const [buildTools, setBuildTools] = useState([]);
 
     useEffect(() => {
+        loadDetails();
         loadAllK8sClusters();
         loadAllContainerRegistries();
         loadAllBuildTools();
     }, [projectResourceId]);
+
+    function loadDetails() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/basic-spring-boot/${deploymentResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                setValue("displayName", response.data.displayName);
+                setValue("description", response.data.description);
+                setValue("serviceName", response.data.serviceName);
+                setValue("applicationPort", response.data.appServerPort);
+                setValue("replicas", response.data.replicas);
+                setValue("deploymentStrategy", response.data.deploymentStrategy);
+                setValue("gitRepoUrl", response.data.gitRepoUrl);
+                setValue("gitRepoUsername", response.data.gitRepoUsername);
+                setValue("gitRepoPassword", response.data.gitRepoPassword);
+                setValue("gitRepoBranchName", response.data.gitRepoBranchName);
+                setValue("platform", response.data.platform);
+                setValue("containerRegistrySettingId", response.data.containerRegistrySettingId);
+                setValue("containerRegistryPath", response.data.containerRegistryPath);
+                setValue("containerImageName", response.data.containerImageName);
+                setValue("buildTool", response.data.buildTool);
+                setValue("baseBuildPath", response.data.baseBuildPath);
+                setValue("buildToolSettingId", response.data.buildToolSettingId);
+                setValue("deploymentPipelineType", response.data.deploymentPipelineType);
+                setValue("devKubernetesClusterSettingId", response.data.devKubernetesClusterSettingId);
+                setValue("devKubernetesNamespace", response.data.devKubernetesNamespace);
+
+
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
 
     function loadAllK8sClusters() {
         setLoading(true);
@@ -101,6 +135,7 @@ function EditApplication() {
         setLoading(true);
 
         let data = {
+            "applicationType": "basic-spring-boot",
             "displayName": formValues.displayName,
             "description": formValues.description,
             "serviceName": formValues.serviceName,
@@ -127,11 +162,11 @@ function EditApplication() {
             "prodKubernetesNamespace": ""
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/basic-spring-boot`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/${deploymentResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Application created successfully.', { variant: 'success' });
+                enqueueSnackbar('Application updated successfully.', { variant: 'success' });
                 history.push(`/app/project/${projectResourceId}/applications`);
             })
             .catch(() => {
@@ -143,7 +178,12 @@ function EditApplication() {
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
-                    <Typography variant="h6" color="inherit">Edit Application</Typography>
+                    <Typography variant="h6" color="inherit">
+                        Edit Application
+                        <Typography variant="caption" >
+                            &nbsp; {deploymentResourceId}
+                        </Typography>
+                    </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
                 </Toolbar>
             </AppBar>
@@ -153,90 +193,90 @@ function EditApplication() {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="displayName"
                                 label="Display Name"
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="description"
                                 label="Description"
                                 multiline
                                 rows={1}
                                 inputRef={register({
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.description ? true : false}
                                 helperText={errors.description?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="serviceName"
                                 label="Service Name"
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.serviceName ? true : false}
                                 helperText={errors.serviceName?.message}
                             />
-                            
+
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="gitRepoUrl"
                                 label="Git Repository URL"
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 250, message: "Maximum 250 characters are allowed." }
+                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
                                 })}
                                 error={errors.gitRepoUrl ? true : false}
                                 helperText={errors.gitRepoUrl?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="gitRepoUsername"
                                 label="Git Repository User Name"
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.gitRepoUsername ? true : false}
                                 helperText={errors.gitRepoUsername?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="gitRepoPassword"
                                 label="Git Repository Token / Password"
@@ -244,16 +284,16 @@ function EditApplication() {
                                 type="password"
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.gitRepoPassword ? true : false}
                                 helperText={errors.gitRepoPassword?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="gitRepoBranchName"
                                 label="Git Repository Branch Name"
@@ -261,14 +301,14 @@ function EditApplication() {
                                 defaultValue="master"
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.gitRepoBranchName ? true : false}
                                 helperText={errors.gitRepoBranchName?.message}
                             />
                             {/* continuous deployment */}
                             {/* polling interval */}
-                            
+
                             <Controller
                                 name="containerRegistrySettingId"
                                 control={control}
@@ -278,9 +318,9 @@ function EditApplication() {
                                 }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Container Registry"
                                     required
@@ -289,21 +329,22 @@ function EditApplication() {
                                     helperText={errors.containerRegistrySettingId?.message}
                                 >
                                     {containerRegistries.map(registry =>
-                                        <MenuItem key={registry.settingId} value={registry.settingId}> {`${registry.displayName} (${registry.settingId})`} </MenuItem>)}
+                                        <MenuItem key={registry.settingId}
+                                                  value={registry.settingId}> {`${registry.displayName} (${registry.settingId})`} </MenuItem>)}
                                 </TextField>}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="containerImageName"
                                 label="Container Image Name"
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.containerImageName ? true : false}
                                 helperText={errors.containerImageName?.message}
@@ -317,9 +358,9 @@ function EditApplication() {
                                 }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Build Tool"
                                     required
@@ -340,9 +381,9 @@ function EditApplication() {
                                 }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Deployment Pipeline Type"
                                     required
@@ -350,7 +391,8 @@ function EditApplication() {
                                     error={errors.deploymentPipelineType ? true : false}
                                     helperText={errors.deploymentPipelineType?.message}
                                 >
-                                    <MenuItem key="standard-dev-1.0" value="standard-dev-1.0"> Standard Dev Pipeline 1.0 </MenuItem>
+                                    <MenuItem key="standard-dev-1.0" value="standard-dev-1.0"> Standard Dev Pipeline
+                                        1.0 </MenuItem>
                                     {/* <MenuItem key="standard-prod-1.0" value="standard-prod-1.0"> Standard Prod Pipeline 1.0 </MenuItem> */}
                                 </TextField>}
                             />
@@ -363,9 +405,9 @@ function EditApplication() {
                                 }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Kubernetes Cluster"
                                     required
@@ -374,14 +416,15 @@ function EditApplication() {
                                     helperText={errors.devKubernetesClusterSettingId?.message}
                                 >
                                     {k8sClusters.map(cluster =>
-                                        <MenuItem key={cluster.settingId} value={cluster.settingId}> {`${cluster.displayName} (${cluster.settingId})`} </MenuItem>)}
+                                        <MenuItem key={cluster.settingId}
+                                                  value={cluster.settingId}> {`${cluster.displayName} (${cluster.settingId})`} </MenuItem>)}
                                 </TextField>}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="devKubernetesNamespace"
                                 label="Deployment Namespace"
@@ -389,14 +432,14 @@ function EditApplication() {
                                 defaultValue="default"
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.devKubernetesNamespace ? true : false}
                                 helperText={errors.devKubernetesNamespace?.message}
                             />
                             {/* prod cluster */}
                             {/* prod namespace */}
-                            
+
                             <Controller
                                 name="platform"
                                 control={control}
@@ -406,9 +449,9 @@ function EditApplication() {
                                 }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Platform"
                                     required
@@ -422,9 +465,9 @@ function EditApplication() {
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="baseBuildPath"
                                 label="Container Image Base Build Path"
@@ -432,7 +475,7 @@ function EditApplication() {
                                 defaultValue="/"
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 200, message: "Maximum 200 characters are allowed." }
+                                    maxLength: {value: 200, message: "Maximum 200 characters are allowed."}
                                 })}
                                 error={errors.baseBuildPath ? true : false}
                                 helperText={errors.baseBuildPath?.message}
@@ -446,9 +489,9 @@ function EditApplication() {
                                 // }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Build Tool Settings"
                                     // required
@@ -457,14 +500,15 @@ function EditApplication() {
                                     helperText={errors.buildToolSettingId?.message}
                                 >
                                     {buildTools.map(buildTool =>
-                                        <MenuItem key={buildTool.settingId} value={buildTool.settingId}> {`${buildTool.displayName} (${buildTool.settingId})`} </MenuItem>)}
+                                        <MenuItem key={buildTool.settingId}
+                                                  value={buildTool.settingId}> {`${buildTool.displayName} (${buildTool.settingId})`} </MenuItem>)}
                                 </TextField>}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="applicationPort"
                                 label="Application Port"
@@ -473,17 +517,17 @@ function EditApplication() {
                                 defaultValue={80}
                                 inputRef={register({
                                     required: "Required.",
-                                    min: { value: 80, message: "Minimum value allowed is 80." },
-                                    max: { value: 65535, message: "Maximum value allowed is 65535." }
+                                    min: {value: 80, message: "Minimum value allowed is 80."},
+                                    max: {value: 65535, message: "Maximum value allowed is 65535."}
                                 })}
                                 error={errors.applicationPort ? true : false}
                                 helperText={errors.applicationPort?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="replicas"
                                 label="Replicas"
@@ -492,13 +536,13 @@ function EditApplication() {
                                 defaultValue={1}
                                 inputRef={register({
                                     required: "Required.",
-                                    min: { value: 1, message: "Minimum value allowed is 1." },
-                                    max: { value: 100, message: "Maximum value allowed is 100." }
+                                    min: {value: 1, message: "Minimum value allowed is 1."},
+                                    max: {value: 100, message: "Maximum value allowed is 100."}
                                 })}
                                 error={errors.replicas ? true : false}
                                 helperText={errors.replicas?.message}
                             />
-                            
+
                             <Controller
                                 name="deploymentStrategy"
                                 control={control}
@@ -508,9 +552,9 @@ function EditApplication() {
                                 }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Deployment Strategy"
                                     required
@@ -531,7 +575,7 @@ function EditApplication() {
                                     variant="outlined"
                                     color="primary"
                                     type="submit"
-                                    disabled={loading}>Create</Button>
+                                    disabled={loading}>Save</Button>
                                 <Button
                                     className={classes.button}
                                     size="small"

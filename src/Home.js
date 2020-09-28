@@ -69,6 +69,7 @@ import EditBuildTool from './BuildTools/EditBuildTool';
 import ManageBuildTools from './BuildTools/ManageBuildTools';
 
 import CreateApplication from './Applications/CreateApplication';
+import EditApplication from "./Applications/EditApplication";
 import ViewApplication from './Applications/ViewApplication';
 import ViewApplicationLogs from './Applications/ViewApplicationLogs';
 import ManageApplications from './Applications/ManageApplications';
@@ -453,6 +454,7 @@ function Home() {
         <Route path="/app/project/:projectResourceId/build-tools" render={() => <ProtectedRoute component={ManageBuildTools} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/application/create" render={() => <ProtectedRoute component={CreateApplication} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history" render={() => <ProtectedRoute component={ManageApplicationHistory} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
+        <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/edit" render={() => <ProtectedRoute component={EditApplication} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/view" render={() => <ProtectedRoute component={ViewApplication} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId?/logs" render={() => <ProtectedRoute component={ViewApplicationLogs} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
         <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/release/:releaseResourceId" render={() => <ProtectedRoute component={ViewReleasePipeline} roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']} />} />
