@@ -112,6 +112,7 @@ function CreateApplication() {
         setLoading(true);
 
         let data = {
+            "applicationType": "basic-spring-boot",
             "displayName": formValues.displayName,
             "description": formValues.description,
             "serviceName": formValues.serviceName,
