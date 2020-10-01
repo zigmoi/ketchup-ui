@@ -4,9 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Chart from './Chart';
-import Deposits from './Deposits';
-import Orders from './Orders';
+import Title from "./Title";
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
+import RecentReleases from "./Applications/RecentReleases";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -23,33 +24,90 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
+    height: 260
   },
   fixedHeight: {
-    height: 240,
+    height: 160,
+  },
+  fixedHeightChart: {
+    height: 220,
   },
 }));
 
 export default function Dashboard() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const fixedHeightChart = clsx(classes.paper, classes.fixedHeightChart);
 
   return (
       <main className={classes.content}>
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}> 
-            <Grid item xs={12} md={8} lg={9}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                <React.Fragment>
+                  <Title>Applications</Title>
+                  <Typography component="p" variant="h4">
+                    30
+                  </Typography>
+                  <div>
+                    <Link color="primary" href="#" >
+                      View
+                    </Link>
+                  </div>
+                </React.Fragment>
               </Paper>
             </Grid>
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits />
+                <React.Fragment>
+                  <Title>Releases</Title>
+                  <Typography component="p" variant="h4">
+                    100
+                  </Typography>
+                  <div>
+                    <Link color="primary" href="#" >
+                      View
+                    </Link>
+                  </div>
+                </React.Fragment>
               </Paper>
             </Grid>
+            <Grid item xs={12} md={4} lg={3}>
+              <Paper className={fixedHeightPaper}>
+                <React.Fragment>
+                  <Title>Clusters</Title>
+                  <Typography component="p" variant="h4">
+                    3
+                  </Typography>
+                  <div>
+                    <Link color="primary" href="#" >
+                      View
+                    </Link>
+                  </div>
+                </React.Fragment>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={4} lg={3}>
+              <Paper className={fixedHeightPaper}>
+                <React.Fragment>
+                  <Title>Registries</Title>
+                  <Typography component="p" variant="h4">
+                    7
+                  </Typography>
+                  <div>
+                    <Link color="primary" href="#" >
+                      View
+                    </Link>
+                  </div>
+                </React.Fragment>
+              </Paper>
+            </Grid>
+
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <Title>Recent Releases</Title>
+                <RecentReleases />
               </Paper>
             </Grid>
            </Grid>
