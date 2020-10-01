@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function ManageApplications() {
+function ManagePipelineRuns() {
     const classes = useStyles();
     let history = useHistory();
     let { projectResourceId } = useParams();
@@ -42,8 +42,8 @@ function ManageApplications() {
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
-        console.log("in effect Manage Applications");
-        document.title = "Applications";
+        console.log("in effect Manage Pipeline Runs");
+        document.title = "Pipeline Runs";
         loadAll();
     }, [projectResourceId]);
 
@@ -53,7 +53,7 @@ function ManageApplications() {
 
     function loadAll() {
         setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/basic-spring-boot/list`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/pipelines?projectResourceId=${projectResourceId}&status=IN PROGRESS`)
             .then((response) => {
                 setIconLoading(false);
                 setDataSource(response.data);
@@ -63,61 +63,27 @@ function ManageApplications() {
             });
     }
 
-    function deleteItem(selectedRecord) {
-        setIconLoading(true);
-        let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/user/${userName}`)
-            .then((response) => {
-                setIconLoading(false);
-                reloadTabularData();
-                // message.success('User deleted successfully.');
-            })
-            .catch((error) => {
-                setIconLoading(false);
-            });
-    }
-
     return (
             <Container maxWidth="xl" className={classes.container}>
                     <Grid>
                         <MaterialTable
-                            title="Applications"
+                            title="Pipeline Runs"
                             icons={tableIcons}
                             isLoading={iconLoading}
                             components={{ Container: props => props.children }}
                             columns={[
-                                { title: 'Display Name', field: 'displayName' },
-                                { title: 'ID', field: 'id.deploymentResourceId', width: 280},
-                                { title: 'Type', field: 'type' },
+                                { title: 'Release ID', field: 'id.releaseResourceId', width: 280},
+                                { title: 'Application ID', field: 'deploymentResourceId', width: 280},
+                                { title: 'Commit Id', field: 'commitId' },
+                                { title: 'Status', field: 'status' },
                                 { title: 'Updation Date', field: 'lastUpdatedOn', type: 'datetime'}
                             ]}
                             data={dataSource}
                             actions={[
                                 {
                                     icon: () => <LaunchIcon color="action" fontSize="small" />,
-                                    tooltip: 'View Application',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/view`)
-                                },
-                                {
-                                    icon: () => <EditIcon color="action" fontSize="small" />,
-                                    tooltip: 'Edit Application',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/edit`)
-                                },
-                                // {
-                                //     icon: () => <DateRangeIcon color="action" fontSize="small" />,
-                                //     tooltip: 'History',
-                                //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/history`)
-                                // },
-                                {
-                                    icon: () => <DeleteIcon color="action" fontSize="small" />,
-                                    tooltip: 'Delete Application',
-                                    onClick: (event, rowData) => alert("Are you sure you want to delete application " + rowData.displayName)
-                                },
-                                {
-                                    icon: () => <AddIcon color="action" fontSize="small" />,
-                                    tooltip: 'Add Application',
-                                    isFreeAction: true,
-                                    onClick: () => history.push(`/app/project/${projectResourceId}/application/create`)
+                                    tooltip: 'View Pipeline',
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
                                 },
                                 {
                                     icon: () => <RefreshIcon color="action" fontSize="small" />,
@@ -141,4 +107,4 @@ function ManageApplications() {
     );
 }
 
-export default ManageApplications;
+export default ManagePipelineRuns;
