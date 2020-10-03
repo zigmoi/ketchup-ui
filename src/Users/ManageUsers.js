@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import MaterialTable from 'material-table';
 import { Grid } from '@material-ui/core';
@@ -10,6 +10,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
 import { useHistory } from 'react-router-dom';
+import VpnKey from "@material-ui/icons/VpnKey";
+import useCurrentProject from "../useCurrentProject";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -34,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
 function ManageUsers() {
     const classes = useStyles();
     let history = useHistory();
-    
+
+    const currentProject = useCurrentProject();
     const [iconLoading, setIconLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
 
@@ -43,29 +46,6 @@ function ManageUsers() {
         document.title = "Users";
         loadAll();
     }, []);
-
-    //             <span>
-    //                 <Button type="primary" size="small"><Link to={`/app/user/${record.userName}/view`}>View</Link></Button>
-    //                 <Divider type="vertical" />
-    //                 <Button type="primary" size="small"><Link to={`/app/user/${record.userName}/edit`}>Edit</Link></Button>
-    //                 <Divider type="vertical" />
-    //                 {/* <Button type="primary" size="small"><Link to={`/app/user/${record.userName}/roles`}>Roles</Link></Button>
-    //                 <Divider type="vertical" /> */}
-    //                 <Popconfirm title="Confirm operation?"
-    //                     okText="Go Ahead" cancelText="Cancel" onConfirm={() => toggleStatus(record)}>
-    //                     <Button type="danger" size="small">{record.enabled ? 'Disable' : 'Enable'}</Button>
-    //                 </Popconfirm>
-    //                 <Divider type="vertical" />
-    //                 <Popconfirm title="Confirm operation?"
-    //                     okText="Go Ahead" cancelText="Cancel" onConfirm={() => deleteUser(record)}>
-    //                     <Button type="danger" size="small">Delete</Button>
-    //                 </Popconfirm>
-    //             </span>
-    //         )
-    //     }];
-
-    //     setColumns(columns);
-    // }
 
     function reloadTabularData() {
         loadAll();
@@ -122,6 +102,11 @@ function ManageUsers() {
                             ]}
                             data={dataSource}
                             actions={[
+                                {
+                                    icon: () => <VpnKey color="action" fontSize="small" />,
+                                    tooltip: 'User Permissions',
+                                    onClick: (event, rowData) => history.push(`/app/project/${currentProject?.projectId}/permissions/${rowData.userName}`)
+                                },
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit User',

@@ -78,6 +78,8 @@ import ManageApplicationHistory from './Applications/ManageApplicationHistory';
 
 import CreateProject from './Projects/CreateProject';
 import LoadProject from './Projects/LoadProject';
+import ManageProjectPermissions from "./Users/ManageProjectPermissions";
+
 import ViewReleasePipeline from './Applications/ViewReleasePipeline';
 import ManagePipelineRuns from "./Applications/ManagePipelineRuns";
 import {validateHasAllRoles} from './Util';
@@ -308,10 +310,8 @@ function Home() {
                             aria-label="account of current user"
                             color="inherit"
                         >
-                            <Tooltip title={userContext.currentUser ? userContext.currentUser.displayName : ""}
-                                     aria-label="User">
-                                <AccountCircle/>
-                            </Tooltip>
+                            <AccountCircle/>
+                            <Typography variant="body2">{userContext?.currentUser?.displayName}</Typography>
                         </IconButton>
                         <IconButton
                             edge="end"
@@ -383,6 +383,12 @@ function Home() {
                                 </ListItemIcon>
                                 <ListItemText primary="Build Tools"/>
                             </ListItem>
+                            <ListItem button component={Link} to={`/app/project/${projectId}/permissions/`}>
+                                <ListItemIcon>
+                                    <VpnKeyIcon className={classes.drawerMenuIcon}/>
+                                </ListItemIcon>
+                                <ListItemText primary="Permissions"/>
+                            </ListItem>
                         </React.Fragment>}
                     {useValidateUserHasAllRoles(['ROLE_SUPER_ADMIN']) === false ? null :
                         <ListItem button component={Link} to="/app/manage-tenants">
@@ -404,12 +410,7 @@ function Home() {
             </ListItemIcon>
             <ListItemText primary="Members" />
           </ListItem> */}
-                    {/* <ListItem button>
-            <ListItemIcon>
-              <VpnKeyIcon className={classes.drawerMenuIcon}  />
-            </ListItemIcon>
-            <ListItemText primary="Permissions" />
-          </ListItem>
+                    {/*
           <ListItem button>
             <ListItemIcon>
               <SettingsIcon className={classes.drawerMenuIcon}  />
@@ -455,6 +456,9 @@ function Home() {
                                                                               roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']}/>}/>
                 <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject}
                                                                                 roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
+                <Route path="/app/project/:projectResourceId/permissions/:userId?"
+                       render={() => <ProtectedRoute component={ManageProjectPermissions}
+                                                     roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/kubernetes-cluster/add"
                        render={() => <ProtectedRoute component={AddK8sCluster}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>

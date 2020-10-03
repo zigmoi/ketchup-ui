@@ -130,7 +130,7 @@ function ViewReleasePipeline() {
         pipelineStatusView = (
             <React.Fragment>
                 <Chip label="UNKNOWN" style={{backgroundColor: '#00bcd4', color: 'white'}} />&nbsp;
-                <IconButton color="secondary" onClick={stopPipeline}><CancelIcon /></IconButton>
+                <Button color="secondary" onClick={stopPipeline}>Cancel</Button>
             </React.Fragment>);
     }
 
