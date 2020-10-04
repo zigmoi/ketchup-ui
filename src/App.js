@@ -8,10 +8,28 @@ import Nomatch from './Nomatch';
 import { UserProvider } from './UserContext.js';
 import { ProjectProvider } from './ProjectContext.js'
 import { SnackbarProvider } from 'notistack';
+import {Button} from "@material-ui/core";
 
 function App() {
+
+  const notistackRef = React.createRef();
+  const onClickDismiss = key => () => {
+    notistackRef.current.closeSnackbar(key);
+  }
+
   return (
-    <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }} autoHideDuration={4000} >
+    <SnackbarProvider
+        anchorOrigin={{ vertical: 'top', horizontal: 'center', }}
+        autoHideDuration={4000}
+        preventDuplicate={true}
+        maxSnack={1}
+        ref={notistackRef}
+        action={(key) => (
+            <Button onClick={onClickDismiss(key)}>
+              Dismiss
+            </Button>
+        )}
+    >
       <UserProvider>
         <ProjectProvider>
           <div className="App">

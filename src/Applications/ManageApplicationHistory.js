@@ -137,11 +137,11 @@ function ManageApplicationHistory() {
                             tooltip: 'Pipeline',
                             onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
                         },
-                        {
-                            icon: () => <DeleteIcon color="action" fontSize="small" />,
-                            tooltip: 'Cleanup Pipeline Resources',
-                            onClick: (event, rowData) => cleanupPipelineResource(rowData.id.releaseResourceId)
-                        },
+                        // {
+                        //     icon: () => <DeleteIcon color="action" fontSize="small" />,
+                        //     tooltip: 'Cleanup Pipeline Resources',
+                        //     onClick: (event, rowData) => cleanupPipelineResource(rowData.id.releaseResourceId)
+                        // },
                         {
                             icon: () => <PlayCircleOutlineIcon color="action" fontSize="small" />,
                             tooltip: 'Deploy Now',
