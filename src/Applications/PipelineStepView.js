@@ -103,6 +103,7 @@ export default function PipelineStepView(props) {
                                         // width={logViewerWidth}
                                         style={{ textAlign: 'left' }}
                                         stream
+                                        selectableLines
                                         follow={follow}
                                         onScroll={onScroll}
                                         enableSearch />

@@ -147,7 +147,9 @@ function ViewReleasePipeline() {
         pipelineStatusView = (
             <React.Fragment>
                 <Chip label="UNKNOWN" style={{backgroundColor: '#00bcd4', color: 'white'}}/>&nbsp;
-                <Button color="secondary" onClick={stopPipeline}>Cancel</Button>
+                {cancellingPipeline ?
+                    <Typography variant="subtitle2">Cancelling &nbsp;<CircularProgress size={12}/></Typography> :
+                    <Button color="secondary" onClick={stopPipeline}>Cancel</Button>}
             </React.Fragment>);
     }
 

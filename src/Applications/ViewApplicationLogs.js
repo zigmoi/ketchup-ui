@@ -170,6 +170,7 @@ function ViewApplicationLogs() {
                                             // width={logViewerWidth}
                                             style={{ textAlign: 'left' }}
                                             stream
+                                            selectableLines
                                             follow={follow}
                                             onScroll={onScroll}
                                             enableSearch />
