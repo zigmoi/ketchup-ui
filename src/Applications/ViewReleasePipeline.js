@@ -226,7 +226,7 @@ function ViewReleasePipeline() {
                         {statusJson?.tasks?.sort((a, b) => a.order - b.order).map((task, taskIndex) => {
                             return (
                                 <React.Fragment key={taskIndex}>
-                                    <Accordion style={{backgroundColor: 'rgba(0, 0, 0, 0.04)'}}>
+                                    <Accordion style={{backgroundColor: '#e9e5df'}}>
                                         <AccordionSummary
                                             expandIcon={<ExpandMoreIcon/>}
                                             id="panel1bh-header"
@@ -273,7 +273,7 @@ function ViewReleasePipeline() {
                                                                         {task?.reason}{task?.message ? "," : ""} {task?.message}
                                                                     </Typography>
                                                                 </Typography>
-                                                                <PipelineStepView step={step}/>
+                                                                <PipelineStepView step={step} releaseResourceId={releaseResourceId}/>
                                                             </React.Fragment>
                                                         )
                                                     })}

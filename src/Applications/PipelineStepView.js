@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 export default function PipelineStepView(props) {
-    let { releaseResourceId } = useParams();
+    let { releaseResourceId } = props;
     const classes = useStyles();
     const logViewerHeight = 350;
     const userContext = useContext(UserContext);
