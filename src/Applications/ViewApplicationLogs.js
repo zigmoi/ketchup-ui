@@ -92,7 +92,7 @@ function ViewApplicationLogs() {
     }
 
     function startStreaming() {
-        let url = `${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/logs/stream/direct?releaseId=b3e31f78-ddee-4c0b-8a2a-961d5ce87437&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+        let url = `${process.env.REACT_APP_API_BASE_URL}/v1/release/active/application/logs/stream?deploymentResourceId=${selectedApplication}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         setLogUrl(url);
     }
 
