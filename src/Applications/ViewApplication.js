@@ -61,11 +61,13 @@ function ViewApplication() {
 
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
+    const [activeReleaseResponse, setActiveReleaseResponse] = useState({});
     const [instances, setInstances] = useState([]);
 
     useEffect(() => {
         loadDetails();
         getInstances();
+        getActiveRelease();
     }, [projectResourceId, deploymentResourceId]);
 
 
@@ -79,6 +81,18 @@ function ViewApplication() {
                 // setValue("buildconfig", atob(response.data.fileData));
                 // setLastUpdatedBy(response.data.lastUpdatedBy);
                 // setLastUpdatedOn(response.data.lastUpdatedOn);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
+
+    function getActiveRelease() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/active?deploymentResourceId=${deploymentResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                setActiveReleaseResponse(response.data);
             })
             .catch(() => {
                 setLoading(false);
@@ -178,10 +192,24 @@ function ViewApplication() {
                                             {response?.applicationType}
                                         </Typography>
                                     </Typography>
+                                    <br/>
+                                    <label style={{fontWeight: 'bold'}}>Active Version Details</label>
                                     <Typography variant="subtitle2">
-                                        Active Version: &nbsp;
+                                        Version Number: &nbsp;
                                         <Typography variant="caption">
-                                            "v3" {"releaseResourceId"} {"Current Commit"}
+                                            {activeReleaseResponse?.version}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Release ID: &nbsp;
+                                        <Typography variant="caption">
+                                            {activeReleaseResponse?.id?.releaseResourceId}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Commit ID : &nbsp;
+                                        <Typography variant="caption">
+                                            {activeReleaseResponse?.commitId}
                                         </Typography>
                                     </Typography>
                                     <br/>
