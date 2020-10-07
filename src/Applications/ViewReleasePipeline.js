@@ -25,6 +25,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PipelineTaskStatusView from './PipelineTaskStatusView';
 import PipelineStepView from './PipelineStepView';
 import CancelIcon from '@material-ui/icons/Cancel';
+import {format, formatDistanceStrict} from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -199,13 +200,20 @@ function ViewReleasePipeline() {
                                     <Typography variant="subtitle2">
                                         Start Time: &nbsp;
                                         <Typography variant="caption">
-                                            {statusJson?.startTime}
+                                            {statusJson?.startTime ? format(new Date(statusJson.startTime), 'PPpp') : ""}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Completion Time: &nbsp;
                                         <Typography variant="caption">
-                                            {statusJson?.completionTime}
+                                            {statusJson?.completionTime ? format(new Date(statusJson.completionTime), 'PPpp') : ""}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Duration: &nbsp;
+                                        <Typography variant="caption">
+                                            {statusJson?.startTime && statusJson?.completionTime ?
+                                                formatDistanceStrict(new Date(statusJson.completionTime), new Date(statusJson.startTime)) : ""}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
@@ -240,19 +248,28 @@ function ViewReleasePipeline() {
                                                         </Typography>
                                                     </Typography>
                                                 </Box>
-                                                <Box m={1} width="35%">
+                                                <Box m={1} width="23%">
                                                     <Typography variant="subtitle2">
                                                         Start Time: &nbsp;
                                                         <Typography variant="caption">
-                                                            {task?.startTime}
+                                                            {task?.startTime ? format(new Date(task.startTime), 'PPpp') : ""}
                                                         </Typography>
                                                     </Typography>
                                                 </Box>
-                                                <Box m={1} width="35%">
+                                                <Box m={1} width="27%">
                                                     <Typography variant="subtitle2">
                                                         Completion Time: &nbsp;
                                                         <Typography variant="caption">
-                                                            {task?.completionTime}
+                                                            {task?.completionTime ? format(new Date(task.completionTime), 'PPpp') : ""}
+                                                        </Typography>
+                                                    </Typography>
+                                                </Box>
+                                                <Box m={1} width="20%">
+                                                    <Typography variant="subtitle2">
+                                                        Duration: &nbsp;
+                                                        <Typography variant="caption">
+                                                            {task?.startTime && task?.completionTime ?
+                                                                formatDistanceStrict(new Date(task.completionTime), new Date(task.startTime)) : ""}
                                                         </Typography>
                                                     </Typography>
                                                 </Box>

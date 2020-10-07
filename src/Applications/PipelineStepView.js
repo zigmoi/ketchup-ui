@@ -6,6 +6,7 @@ import { LazyLog, ScrollFollow } from 'react-lazylog';
 import PipelineStepStatusView from './PipelineStepStatusView';
 import { useParams } from 'react-router-dom';
 import UserContext from '../UserContext';
+import {format, formatDistanceStrict} from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
     heading: {
@@ -50,19 +51,28 @@ export default function PipelineStepView(props) {
                             </Typography>
                         </Typography>
                     </Box>
-                    <Box m={1} width="35%">
+                    <Box m={1} width="23%">
                         <Typography variant="subtitle2" >
                             Start Time: &nbsp;
                             <Typography variant="caption" >
-                                {props.step?.startTime}
+                                {props.step?.startTime ? format(new Date(props.step.startTime), 'PPpp') : ""}
                             </Typography>
                         </Typography>
                     </Box>
-                    <Box m={1} width="35%">
+                    <Box m={1} width="27%">
                         <Typography variant="subtitle2" >
                             Completion Time: &nbsp;
                             <Typography variant="caption" >
-                                {props.step?.completionTime}
+                                {props.step?.completionTime ? format(new Date(props.step.completionTime), 'PPpp') : ""}
+                            </Typography>
+                        </Typography>
+                    </Box>
+                    <Box m={1} width="20%">
+                        <Typography variant="subtitle2" >
+                            Duration: &nbsp;
+                            <Typography variant="caption" >
+                                {props.step?.startTime && props.step?.completionTime ?
+                                    formatDistanceStrict(new Date(props.step.completionTime), new Date(props.step.startTime)) : ""}
                             </Typography>
                         </Typography>
                     </Box>

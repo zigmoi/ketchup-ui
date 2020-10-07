@@ -13,6 +13,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
 import {Link, NavLink, useHistory, useParams} from 'react-router-dom';
 import useCurrentProject from "../useCurrentProject";
+import {format} from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -80,7 +81,7 @@ function RecentReleases() {
                 {title: 'Application ID', field: 'deploymentResourceId', width: 280},
                 {title: 'Commit Id', field: 'commitId'},
                 {title: 'Status', field: 'status'},
-                {title: 'Updation Date', field: 'lastUpdatedOn', type: 'datetime'}
+                {title: 'Updation Date', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
             ]}
             data={dataSource}
             actions={[

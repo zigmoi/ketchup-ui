@@ -10,6 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
 import { useHistory, useParams } from 'react-router-dom';
+import {format} from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -87,7 +88,7 @@ function ManageK8sCusters() {
                             columns={[
                                 { title: 'Display Name', field: 'displayName' },
                                 { title: 'ID', field: 'settingId' },
-                                { title: 'Updation Date', field: 'lastUpdatedOn', type: 'datetime', width: 180}
+                                { title: 'Updation Date', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
                             ]}
                             data={dataSource}
                             actions={[

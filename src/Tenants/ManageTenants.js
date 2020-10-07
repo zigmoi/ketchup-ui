@@ -1,14 +1,15 @@
-import { Grid } from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import axios from 'axios';
 import MaterialTable from 'material-table';
-import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import tableIcons from '../tableIcons';
+import {format} from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -63,33 +64,32 @@ function ManageTenants() {
                     title="Tenants"
                     icons={tableIcons}
                     isLoading={iconLoading}
-                    components={{ Container: props => props.children }}
+                    components={{Container: props => props.children}}
                     columns={[
-                        { title: 'Display Name', field: 'displayName' },
-                        { title: 'ID', field: 'id' },
+                        {title: 'Display Name', field: 'displayName'},
+                        {title: 'ID', field: 'id'},
+                        {title: 'Status', field: 'enabled', render: rowData => rowData.enabled ? "Active" : "Disabled"},
                         {
-                            title: 'Status', field: 'enabled',
-                            render: rowData => rowData.enabled ? "Active" : "Disabled"
-                        },
-                        {
-                            title: 'Creation Date', field: 'createdOn', type: 'datetime'
+                            title: 'Creation Date',
+                            field: 'createdOn',
+                            render: (rowData) => format(new Date(rowData.createdOn), "PPpp")
                         }
                     ]}
                     data={dataSource}
                     actions={[
                         {
-                            icon: () => <EditIcon color="action" fontSize="small" />,
+                            icon: () => <EditIcon color="action" fontSize="small"/>,
                             tooltip: 'Edit Tenant',
                             onClick: (event, rowData) => alert("You saved " + rowData.name)
                         },
                         {
-                            icon: () => <AddIcon color="action" fontSize="small" />,
+                            icon: () => <AddIcon color="action" fontSize="small"/>,
                             tooltip: 'Add Tenant',
                             isFreeAction: true,
                             onClick: () => history.push('/app/create-tenant')
                         },
                         {
-                            icon: () => <RefreshIcon color="action" fontSize="small" />,
+                            icon: () => <RefreshIcon color="action" fontSize="small"/>,
                             tooltip: 'Refresh',
                             isFreeAction: true,
                             onClick: loadAll
@@ -98,8 +98,8 @@ function ManageTenants() {
                     options={{
                         actionsColumnIndex: -1,
                         padding: "dense",
-                        headerStyle: { fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee', },
-                        cellStyle: { fontSize: '12px' },
+                        headerStyle: {fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee',},
+                        cellStyle: {fontSize: '12px'},
                         pageSize: 20,
                         pageSizeOptions: [20, 30, 40, 50],
                     }}

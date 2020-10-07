@@ -11,6 +11,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
 import ProjectContext from '../ProjectContext';
+import {format} from "date-fns";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -81,7 +82,7 @@ export default function LoadProject(props) {
                 field: 'id.resourceId',
                 render: rowData => rowData.id.resourceId === activeProjectId ? <b>{rowData.id.resourceId}</b>: rowData.id.resourceId
               },
-              { title: 'Creation Date', field: 'createdOn', type: 'datetime' }
+              { title: 'Creation Date', field: 'createdOn', render: (rowData)=> format(new Date(rowData.createdOn), "PPpp")}
             ]}
             data={dataSource}
             actions={[

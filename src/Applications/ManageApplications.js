@@ -12,6 +12,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
 import { Link, NavLink, useHistory, useParams } from 'react-router-dom';
+import {format} from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -89,7 +90,7 @@ function ManageApplications() {
                                 { title: 'Display Name', field: 'displayName' },
                                 { title: 'ID', field: 'id.deploymentResourceId', width: 280},
                                 { title: 'Type', field: 'type' },
-                                { title: 'Updation Date', field: 'lastUpdatedOn', type: 'datetime'}
+                                { title: 'Updation Date', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
                             ]}
                             data={dataSource}
                             actions={[

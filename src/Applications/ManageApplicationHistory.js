@@ -15,6 +15,7 @@ import LowPriorityIcon from '@material-ui/icons/LowPriority';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import tableIcons from '../tableIcons';
 import { useHistory, useParams } from 'react-router-dom';
+import {format} from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -128,7 +129,7 @@ function ManageApplicationHistory() {
                         { title: 'Version', field: 'version' },
                         { title: 'Commit', field: 'commitId' },
                         { title: 'Status', field: 'status' },
-                        { title: 'Creation Date', field: 'createdOn', type: 'datetime' },
+                        { title: 'Creation Date', field: 'createdOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")},
                     ]}
                     data={dataSource}
                     actions={[
