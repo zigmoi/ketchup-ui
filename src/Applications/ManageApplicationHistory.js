@@ -83,12 +83,12 @@ function ManageApplicationHistory() {
 
     function createDeployment() {
         setIconLoading(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setIconLoading(false);
                 enqueueSnackbar('Deployment started successfully!', {variant: 'success'});
-                reloadTabularData();
+                history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.releaseResourceId}`);
             })
             .catch((error) => {
                 setIconLoading(false);
