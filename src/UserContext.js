@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { useHistory, useLocation } from 'react-router-dom';
-// import { message, Modal, Col, Row } from 'antd';
-import { useSnackbar } from 'notistack';
+import {useHistory, useLocation} from 'react-router-dom';
+import {useSnackbar} from 'notistack';
 
 const UserContext = React.createContext({});
 export const UserConsumer = UserContext.Consumer;
@@ -11,7 +10,7 @@ export function UserProvider(props) {
     const [loggedInUser, setLoggedInUser] = useState(null);
     let history = useHistory();
     let location = useLocation();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     function setCurrentUser(user) {
         console.log("started setting logged in user:", user);
@@ -98,7 +97,7 @@ export function UserProvider(props) {
                             //Allows promise to resolve before history.push executes 
                             //and hence avoids set state executing after component unmounts. 
                             clearCurrentUser();
-                            history.push("/login", { from: location.pathname });
+                            history.push("/login", {from: location.pathname});
                         }, 500);
                     } else if (responseStatus === 403) {
                         // message.error('Access denied, If you think you should have access to this resource, please contact support.', 5);
@@ -159,7 +158,8 @@ export function UserProvider(props) {
                 // message.error('Something went wrong! If the problem persists, kindly contact support.', 5);
                 enqueueSnackbar('Something went wrong! If the problem persists, kindly contact support.', {variant: 'error'});
                 return Promise.reject(error);
-            };
+            }
+            ;
         });
     }
 

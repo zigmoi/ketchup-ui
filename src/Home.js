@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import './App.css';
-import {Switch, useHistory, Route, Link} from 'react-router-dom';
+import {Switch, useHistory, useLocation, Route, Link} from 'react-router-dom';
 
 import UserContext from './UserContext';
 import ProjectContext from './ProjectContext';
@@ -228,8 +228,16 @@ const useStyles = makeStyles((theme) => ({
 
 function Home() {
     const classes = useStyles();
-    const userContext = useContext(UserContext);
     let history = useHistory();
+    let location = useLocation();
+    const userContext = useContext(UserContext);
+
+    useEffect(() => {
+        if (!userContext.currentUser) {
+            history.push("/login", {from: location.pathname});
+        }
+    }, [userContext.currentUser]);
+
 
     const projectContext = useContext(ProjectContext);
     const currentProject = useCurrentProject();
@@ -252,7 +260,6 @@ function Home() {
     const handleClose = () => {
         setOpenProjectLoader(false);
     };
-
 
     useEffect(() => {
         console.log("in effect home, project: ", currentProject);
@@ -321,6 +328,8 @@ function Home() {
                                 projectContext.clearCurrentProject();
                                 userContext.clearCurrentUser();
                                 history.push(`/login`);
+                                //not passing location because if user logouts he should go to default route.
+                                //setting location can redirect different users to route set by previous users.
                             }}
                         >
                             <Tooltip title="Logout" aria-label="logout">
@@ -513,7 +522,7 @@ function Home() {
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route render={() => <ProtectedRoute component={Nomatch}/>}/>
             </Switch>
-            <LoadProject activeProjectId={projectId} open={openProjectLoader} onClose={handleClose}/>
+            {openProjectLoader? <LoadProject activeProjectId={projectId} open={openProjectLoader} onClose={handleClose}/> : null}
         </div>
     );
 }

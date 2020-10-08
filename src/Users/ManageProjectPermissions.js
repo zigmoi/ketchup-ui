@@ -196,7 +196,7 @@ function ManageProjectPermissions() {
                     getOptionLabel={(option) => option.id.resourceId}
                     getOptionSelected={(option, value) => option.id.resourceId === value.id.resourceId}
                     style={{width: 300}}
-                    disableClearable="false"
+                    disableClearable={true}
                     renderInput={(params) => <TextField {...params} label="Projects" variant="outlined"/>}
                 />
                 <Autocomplete
@@ -211,7 +211,7 @@ function ManageProjectPermissions() {
                     getOptionLabel={(option) => option.userName}
                     getOptionSelected={(option, value) => option.userName === value.userName}
                     style={{width: 300}}
-                    disableClearable="false"
+                    disableClearable={true}
                     renderInput={(params) => <TextField {...params} label="Users" variant="outlined"/>}
                 />
                 <Button

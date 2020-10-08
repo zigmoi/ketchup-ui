@@ -234,16 +234,17 @@ function ViewApplication() {
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Container Registry Settings: &nbsp;
-                                        <Link
-                                            component="button"
-                                            variant="caption"
-                                            color="inherit"
-                                            onClick={() => {
-                                                history.push(`/app/project/${projectResourceId}/container-registry/${response?.containerRegistrySettingId}/edit`)
-                                            }}
-                                        >
-                                            {response?.containerRegistrySettingId}
-                                        </Link>
+                                        {response?.containerRegistrySettingId ?
+                                            <Link
+                                                component="button"
+                                                variant="caption"
+                                                color="inherit"
+                                                onClick={() => {
+                                                    history.push(`/app/project/${projectResourceId}/container-registry/${response?.containerRegistrySettingId}/edit`)
+                                                }}
+                                            >
+                                                {response?.containerRegistrySettingId}
+                                            </Link> : null}
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Container Image Name: &nbsp;
@@ -271,16 +272,17 @@ function ViewApplication() {
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Build Settings: &nbsp;
-                                        <Link
-                                            component="button"
-                                            variant="caption"
-                                            color="inherit"
-                                            onClick={() => {
-                                                history.push(`/app/project/${projectResourceId}/build-tool/${response?.buildToolSettingId}/edit`)
-                                            }}
-                                        >
-                                            {response?.buildToolSettingId}
-                                        </Link>
+                                        {response?.buildToolSettingId ?
+                                            <Link
+                                                component="button"
+                                                variant="caption"
+                                                color="inherit"
+                                                onClick={() => {
+                                                    history.push(`/app/project/${projectResourceId}/build-tool/${response?.buildToolSettingId}/edit`)
+                                                }}
+                                            >
+                                                {response?.buildToolSettingId}
+                                            </Link> : null}
                                     </Typography>
                                     <br/>
                                     <label style={{fontWeight: 'bold'}}>Deployment Details</label>
@@ -292,6 +294,7 @@ function ViewApplication() {
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Cluster: &nbsp;
+                                        {response?.devKubernetesClusterSettingId ?
                                         <Link
                                             component="button"
                                             variant="caption"
@@ -301,7 +304,7 @@ function ViewApplication() {
                                             }}
                                         >
                                             {response?.devKubernetesClusterSettingId}
-                                        </Link>
+                                        </Link> : null}
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Namespace: &nbsp;
