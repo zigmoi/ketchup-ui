@@ -3,7 +3,6 @@ import './App.css';
 import {Switch, useHistory, useLocation, Route, Link} from 'react-router-dom';
 
 import UserContext from './UserContext';
-import ProjectContext from './ProjectContext';
 import useCurrentProject from './useCurrentProject';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -239,9 +238,7 @@ function Home() {
     }, [userContext.currentUser]);
 
 
-    const projectContext = useContext(ProjectContext);
-    const currentProject = useCurrentProject();
-    const [projectId, setProjectId] = useState("");
+    const projectId = useCurrentProject();
 
     const [open, setOpen] = React.useState(true);
     const handleDrawerOpen = () => {
@@ -260,11 +257,6 @@ function Home() {
     const handleClose = () => {
         setOpenProjectLoader(false);
     };
-
-    useEffect(() => {
-        console.log("in effect home, project: ", currentProject);
-        setProjectId(currentProject ? currentProject.projectId : "a1");
-    }, [currentProject]);
 
 
     return (
@@ -290,7 +282,7 @@ function Home() {
                         className={classes.button}
                         onClick={handleClickOpen}
                     >
-                        <Typography variant="subtitle1" noWrap>{projectId}</Typography>
+                        <Typography variant="subtitle1" noWrap>{projectId ? projectId: "Select Project"}</Typography>
                     </Button>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
@@ -325,7 +317,7 @@ function Home() {
                             aria-label="account of current user"
                             color="inherit"
                             onClick={() => {
-                                projectContext.clearCurrentProject();
+                               // projectContext.clearCurrentProject();
                                 userContext.clearCurrentUser();
                                 history.push(`/login`);
                                 //not passing location because if user logouts he should go to default route.
@@ -356,6 +348,8 @@ function Home() {
                     </ListItem>
                     {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']) === false ? null :
                         <React.Fragment>
+                            {projectId ?
+                             <React.Fragment>
                             <ListItem button component={Link} to={`/app/project/${projectId}/applications`}>
                                 <ListItemIcon>
                                     <AppsIcon className={classes.drawerMenuIcon}/>
@@ -398,7 +392,9 @@ function Home() {
                                 </ListItemIcon>
                                 <ListItemText primary="Permissions"/>
                             </ListItem>
-                        </React.Fragment>}
+                        </React.Fragment> : null}
+                        </React.Fragment>
+                        }
                     {useValidateUserHasAllRoles(['ROLE_SUPER_ADMIN']) === false ? null :
                         <ListItem button component={Link} to="/app/manage-tenants">
                             <ListItemIcon>
@@ -451,7 +447,7 @@ function Home() {
                                                                     roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app" exact render={() => <ProtectedRoute component={Dashboard}
                                                                        roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard}
+                <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard} projectId={projectId}
                                                                            roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/create-tenant"
                        render={() => <ProtectedRoute component={CreateTenant} roles={['ROLE_SUPER_ADMIN']}/>}/>

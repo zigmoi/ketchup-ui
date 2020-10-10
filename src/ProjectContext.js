@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 
 const ProjectContext = React.createContext({});
 export const ProjectConsumer = ProjectContext.Consumer;
@@ -6,12 +6,24 @@ export const ProjectConsumer = ProjectContext.Consumer;
 export function ProjectProvider(props) {
     const [activeProject, setActiveProject] = useState(null);
 
-    function setCurrentProject(project) {
+    function setCurrentProject(userName, project) {
         console.log("setting current project.")
         console.log(project);
         setActiveProject(project);
-        localStorage.setItem('currentProject', JSON.stringify(project));
-        console.log("setting current project complete.")
+
+        const localStoreProjectDetails = localStorage.getItem('currentProject');
+        if (localStoreProjectDetails === null || localStoreProjectDetails === "null" || localStoreProjectDetails === undefined) {
+            let projectDetails = {};
+            projectDetails[userName] = project;
+            localStorage.setItem('currentProject', JSON.stringify(projectDetails));
+            console.log("setting (update) current project complete.");
+        } else {
+            let localStoreProjectDetailsJson = JSON.parse(localStoreProjectDetails);
+            localStoreProjectDetailsJson[userName] = project;
+            localStorage.setItem('currentProject', JSON.stringify(localStoreProjectDetailsJson));
+            console.log("setting (init) current project complete.")
+        }
+
     }
 
     function clearCurrentProject() {

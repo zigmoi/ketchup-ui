@@ -106,7 +106,7 @@ function ManageUsers() {
                                 {
                                     icon: () => <VpnKey color="action" fontSize="small" />,
                                     tooltip: 'User Permissions',
-                                    onClick: (event, rowData) => history.push(`/app/project/${currentProject?.projectId}/permissions/${rowData.userName}`)
+                                    onClick: (event, rowData) => history.push(`/app/project/${currentProject}/permissions/${rowData.userName}`)
                                 },
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,

@@ -63,6 +63,7 @@ function ViewApplication() {
     const [response, setResponse] = useState({});
     const [activeReleaseResponse, setActiveReleaseResponse] = useState({});
     const [instances, setInstances] = useState([]);
+    const [deploying, setDeploying] = useState(false);
 
     useEffect(() => {
         loadDetails();
@@ -111,17 +112,17 @@ function ViewApplication() {
             });
     }
 
-    function createDeployment() {
-        setLoading(true);
+    function deployApplication() {
+        setDeploying(true);
         axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
-                setLoading(false);
+                setDeploying(false);
                 enqueueSnackbar('Deployment started successfully!', {variant: 'success'});
                 history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.releaseResourceId}`);
             })
             .catch((error) => {
-                setLoading(false);
+                setDeploying(false);
                 enqueueSnackbar('Deployment failed!', {variant: 'error'});
             });
     }
@@ -149,8 +150,16 @@ function ViewApplication() {
                         size="small"
                         variant="text"
                         color="primary"
-                        onClick={() => createDeployment()}
-                    >Deploy</Button>
+                        disabled={deploying}
+                        onClick={() => deployApplication()}
+                    >{deploying ?
+                        <React.Fragment>
+                            <CircularProgress size={15} className={classes.circularProgress}/>
+                            <Typography variant="caption">
+                                &nbsp; Deploy
+                            </Typography>
+                        </React.Fragment>
+                        : "Deploy"}</Button>
                     <Button
                         className={classes.button}
                         size="small"
@@ -165,6 +174,13 @@ function ViewApplication() {
                         color="primary"
                         onClick={() => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/history`)}
                     >History</Button>
+                    <Button
+                        className={classes.button}
+                        size="small"
+                        variant="text"
+                        color="secondary"
+                        onClick={() => console.log("delete")}
+                    >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>
@@ -295,16 +311,16 @@ function ViewApplication() {
                                     <Typography variant="subtitle2">
                                         Cluster: &nbsp;
                                         {response?.devKubernetesClusterSettingId ?
-                                        <Link
-                                            component="button"
-                                            variant="caption"
-                                            color="inherit"
-                                            onClick={() => {
-                                                history.push(`/app/project/${projectResourceId}/kubernetes-cluster/${response?.devKubernetesClusterSettingId}/edit`)
-                                            }}
-                                        >
-                                            {response?.devKubernetesClusterSettingId}
-                                        </Link> : null}
+                                            <Link
+                                                component="button"
+                                                variant="caption"
+                                                color="inherit"
+                                                onClick={() => {
+                                                    history.push(`/app/project/${projectResourceId}/kubernetes-cluster/${response?.devKubernetesClusterSettingId}/edit`)
+                                                }}
+                                            >
+                                                {response?.devKubernetesClusterSettingId}
+                                            </Link> : null}
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Namespace: &nbsp;

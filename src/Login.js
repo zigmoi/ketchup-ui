@@ -18,6 +18,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {useSnackbar} from 'notistack';
 import {useForm} from 'react-hook-form';
+import ProjectContext from "./ProjectContext";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -51,6 +52,7 @@ function Login() {
     let location = useLocation();
 
     const userContext = useContext(UserContext);
+    const projectContext = useContext(ProjectContext);
 
     useEffect(() => {
         //if current logged in user (user details and auth token) is present in local storage,
@@ -60,6 +62,7 @@ function Login() {
             console.log(user);
             if (!(user === null || user === "null" || user === undefined)) {
                 const currentUser = JSON.parse(user);
+                projectContext.setCurrentProject(currentUser?.id, loadProjectDetailsFromLocalStore(currentUser?.id));
                 userContext.setCurrentUser(currentUser);
                 if (location?.state?.from) {
                     console.log("redirecting to: ", location.state.from);
@@ -72,17 +75,27 @@ function Login() {
         }
     }, [userContext.currentUser]);
 
+    function loadProjectDetailsFromLocalStore(userName) {
+        const localStoreProjectDetails = localStorage.getItem('currentProject');
+        if (localStoreProjectDetails) {
+            let localStoreProjectDetailsJson = JSON.parse(localStoreProjectDetails);
+            return localStoreProjectDetailsJson[userName];
+        } else {
+            return null;
+        }
+    }
+
 
     function onSubmit(formValues) {
         setLoading(true);
 
-        var params = {
+        let params = {
             "grant_type": "password",
             'username': formValues.username,
             'password': formValues.password
         };
 
-        var authHeader = {
+        let authHeader = {
             username: 'client-id-1',
             password: 'client-id-1-secret',
             scope: 'all'
@@ -98,7 +111,7 @@ function Login() {
         }).then((response) => {
             console.log(response);
             setLoading(false);
-            // var decoded_token = jwt_decode(response.data.access_token);
+            // let decoded_token = jwt_decode(response.data.access_token);
             // console.log(decoded_token);
             getUserInfo(formValues.username, response.data.access_token);
         })
@@ -184,6 +197,7 @@ function Login() {
                     email: response.data.email,
                 };
 
+                projectContext.setCurrentProject(loggedInUserName, loadProjectDetailsFromLocalStore(loggedInUserName));
                 userContext.setCurrentUser(user);
                 if (location?.state?.from) {
                     console.log("redirecting to: ", location.state.from);

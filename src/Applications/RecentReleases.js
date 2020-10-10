@@ -3,16 +3,9 @@ import axios from 'axios';
 import MaterialTable from 'material-table';
 import {Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import DateRangeIcon from '@material-ui/icons/DateRange';
 import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
 import {Link, NavLink, useHistory, useParams} from 'react-router-dom';
-import useCurrentProject from "../useCurrentProject";
 import {format} from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,38 +28,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function RecentReleases() {
+function RecentReleases(props) {
     const classes = useStyles();
     let history = useHistory();
-    let currentProject = useCurrentProject();
 
-    const [iconLoading, setIconLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
-    const [projectId, setProjectId] = useState("");
-
-    useEffect(() => {
-        console.log("in effect home, project: ", currentProject);
-        setProjectId(currentProject ? currentProject.projectId : "a1");
-    }, [currentProject]);
+    const {projectId} = props;
 
     useEffect(() => {
         console.log("in effect Recent Releases");
         loadAll();
     }, [projectId]);
 
-    function reloadTabularData() {
-        loadAll();
-    }
-
     function loadAll() {
-        setIconLoading(true);
+        setLoading(true);
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/pipelines/recent?projectResourceId=${projectId}`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 setDataSource(response.data);
             })
             .catch(() => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
@@ -74,7 +57,7 @@ function RecentReleases() {
         <MaterialTable
             title=""
             icons={tableIcons}
-            isLoading={iconLoading}
+            isLoading={loading}
             components={{Container: props => props.children}}
             columns={[
                 {title: 'Release ID', field: 'id.releaseResourceId', width: 280},

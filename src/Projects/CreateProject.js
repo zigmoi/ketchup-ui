@@ -1,11 +1,22 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+    AppBar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    TextField,
+    Toolbar,
+    Typography
+} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
-import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useForm } from "react-hook-form";
+import {useSnackbar} from 'notistack';
+import React, {useState, useContext} from 'react';
+import {useHistory} from 'react-router-dom';
+import {useForm} from "react-hook-form";
 import ProjectContext from '../ProjectContext';
+import useCurrentUser from "../useCurrentUser";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -40,13 +51,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function CreateProject() {
-    document.title = "Create User";
+    document.title = "Create Project";
     const classes = useStyles();
-    const { enqueueSnackbar } = useSnackbar();
-    const { register, handleSubmit, errors } = useForm({ mode: 'onBlur' });
+    const {enqueueSnackbar} = useSnackbar();
+    const {register, handleSubmit, errors} = useForm({mode: 'onBlur'});
 
     let history = useHistory();
     const projectContext = useContext(ProjectContext);
+    const currentUser = useCurrentUser();
     const [loading, setLoading] = useState(false);
 
     function onSubmit(formValues) {
@@ -62,9 +74,9 @@ function CreateProject() {
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Project created successfully.', { variant: 'success' });
-                projectContext.setCurrentProject({ "projectId": formValues.projectName });
-                history.push(`/app/project/${formValues.projectName}/applications`);
+                enqueueSnackbar('Project created successfully.', {variant: 'success'});
+                projectContext.setCurrentProject(currentUser?.id, formValues.projectName);
+                history.push(`/app/dashboard`);
             })
             .catch(() => {
                 setLoading(false);
@@ -76,7 +88,7 @@ function CreateProject() {
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Create Project</Typography>
-                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
                 </Toolbar>
             </AppBar>
             <Grid container>
@@ -85,32 +97,32 @@ function CreateProject() {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="projectName"
                                 label="Name"
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.projectName ? true : false}
                                 helperText={errors.projectName?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="description"
                                 label="Description"
                                 multiline
                                 rows={3}
                                 inputRef={register({
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.description ? true : false}
                                 helperText={errors.description?.message}
@@ -134,8 +146,9 @@ function CreateProject() {
                     </Box>
                 </Grid>
             </Grid>
-        </Container >
+        </Container>
     )
 
 }
+
 export default CreateProject;

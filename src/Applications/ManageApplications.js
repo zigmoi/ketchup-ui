@@ -109,11 +109,11 @@ function ManageApplications() {
                                 //     tooltip: 'History',
                                 //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/history`)
                                 // },
-                                {
-                                    icon: () => <DeleteIcon color="action" fontSize="small" />,
-                                    tooltip: 'Delete Application',
-                                    onClick: (event, rowData) => alert("Are you sure you want to delete application " + rowData.displayName)
-                                },
+                                // {
+                                //     icon: () => <DeleteIcon color="action" fontSize="small" />,
+                                //     tooltip: 'Delete Application',
+                                //     onClick: (event, rowData) => alert("Are you sure you want to delete application " + rowData.displayName)
+                                // },
                                 {
                                     icon: () => <AddIcon color="action" fontSize="small" />,
                                     tooltip: 'Add Application',

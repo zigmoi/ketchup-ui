@@ -12,6 +12,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
 import ProjectContext from '../ProjectContext';
 import {format} from "date-fns";
+import useCurrentUser from "../useCurrentUser";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -26,6 +27,7 @@ export default function LoadProject(props) {
   const { onClose, activeProjectId, open } = props;
   const classes = useStyles();
   const projectContext = useContext(ProjectContext);
+  const currentUser = useCurrentUser();
   let history = useHistory();
 
   const [loading, setLoading] = useState(false);
@@ -59,8 +61,8 @@ export default function LoadProject(props) {
   function openProject(selectedRecord) {
     console.log("View project details selectedRecord", selectedRecord);
     let projectName = selectedRecord.id.resourceId;
-    projectContext.setCurrentProject({ "projectId": projectName });
-    history.push(`/app/project/${projectName}/applications`);
+    projectContext.setCurrentProject(currentUser?.id, projectName);
+    history.push(`/app/dashboard`);
     handleClose();
   }
 

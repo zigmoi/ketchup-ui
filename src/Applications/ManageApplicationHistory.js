@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import MaterialTable from 'material-table';
-import { Grid, Typography, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {Grid, Typography, Box, IconButton} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useSnackbar } from 'notistack';
+import {useSnackbar} from 'notistack';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -13,8 +13,9 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import LoopIcon from '@material-ui/icons/Loop';
 import LowPriorityIcon from '@material-ui/icons/LowPriority';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import tableIcons from '../tableIcons';
-import { useHistory, useParams } from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import {format} from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
 function ManageApplicationHistory() {
     const classes = useStyles();
     let history = useHistory();
-    const { projectResourceId, deploymentResourceId } = useParams();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const {projectResourceId, deploymentResourceId} = useParams();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [iconLoading, setIconLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
@@ -82,7 +83,7 @@ function ManageApplicationHistory() {
             });
     }
 
-    function createDeployment() {
+    function deployApplication() {
         setIconLoading(true);
         axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
             .then((response) => {
@@ -117,24 +118,34 @@ function ManageApplicationHistory() {
                     title={
                         <Typography variant="h6">
                             Application History
-                                <Typography variant="caption" >
-                                    &nbsp; {deploymentResourceId}
-                                </Typography>
+                            <Typography variant="caption">
+                                &nbsp; {deploymentResourceId}
+                            </Typography>
                         </Typography>}
                     icons={tableIcons}
                     isLoading={iconLoading}
-                    components={{ Container: props => props.children }}
+                    components={{Container: props => props.children}}
                     columns={[
-                        { title: 'ID', field: 'id.releaseResourceId', width: 280 },
-                        { title: 'Version', field: 'version' },
-                        { title: 'Commit', field: 'commitId' },
-                        { title: 'Status', field: 'status' },
-                        { title: 'Creation Date', field: 'createdOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")},
+                        {title: 'ID', field: 'id.releaseResourceId', width: 280},
+                        {title: 'Version', field: 'version'},
+                        {title: 'Commit', field: 'commitId'},
+                        {title: 'Status', field: 'status'},
+                        // {
+                        //     title: 'Status', field: 'status', render: (rowData) => rowData.status ? rowData.status
+                        //         : <IconButton style={{margin: 0, padding: 0}} aria-label="delete" size="small">
+                        //             <AutorenewIcon fontSize="inherit"/>
+                        //         </IconButton>
+                        // },
+                        {
+                            title: 'Creation Date',
+                            field: 'createdOn',
+                            render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
+                        },
                     ]}
                     data={dataSource}
                     actions={[
                         {
-                            icon: () => <LowPriorityIcon color="action" fontSize="small" />,
+                            icon: () => <LowPriorityIcon color="action" fontSize="small"/>,
                             tooltip: 'Pipeline',
                             onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
                         },
@@ -144,13 +155,13 @@ function ManageApplicationHistory() {
                         //     onClick: (event, rowData) => cleanupPipelineResource(rowData.id.releaseResourceId)
                         // },
                         {
-                            icon: () => <PlayCircleOutlineIcon color="action" fontSize="small" />,
+                            icon: () => <PlayCircleOutlineIcon color="action" fontSize="small"/>,
                             tooltip: 'Deploy Now',
                             isFreeAction: true,
-                            onClick: () => createDeployment()
+                            onClick: () => deployApplication()
                         },
                         {
-                            icon: () => <RefreshIcon color="action" fontSize="small" />,
+                            icon: () => <RefreshIcon color="action" fontSize="small"/>,
                             tooltip: 'Refresh',
                             isFreeAction: true,
                             onClick: loadAll
@@ -159,8 +170,14 @@ function ManageApplicationHistory() {
                     options={{
                         actionsColumnIndex: -1,
                         padding: "dense",
-                        headerStyle: { fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee', },
-                        cellStyle: { fontSize: '12px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 100 },
+                        headerStyle: {fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee',},
+                        cellStyle: {
+                            fontSize: '12px',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            maxWidth: 100
+                        },
                         pageSize: 20,
                         pageSizeOptions: [20, 30, 40, 50],
                     }}
