@@ -89,7 +89,7 @@ function ManageContainerRegistries() {
                             isLoading={iconLoading}
                             components={{ Container: props => props.children }}
                             columns={[
-                                { title: 'Display Name', field: 'displayName', width: 160 },
+                                { title: 'Name', field: 'displayName', width: 160 },
                                 { title: 'ID', field: 'settingId', width: 280 },
                                 { title: 'Type', field: 'type', width: 102 },
                                 { title: 'URL', field: 'registryUrl'},

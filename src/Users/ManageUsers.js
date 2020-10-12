@@ -91,7 +91,7 @@ function ManageUsers() {
                             isLoading={iconLoading}
                             components={{ Container: props => props.children }}
                             columns={[
-                                { title: 'Display Name', field: 'displayName' },
+                                { title: 'Name', field: 'displayName' },
                                 { title: 'User Name', field: 'userName' },
                                 { title: 'Email', field: 'email' },
                                 {

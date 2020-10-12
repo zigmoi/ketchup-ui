@@ -73,9 +73,9 @@ function ManagePipelineRuns() {
                     isLoading={iconLoading}
                     components={{Container: props => props.children}}
                     columns={[
-                        {title: 'Release ID', field: 'id.releaseResourceId', width: 280},
                         {title: 'Application ID', field: 'deploymentResourceId', width: 280},
-                        {title: 'Commit Id', field: 'commitId'},
+                        {title: 'Version', field: 'version'},
+                        {title: 'Commit Id', field: 'commitId', width: 320},
                         {title: 'Status', field: 'status'},
                         {
                             title: 'Last Updated',

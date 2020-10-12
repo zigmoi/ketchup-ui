@@ -66,7 +66,7 @@ function ManageTenants() {
                     isLoading={iconLoading}
                     components={{Container: props => props.children}}
                     columns={[
-                        {title: 'Display Name', field: 'displayName'},
+                        {title: 'Name', field: 'displayName'},
                         {title: 'ID', field: 'id'},
                         {title: 'Status', field: 'enabled', render: rowData => rowData.enabled ? "Active" : "Disabled"},
                         {

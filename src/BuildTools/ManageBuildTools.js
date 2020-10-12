@@ -85,7 +85,7 @@ function ManageBuildTools() {
                             isLoading={iconLoading}
                             components={{ Container: props => props.children }}
                             columns={[
-                                { title: 'Display Name', field: 'displayName' },
+                                { title: 'Name', field: 'displayName' },
                                 { title: 'ID', field: 'settingId' , width: 280 },
                                 { title: 'Type', field: 'type' },
                                 { title: 'Updation Date', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
