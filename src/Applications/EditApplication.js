@@ -198,9 +198,14 @@ function EditApplication() {
         console.log(formValues);
         setTestConnectionLoading(true);
 
-        let params = "?repoURL=" + formValues.gitRepoUrl + "&username=" + formValues.gitRepoUsername + "&password=" + formValues.gitRepoPassword;
+       // let params = "?repoURL=" + encodeURI(formValues.gitRepoUrl) + "&username=" + encodeURIComponent(formValues.gitRepoUsername) + "&password=" + encodeURIComponent(formValues.gitRepoPassword);
+        let data = {
+            repoUrl: formValues.gitRepoUrl,
+            username: formValues.gitRepoUsername,
+            password: formValues.gitRepoPassword
+        }
         // alert(JSON.stringify(data, null, 2));
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/git-remote/basic-auth` + params)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/git-remote/basic-auth`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
