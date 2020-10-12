@@ -93,7 +93,7 @@ function ManageContainerRegistries() {
                                 { title: 'ID', field: 'settingId', width: 280 },
                                 { title: 'Type', field: 'type', width: 102 },
                                 { title: 'URL', field: 'registryUrl'},
-                                { title: 'Updation Date', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
+                                { title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
                             ]}
                             data={dataSource}
                             actions={[

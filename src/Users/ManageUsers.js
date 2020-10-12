@@ -99,7 +99,7 @@ function ManageUsers() {
                                     //   render: rowData => rowData.enabled ? <Chip variant="outlined" size="small" label="Active" color="primary" /> : <Chip variant="outlined" size="small" label="Disabled" />
                                     render: rowData => rowData.enabled ? "Active" : "Disabled"
                                 },
-                                { title: 'Creation Date', field: 'createdOn', render: (rowData)=> format(new Date(rowData.createdOn), "PPpp")}
+                                { title: 'Created On', field: 'createdOn', render: (rowData)=> format(new Date(rowData.createdOn), "PPpp")}
                             ]}
                             data={dataSource}
                             actions={[

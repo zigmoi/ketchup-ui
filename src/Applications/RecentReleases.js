@@ -64,7 +64,7 @@ function RecentReleases(props) {
                 {title: 'Version', field: 'version'},
                 {title: 'Commit Id', field: 'commitId', width: 320},
                 {title: 'Status', field: 'status'},
-                {title: 'Updation Date', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
+                {title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
             ]}
             data={dataSource}
             actions={[

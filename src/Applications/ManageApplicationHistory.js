@@ -155,7 +155,7 @@ function ManageApplicationHistory() {
                         {title: 'Commit', field: 'commitId', width: 320},
                         {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
                         {
-                            title: 'Creation Date',
+                            title: 'Created On',
                             field: 'createdOn',
                             render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
                         },

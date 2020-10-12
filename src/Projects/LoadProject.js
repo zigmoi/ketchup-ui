@@ -84,7 +84,7 @@ export default function LoadProject(props) {
                 field: 'id.resourceId',
                 render: rowData => rowData.id.resourceId === activeProjectId ? <b>{rowData.id.resourceId}</b>: rowData.id.resourceId
               },
-              { title: 'Creation Date', field: 'createdOn', render: (rowData)=> format(new Date(rowData.createdOn), "PPpp")}
+              { title: 'Created On', field: 'createdOn', render: (rowData)=> format(new Date(rowData.createdOn), "PPpp")}
             ]}
             data={dataSource}
             actions={[

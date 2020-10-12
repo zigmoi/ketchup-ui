@@ -88,7 +88,7 @@ function ManageK8sCusters() {
                             columns={[
                                 { title: 'Name', field: 'displayName' },
                                 { title: 'ID', field: 'settingId' },
-                                { title: 'Updation Date', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
+                                { title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
                             ]}
                             data={dataSource}
                             actions={[

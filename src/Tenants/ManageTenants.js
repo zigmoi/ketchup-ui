@@ -70,7 +70,7 @@ function ManageTenants() {
                         {title: 'ID', field: 'id'},
                         {title: 'Status', field: 'enabled', render: rowData => rowData.enabled ? "Active" : "Disabled"},
                         {
-                            title: 'Creation Date',
+                            title: 'Created On',
                             field: 'createdOn',
                             render: (rowData) => format(new Date(rowData.createdOn), "PPpp")
                         }
