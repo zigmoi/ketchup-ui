@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import MaterialTable from 'material-table';
-import { Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {Box, Divider, Grid} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -11,8 +11,10 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
-import { Link, NavLink, useHistory, useParams } from 'react-router-dom';
+import {Link, NavLink, useHistory, useParams} from 'react-router-dom';
 import {format} from "date-fns";
+import ApplicationsActionMenu from "./ApplicationsActionMenu";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -37,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
 function ManageApplications() {
     const classes = useStyles();
     let history = useHistory();
-    let { projectResourceId } = useParams();
-    
+    let {projectResourceId} = useParams();
+
     const [iconLoading, setIconLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
 
@@ -79,66 +81,83 @@ function ManageApplications() {
     }
 
     return (
-            <Container maxWidth="xl" className={classes.container}>
-                    <Grid>
-                        <MaterialTable
-                            title="Applications"
-                            icons={tableIcons}
-                            isLoading={iconLoading}
-                            components={{ Container: props => props.children }}
-                            columns={[
-                                { title: 'Name', field: 'displayName' },
-                                { title: 'ID', field: 'id.deploymentResourceId', width: 280},
-                                { title: 'Type', field: 'type' },
-                                { title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
-                            ]}
-                            data={dataSource}
-                            actions={[
-                                {
-                                    icon: () => <LaunchIcon color="action" fontSize="small" />,
-                                    tooltip: 'View Application',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/view`)
-                                },
-                                {
-                                    icon: () => <EditIcon color="action" fontSize="small" />,
-                                    tooltip: 'Edit Application',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/edit`)
-                                },
-                                // {
-                                //     icon: () => <DateRangeIcon color="action" fontSize="small" />,
-                                //     tooltip: 'History',
-                                //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/history`)
-                                // },
-                                // {
-                                //     icon: () => <DeleteIcon color="action" fontSize="small" />,
-                                //     tooltip: 'Delete Application',
-                                //     onClick: (event, rowData) => alert("Are you sure you want to delete application " + rowData.displayName)
-                                // },
-                                {
-                                    icon: () => <AddIcon color="action" fontSize="small" />,
-                                    tooltip: 'Add Application',
-                                    isFreeAction: true,
-                                    onClick: () => history.push(`/app/project/${projectResourceId}/application/create`)
-                                },
-                                {
-                                    icon: () => <RefreshIcon color="action" fontSize="small" />,
-                                    tooltip: 'Refresh',
-                                    isFreeAction: true,
-                                    onClick: loadAll
-                                }
-                            ]}
-                            options={{
-                                actionsColumnIndex: -1,
-                                padding: "dense",
-                                headerStyle: { fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee', },
-                                cellStyle: {fontSize: '12px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 100},
-                                pageSize: 20,
-                                pageSizeOptions: [20, 30, 40, 50],
-                            }}
-                        />
+        <Container maxWidth="xl" className={classes.container}>
+            <Grid>
+                <MaterialTable
+                    title="Applications"
+                    icons={tableIcons}
+                    isLoading={iconLoading}
+                    components={{Container: props => props.children}}
+                    columns={[
+                        {title: 'Name', field: 'displayName'},
+                        {title: 'ID', field: 'id.deploymentResourceId', width: 280},
+                        {title: 'Type', field: 'type'},
+                        {
+                            title: 'Updated On',
+                            field: 'lastUpdatedOn',
+                            render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
+                        },
+                        {
+                            title: 'Actions', width: 100, render: (rowData) => <ApplicationsActionMenu rowData={rowData}/>
+                        },
+                    ]}
+                    data={dataSource}
+                    actions={[
+                        // {
+                        //     icon: () => <LaunchIcon color="action" fontSize="small"/>,
+                        //     tooltip: 'View Application',
+                        //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/view`)
+                        // },
+                        // {
+                        //     icon: () => <EditIcon color="action" fontSize="small"/>,
+                        //     tooltip: 'Edit Application',
+                        //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/edit`)
+                        // },
+                        // {
+                        //     icon: () => <ApplicationsActionMenu />,
+                        //     // onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/edit`)
+                        // },
+                        // {
+                        //     icon: () => <DateRangeIcon color="action" fontSize="small" />,
+                        //     tooltip: 'History',
+                        //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/history`)
+                        // },
+                        // {
+                        //     icon: () => <DeleteIcon color="action" fontSize="small" />,
+                        //     tooltip: 'Delete Application',
+                        //     onClick: (event, rowData) => alert("Are you sure you want to delete application " + rowData.displayName)
+                        // },
+                        {
+                            icon: () => <AddIcon color="action" fontSize="small"/>,
+                            tooltip: 'Add Application',
+                            isFreeAction: true,
+                            onClick: () => history.push(`/app/project/${projectResourceId}/application/create`)
+                        },
+                        {
+                            icon: () => <RefreshIcon color="action" fontSize="small"/>,
+                            tooltip: 'Refresh',
+                            isFreeAction: true,
+                            onClick: loadAll
+                        }
+                    ]}
+                    options={{
+                        actionsColumnIndex: -1,
+                        padding: "dense",
+                        headerStyle: {fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee',},
+                        cellStyle: {
+                            fontSize: '12px',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            maxWidth: 100
+                        },
+                        pageSize: 20,
+                        pageSizeOptions: [20, 30, 40, 50],
+                    }}
+                />
 
-                    </Grid>
-            </Container>
+            </Grid>
+        </Container>
     );
 }
 
