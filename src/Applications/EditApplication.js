@@ -17,12 +17,12 @@ import {
     Tab,
     IconButton
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
-import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import {useSnackbar} from 'notistack';
+import React, {useState, useEffect} from 'react';
+import {useHistory, useParams} from 'react-router-dom';
+import {useForm, Controller} from "react-hook-form";
 import MenuIcon from "@material-ui/icons/Menu";
 
 
@@ -61,12 +61,12 @@ const useStyles = makeStyles((theme) => ({
 function EditApplication() {
     document.title = "Edit Application";
     const classes = useStyles();
-    const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
+    const {control, register, handleSubmit, watch, reset, setValue, errors} = useForm({mode: 'onBlur'});
 
-    let { projectResourceId, deploymentResourceId } = useParams();
+    let {projectResourceId, deploymentResourceId} = useParams();
 
     let history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [loading, setLoading] = useState(false);
     const [k8sClusters, setK8sClusters] = useState([]);
@@ -186,7 +186,7 @@ function EditApplication() {
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Application updated successfully.', { variant: 'success' });
+                enqueueSnackbar('Application updated successfully.', {variant: 'success'});
                 history.push(`/app/project/${projectResourceId}/applications`);
             })
             .catch(() => {
@@ -198,16 +198,19 @@ function EditApplication() {
         console.log(formValues);
         setTestConnectionLoading(true);
 
-        let params = "?repoURL=" + formValues.gitRepoUrl + "&username="+ formValues.gitRepoUsername+ "&password="+ formValues.gitRepoPassword;
+        let params = "?repoURL=" + formValues.gitRepoUrl + "&username=" + formValues.gitRepoUsername + "&password=" + formValues.gitRepoPassword;
         // alert(JSON.stringify(data, null, 2));
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/git-remote/basic-auth` + params)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
-                enqueueSnackbar('Connection successful.', {variant: 'success'});
+                if (response.data.status === "success") {
+                    enqueueSnackbar('Connection test successful.', {variant: 'success'});
+                } else {
+                    enqueueSnackbar('Connection test failed.', {variant: 'error'});
+                }
             })
             .catch(() => {
-                enqueueSnackbar('Connection failed.', {variant: 'error'});
                 setTestConnectionLoading(false);
             });
     }
@@ -218,11 +221,11 @@ function EditApplication() {
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">
                         Edit Application
-                        <Typography variant="caption" >
+                        <Typography variant="caption">
                             &nbsp; {deploymentResourceId}
                         </Typography>
                     </Typography>
-                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
                 </Toolbar>
             </AppBar>
             <Grid container>
@@ -642,8 +645,9 @@ function EditApplication() {
                     </Box>
                 </Grid>
             </Grid>
-        </Container >
+        </Container>
     )
 
 }
+
 export default EditApplication;

@@ -123,10 +123,13 @@ function EditK8sCluster() {
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
-                enqueueSnackbar('Connection successful.', {variant: 'success'});
+                if (response.data.status === "success") {
+                    enqueueSnackbar('Connection test successful.', {variant: 'success'});
+                } else {
+                    enqueueSnackbar('Connection test failed.', {variant: 'error'});
+                }
             })
             .catch(() => {
-                enqueueSnackbar('Connection failed.', {variant: 'error'});
                 setTestConnectionLoading(false);
             });
     }

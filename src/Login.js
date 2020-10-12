@@ -72,6 +72,14 @@ function Login() {
                     history.replace(defaultRoute);
                 }
             }
+        }else{
+            if (location?.state?.from) {
+                console.log("redirecting to: ", location.state.from);
+                history.replace(location.state.from);
+            } else {
+                console.log("redirecting to: ", defaultRoute);
+                history.replace(defaultRoute);
+            }
         }
     }, [userContext.currentUser]);
 

@@ -156,16 +156,19 @@ function CreateApplication() {
         console.log(formValues);
         setTestConnectionLoading(true);
 
-        let params = "?repoURL=" + formValues.gitRepoUrl + "&username="+ formValues.gitRepoUsername+ "&password="+ formValues.gitRepoPassword;
+        let params = "?repoURL=" + formValues.gitRepoUrl + "&username=" + formValues.gitRepoUsername + "&password=" + formValues.gitRepoPassword;
         // alert(JSON.stringify(data, null, 2));
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/git-remote/basic-auth` + params)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
-                enqueueSnackbar('Connection successful.', {variant: 'success'});
+                if (response.data.status === "success") {
+                    enqueueSnackbar('Connection test successful.', {variant: 'success'});
+                } else {
+                    enqueueSnackbar('Connection test failed.', {variant: 'error'});
+                }
             })
             .catch(() => {
-                enqueueSnackbar('Connection failed.', {variant: 'error'});
                 setTestConnectionLoading(false);
             });
     }
