@@ -1,10 +1,29 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, Tabs, Tab } from '@material-ui/core';
+import {
+    AppBar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    TextField,
+    Toolbar,
+    Typography,
+    MenuItem,
+    Select,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    Tabs,
+    Tab,
+    IconButton
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useForm, Controller } from "react-hook-form";
+import MenuIcon from "@material-ui/icons/Menu";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +72,7 @@ function EditApplication() {
     const [k8sClusters, setK8sClusters] = useState([]);
     const [containerRegistries, setContainerRegistries] = useState([]);
     const [buildTools, setBuildTools] = useState([]);
+    const [testConnectionLoading, setTestConnectionLoading] = useState(false);
 
     useEffect(() => {
         loadDetails();
@@ -174,6 +194,24 @@ function EditApplication() {
             });
     }
 
+    function testGitRepoConnection(formValues) {
+        console.log(formValues);
+        setTestConnectionLoading(true);
+
+        let params = "?repoURL=" + formValues.gitRepoUrl + "&username="+ formValues.gitRepoUsername+ "&password="+ formValues.gitRepoPassword;
+        // alert(JSON.stringify(data, null, 2));
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/git-remote/basic-auth` + params)
+            .then((response) => {
+                console.log(response);
+                setTestConnectionLoading(false);
+                enqueueSnackbar('Connection successful.', {variant: 'success'});
+            })
+            .catch(() => {
+                enqueueSnackbar('Connection failed.', {variant: 'error'});
+                setTestConnectionLoading(false);
+            });
+    }
+
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
@@ -256,6 +294,7 @@ function EditApplication() {
                                 error={errors.gitRepoUrl ? true : false}
                                 helperText={errors.gitRepoUrl?.message}
                             />
+
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
                                 InputLabelProps={{shrink: true,}}
@@ -569,6 +608,22 @@ function EditApplication() {
                                 </TextField>}
                             />
                             <Grid container>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={handleSubmit(testGitRepoConnection)}
+                                    disabled={testConnectionLoading || loading}>
+                                    {testConnectionLoading ?
+                                        <React.Fragment>
+                                            <CircularProgress size={15} className={classes.circularProgress}/>
+                                            <Typography variant="caption">
+                                                &nbsp; Test Git Connection
+                                            </Typography>
+                                        </React.Fragment>
+                                        : "Test Git Connection"}
+                                </Button>
                                 <Button
                                     className={classes.button}
                                     size="small"

@@ -64,6 +64,7 @@ function CreateApplication() {
     const [k8sClusters, setK8sClusters] = useState([]);
     const [containerRegistries, setContainerRegistries] = useState([]);
     const [buildTools, setBuildTools] = useState([]);
+    const [testConnectionLoading, setTestConnectionLoading] = useState(false);
 
     useEffect(() => {
         loadAllK8sClusters();
@@ -148,6 +149,24 @@ function CreateApplication() {
             })
             .catch(() => {
                 setLoading(false);
+            });
+    }
+
+    function testGitRepoConnection(formValues) {
+        console.log(formValues);
+        setTestConnectionLoading(true);
+
+        let params = "?repoURL=" + formValues.gitRepoUrl + "&username="+ formValues.gitRepoUsername+ "&password="+ formValues.gitRepoPassword;
+        // alert(JSON.stringify(data, null, 2));
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/git-remote/basic-auth` + params)
+            .then((response) => {
+                console.log(response);
+                setTestConnectionLoading(false);
+                enqueueSnackbar('Connection successful.', {variant: 'success'});
+            })
+            .catch(() => {
+                enqueueSnackbar('Connection failed.', {variant: 'error'});
+                setTestConnectionLoading(false);
             });
     }
 
@@ -541,6 +560,22 @@ function CreateApplication() {
                                 </TextField>}
                             />
                             <Grid container>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={handleSubmit(testGitRepoConnection)}
+                                    disabled={testConnectionLoading || loading}>
+                                    {testConnectionLoading ?
+                                        <React.Fragment>
+                                            <CircularProgress size={15} className={classes.circularProgress}/>
+                                            <Typography variant="caption">
+                                                &nbsp; Test Git Connection
+                                            </Typography>
+                                        </React.Fragment>
+                                        : "Test Git Connection"}
+                                </Button>
                                 <Button
                                     className={classes.button}
                                     size="small"
