@@ -17,6 +17,7 @@ import AutorenewIcon from '@material-ui/icons/Autorenew';
 import tableIcons from '../tableIcons';
 import {useHistory, useParams} from 'react-router-dom';
 import {format} from 'date-fns';
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -124,13 +125,20 @@ function ManageApplicationHistory() {
     }
 
     function renderStatus(rowData) {
-        if (rowData?.status === "SUCCESS" || rowData?.status === "FAILED") {
-            return rowData.status;
+        if (rowData?.status === "SUCCESS") {
+            return <Typography color="primary" variant="inherit">{rowData?.status}</Typography>
+        } else if (rowData?.status === "FAILED") {
+            return <Typography color="secondary" variant="inherit">{rowData?.status}</Typography>
         } else {
             return (
                 <React.Fragment>
                     <Typography variant="inherit">{rowData?.status}</Typography> &nbsp;
-                    <RefreshIcon onClick={() => refreshReleaseStatus(rowData.id.releaseResourceId)} color="action" fontSize="inherit"/>
+                    <Tooltip title="Refresh Status">
+                        <RefreshIcon
+                            onClick={() => refreshReleaseStatus(rowData.id.releaseResourceId)}
+                            color="action"
+                            fontSize="inherit"/>
+                    </Tooltip>
                 </React.Fragment>);
         }
     }

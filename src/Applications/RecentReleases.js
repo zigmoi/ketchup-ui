@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import MaterialTable from 'material-table';
-import {Grid} from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
 import {Link, NavLink, useHistory, useParams} from 'react-router-dom';
 import {format} from 'date-fns';
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -53,6 +54,16 @@ function RecentReleases(props) {
             });
     }
 
+    function renderStatus(rowData) {
+        if (rowData?.status === "SUCCESS") {
+            return <Typography color="primary" variant="inherit">{rowData?.status}</Typography>
+        }else if (rowData?.status === "FAILED") {
+            return <Typography color="secondary" variant="inherit">{rowData?.status}</Typography>
+        } else {
+            return<Typography variant="inherit">{rowData?.status}</Typography>
+        }
+    }
+
     return (
         <MaterialTable
             title=""
@@ -62,8 +73,8 @@ function RecentReleases(props) {
             columns={[
                 {title: 'Application ID', field: 'deploymentResourceId', width: 280},
                 {title: 'Version', field: 'version'},
-                {title: 'Commit Id', field: 'commitId', width: 320},
-                {title: 'Status', field: 'status'},
+                {title: 'Commit Id', field: 'commitId', render: (rowData)=> rowData?.commitId?.substring(0,8)},
+                {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
                 {title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
             ]}
             data={dataSource}
