@@ -126,6 +126,12 @@ function AddK8sCluster() {
                                     size="small"
                                     variant="outlined"
                                     color="primary"
+                                    disabled={loading}>Test Connection</Button>
+                                <Button
+                                    className={classes.button}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
                                     type="submit"
                                     disabled={loading}>Add</Button>
                                 <Button
