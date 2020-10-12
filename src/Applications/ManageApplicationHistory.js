@@ -44,7 +44,7 @@ function ManageApplicationHistory() {
     const {projectResourceId, deploymentResourceId} = useParams();
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
-    const [iconLoading, setIconLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
@@ -58,57 +58,81 @@ function ManageApplicationHistory() {
     }
 
     function loadAll() {
-        setIconLoading(true);
+        setLoading(true);
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/releases?deploymentId=${deploymentResourceId}`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 setDataSource(response.data);
             })
             .catch(() => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
     function deleteItem(selectedRecord) {
-        setIconLoading(true);
+        setLoading(true);
         let userName = selectedRecord.userName;
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/user/${userName}`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 reloadTabularData();
                 // message.success('User deleted successfully.');
             })
             .catch((error) => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
     function deployApplication() {
-        setIconLoading(true);
+        setLoading(true);
         axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
-                setIconLoading(false);
+                setLoading(false);
                 enqueueSnackbar('Deployment started successfully!', {variant: 'success'});
                 history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.releaseResourceId}`);
             })
             .catch((error) => {
-                setIconLoading(false);
+                setLoading(false);
                 enqueueSnackbar('Deployment failed!', {variant: 'error'});
             });
     }
 
     function cleanupPipelineResource(releaseResourceId) {
-        setIconLoading(true);
+        setLoading(true);
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/cleanup?releaseId=${releaseResourceId}`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 enqueueSnackbar('Pipeline resources successfully cleaned up!', {variant: 'success'});
             })
             .catch((error) => {
-                setIconLoading(false);
+                setLoading(false);
                 enqueueSnackbar('Pipeline resources cleaned up failed!', {variant: 'error'});
             });
+    }
+
+    function refreshReleaseStatus(releaseResourceId) {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/refresh?releaseResourceId=${releaseResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                reloadTabularData();
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
+
+    function renderStatus(rowData) {
+        if (rowData?.status === "SUCCESS" || rowData?.status === "FAILED") {
+            return rowData.status;
+        } else {
+            return (
+                <React.Fragment>
+                    <Typography variant="inherit">{rowData?.status}</Typography> &nbsp;
+                    <RefreshIcon onClick={() => refreshReleaseStatus(rowData.id.releaseResourceId)} color="action" fontSize="inherit"/>
+                </React.Fragment>);
+        }
     }
 
     return (
@@ -123,19 +147,13 @@ function ManageApplicationHistory() {
                             </Typography>
                         </Typography>}
                     icons={tableIcons}
-                    isLoading={iconLoading}
+                    isLoading={loading}
                     components={{Container: props => props.children}}
                     columns={[
                         {title: 'ID', field: 'id.releaseResourceId', width: 280},
-                        {title: 'Version', field: 'version'},
-                        {title: 'Commit', field: 'commitId'},
-                        {title: 'Status', field: 'status'},
-                        // {
-                        //     title: 'Status', field: 'status', render: (rowData) => rowData.status ? rowData.status
-                        //         : <IconButton style={{margin: 0, padding: 0}} aria-label="delete" size="small">
-                        //             <AutorenewIcon fontSize="inherit"/>
-                        //         </IconButton>
-                        // },
+                        {title: 'Version', field: 'version', width: 50},
+                        {title: 'Commit', field: 'commitId', width: 320},
+                        {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
                         {
                             title: 'Creation Date',
                             field: 'createdOn',
@@ -149,11 +167,6 @@ function ManageApplicationHistory() {
                             tooltip: 'Pipeline',
                             onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
                         },
-                        // {
-                        //     icon: () => <DeleteIcon color="action" fontSize="small" />,
-                        //     tooltip: 'Cleanup Pipeline Resources',
-                        //     onClick: (event, rowData) => cleanupPipelineResource(rowData.id.releaseResourceId)
-                        // },
                         {
                             icon: () => <PlayCircleOutlineIcon color="action" fontSize="small"/>,
                             tooltip: 'Deploy Now',
