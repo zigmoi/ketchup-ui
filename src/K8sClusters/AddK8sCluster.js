@@ -47,6 +47,7 @@ function AddK8sCluster() {
     let { projectResourceId } = useParams();
 
     const [loading, setLoading] = useState(false);
+    const [testConnectionLoading, setTestConnectionLoading] = useState(false);
     let history = useHistory();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -70,6 +71,28 @@ function AddK8sCluster() {
             })
             .catch(() => {
                 setLoading(false);
+            });
+    }
+
+    function testConnection(formValues) {
+        console.log(formValues);
+        setTestConnectionLoading(true);
+
+        let data = {
+            'projectId': projectResourceId,
+            'displayName': formValues.displayName,
+            'fileData': btoa(formValues.kubeconfig),
+        };
+        // alert(JSON.stringify(data, null, 2));
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/kubernetes-cluster/kubeconfig-auth`, data)
+            .then((response) => {
+                console.log(response);
+                setTestConnectionLoading(false);
+                enqueueSnackbar('Connection successful.', {variant: 'success'});
+            })
+            .catch(() => {
+                enqueueSnackbar('Connection failed.', {variant: 'error'});
+                setTestConnectionLoading(false);
             });
     }
 
@@ -126,7 +149,17 @@ function AddK8sCluster() {
                                     size="small"
                                     variant="outlined"
                                     color="primary"
-                                    disabled={loading}>Test Connection</Button>
+                                    onClick={handleSubmit(testConnection)}
+                                    disabled={testConnectionLoading || loading}>
+                                    {testConnectionLoading ?
+                                        <React.Fragment>
+                                            <CircularProgress size={15} className={classes.circularProgress}/>
+                                            <Typography variant="caption">
+                                                &nbsp; Test Connection
+                                            </Typography>
+                                        </React.Fragment>
+                                        : "Test Connection"}
+                                </Button>
                                 <Button
                                     className={classes.button}
                                     size="small"
