@@ -1,10 +1,21 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+    AppBar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    TextField,
+    Toolbar,
+    Typography,
+    MenuItem
+} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
-import React, { useState, useEffect, useContext } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { LazyLog, ScrollFollow } from 'react-lazylog';
+import {useSnackbar} from 'notistack';
+import React, {useState, useEffect, useContext} from 'react';
+import {useHistory, useParams} from 'react-router-dom';
+import {LazyLog, ScrollFollow} from 'react-lazylog';
 import UserContext from '../UserContext';
 
 const useStyles = makeStyles((theme) => ({
@@ -42,10 +53,10 @@ const useStyles = makeStyles((theme) => ({
 function ViewApplicationLogs() {
     document.title = "Application Logs";
     const classes = useStyles();
-    let { projectResourceId, deploymentResourceId } = useParams();
+    let {projectResourceId, deploymentResourceId} = useParams();
 
     let history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const logViewerHeight = 600;
     const userContext = useContext(UserContext);
 
@@ -92,7 +103,12 @@ function ViewApplicationLogs() {
     }
 
     function startStreaming() {
-        let url = `${process.env.REACT_APP_API_BASE_URL}/v1/release/active/application/logs/stream?deploymentResourceId=${selectedApplication}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+        let url;
+        if (deploymentResourceId) {
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1/release/active/application/logs/stream?deploymentResourceId=${deploymentResourceId}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+        } else {
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1/release/active/application/logs/stream?deploymentResourceId=${selectedApplication}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+        }
         setLogUrl(url);
     }
 
@@ -102,11 +118,11 @@ function ViewApplicationLogs() {
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">
                         Application Logs
-                        <Typography variant="caption" >
+                        <Typography variant="caption">
                             &nbsp; {deploymentResourceId}
                         </Typography>
                     </Typography>
-                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
                 </Toolbar>
             </AppBar>
             <Grid container>
@@ -117,37 +133,42 @@ function ViewApplicationLogs() {
                                 <TextField
                                     name="applications"
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
-                                    style={{ width: '40%', margin: '4px' }}
+                                    InputLabelProps={{shrink: true,}}
+                                    style={{width: '40%', margin: '4px'}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Applications"
                                     required
                                     select
                                     value={selectedApplication}
-                                    onChange={(e) => {setSelectedApplication(e.target.value); getAllInstances(e.target.value); }}
+                                    onChange={(e) => {
+                                        setSelectedApplication(e.target.value);
+                                        getAllInstances(e.target.value);
+                                    }}
                                 >
-                                    {applications.map(application => <MenuItem key={application.id.deploymentResourceId} value={application.id.deploymentResourceId}> {application.displayName} - {application.id.deploymentResourceId}</MenuItem>)}
+                                    {applications.map(application => <MenuItem key={application.id.deploymentResourceId}
+                                                                               value={application.id.deploymentResourceId}> {application.displayName} - {application.id.deploymentResourceId}</MenuItem>)}
                                 </TextField>}
 
-                             
-                                <TextField
-                                    name="instances"
-                                    variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
-                                    style={{ width: '40%', margin: '4px' }}
-                                    InputProps={{
-                                        classes: { input: classes.textField },
-                                    }}
-                                    label="Instances"
-                                    required
-                                    select
-                                    value={selectedInstance}
-                                    onChange={(e) => setSelectedInstance(e.target.value)}
-                                >
-                                    {instances.map(instance => <MenuItem key={instance} value={instance}> {instance}</MenuItem>)}
-                                </TextField>
+
+                            <TextField
+                                name="instances"
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{shrink: true,}}
+                                style={{width: '40%', margin: '4px'}}
+                                InputProps={{
+                                    classes: {input: classes.textField},
+                                }}
+                                label="Instances"
+                                required
+                                select
+                                value={selectedInstance}
+                                onChange={(e) => setSelectedInstance(e.target.value)}
+                            >
+                                {instances.map(instance => <MenuItem key={instance}
+                                                                     value={instance}> {instance}</MenuItem>)}
+                            </TextField>
 
                             <Button
                                 className={classes.button}
@@ -163,25 +184,26 @@ function ViewApplicationLogs() {
                             <Box width="100%">
                                 <ScrollFollow
                                     startFollowing={true}
-                                    render={({ follow, onScroll }) => (
+                                    render={({follow, onScroll}) => (
                                         <LazyLog
                                             url={logUrl}
                                             height={logViewerHeight}
                                             // width={logViewerWidth}
-                                            style={{ textAlign: 'left' }}
+                                            style={{textAlign: 'left'}}
                                             stream
                                             selectableLines
                                             follow={follow}
                                             onScroll={onScroll}
-                                            enableSearch />
+                                            enableSearch/>
                                     )}
                                 />
                             </Box>}
                     </Box>
                 </Grid>
             </Grid>
-        </Container >
+        </Container>
     )
 
 }
+
 export default ViewApplicationLogs;

@@ -1,20 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import MaterialTable from 'material-table';
-import {Box, Divider, Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
-import {Link, NavLink, useHistory, useParams} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import {format} from "date-fns";
 import ApplicationsActionMenu from "./ApplicationsActionMenu";
-import IconButton from "@material-ui/core/IconButton";
+import {Grid} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -103,30 +98,6 @@ function ManageApplications() {
                     ]}
                     data={dataSource}
                     actions={[
-                        // {
-                        //     icon: () => <LaunchIcon color="action" fontSize="small"/>,
-                        //     tooltip: 'View Application',
-                        //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/view`)
-                        // },
-                        // {
-                        //     icon: () => <EditIcon color="action" fontSize="small"/>,
-                        //     tooltip: 'Edit Application',
-                        //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/edit`)
-                        // },
-                        // {
-                        //     icon: () => <ApplicationsActionMenu />,
-                        //     // onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/edit`)
-                        // },
-                        // {
-                        //     icon: () => <DateRangeIcon color="action" fontSize="small" />,
-                        //     tooltip: 'History',
-                        //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.deploymentResourceId}/history`)
-                        // },
-                        // {
-                        //     icon: () => <DeleteIcon color="action" fontSize="small" />,
-                        //     tooltip: 'Delete Application',
-                        //     onClick: (event, rowData) => alert("Are you sure you want to delete application " + rowData.displayName)
-                        // },
                         {
                             icon: () => <AddIcon color="action" fontSize="small"/>,
                             tooltip: 'Add Application',

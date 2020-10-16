@@ -10,9 +10,7 @@ import LaunchIcon from "@material-ui/icons/Launch";
 import EditIcon from '@material-ui/icons/Edit';
 
 const ITEM_HEIGHT = 30;
-
 export default function ApplicationsActionMenu(props) {
-    console.log(props);
     let history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -65,29 +63,34 @@ export default function ApplicationsActionMenu(props) {
             <Menu
                 id="long-menu"
                 anchorEl={anchorEl}
-                // anchorOrigin={{
-                //     vertical: 'bottom',
-                //     horizontal: 'left',
-                // }}
                 keepMounted
                 open={open}
                 onClose={handleClose}
                 PaperProps={{
                     style: {
                         maxHeight: ITEM_HEIGHT * 4.5 + 1,
-                        width: '15ch',
+                        width: '12ch',
                     },
                 }}
             >
-                {/*<MenuItem*/}
-                {/*    style={{fontSize: 12}}*/}
-                {/*    key="deploy"*/}
-                {/*    onClick={() => {*/}
-                {/*        setAnchorEl(null);*/}
-                {/*        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/history`);*/}
-                {/*    }}>*/}
-                {/*    Deploy Now*/}
-                {/*</MenuItem>*/}
+                <MenuItem
+                    style={{fontSize: 12}}
+                    key="view"
+                    onClick={() => {
+                        setAnchorEl(null);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/view`);
+                    }}>
+                    View
+                </MenuItem>
+                <MenuItem
+                    style={{fontSize: 12}}
+                    key="edit"
+                    onClick={() => {
+                        setAnchorEl(null);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/edit`);
+                    }}>
+                    Edit
+                </MenuItem>
                 <MenuItem
                     style={{fontSize: 12}}
                     key="history"
@@ -106,15 +109,6 @@ export default function ApplicationsActionMenu(props) {
                     }}>
                     Logs
                 </MenuItem>
-                {/*<MenuItem*/}
-                {/*    style={{fontSize: 12}}*/}
-                {/*    key="delete"*/}
-                {/*    onClick={() => {*/}
-                {/*        setAnchorEl(null);*/}
-                {/*        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/history`);*/}
-                {/*    }}>*/}
-                {/*    Delete*/}
-                {/*</MenuItem>*/}
             </Menu>
         </div>
     );

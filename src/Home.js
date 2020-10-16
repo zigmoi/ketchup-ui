@@ -443,9 +443,9 @@ function Home() {
                 </List>
             </Drawer>
             <Switch>
-                <Route path="/" exact render={() => <ProtectedRoute component={Dashboard}
+                <Route path="/" exact render={() => <ProtectedRoute component={Dashboard} projectId={projectId}
                                                                     roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app" exact render={() => <ProtectedRoute component={Dashboard}
+                <Route path="/app" exact render={() => <ProtectedRoute component={Dashboard} projectId={projectId}
                                                                        roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard} projectId={projectId}
                                                                            roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
