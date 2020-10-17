@@ -93,6 +93,18 @@ function ManageApplicationHistory() {
             });
     }
 
+    function rollbackRelease(releaseResourceId) {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/rollback?releaseResourceId=${releaseResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                enqueueSnackbar('Rollback successful!', {variant: 'success'});
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
+
     function renderStatus(rowData) {
         if (rowData?.status === "SUCCESS") {
             return <Typography style={{ fontWeight: "bold", color: 'green'}} variant="inherit">{rowData?.status}</Typography>
@@ -137,7 +149,7 @@ function ManageApplicationHistory() {
                             render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
                         },
                         {
-                            title: 'Actions', width: 100, render: (rowData) => <ActionMenu rowData={rowData} refreshReleaseStatus={refreshReleaseStatus} />
+                            title: 'Actions', width: 100, render: (rowData) => <ActionMenu rowData={rowData} refreshReleaseStatus={refreshReleaseStatus} rollbackRelease={rollbackRelease} />
                         },
                     ]}
                     data={dataSource}
@@ -238,6 +250,15 @@ function ActionMenu(props) {
                         history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/release//release/${props.rowData.id.releaseResourceId}`);
                     }}>
                     View Pipeline
+                </MenuItem>
+                <MenuItem
+                    style={{fontSize: 12}}
+                    key="rollback"
+                    onClick={() => {
+                        setAnchorEl(null);
+                        props.rollbackRelease(props.rowData.id.releaseResourceId);
+                    }}>
+                    Rollback
                 </MenuItem>
                 {props.rowData?.status === "SUCCESS" || props.rowData?.status === "FAILED" ? null :
                     <MenuItem
