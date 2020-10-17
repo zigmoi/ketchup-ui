@@ -56,11 +56,11 @@ function RecentReleases(props) {
 
     function renderStatus(rowData) {
         if (rowData?.status === "SUCCESS") {
-            return <Typography color="primary" variant="inherit">{rowData?.status}</Typography>
+            return <Typography style={{ fontWeight: "bold", color: 'green'}} variant="inherit">{rowData?.status}</Typography>
         }else if (rowData?.status === "FAILED") {
-            return <Typography color="secondary" variant="inherit">{rowData?.status}</Typography>
+            return <Typography style={{ fontWeight: "bold", color: '#f44336'}} variant="inherit">{rowData?.status}</Typography>
         } else {
-            return<Typography variant="inherit">{rowData?.status}</Typography>
+            return<Typography style={{ fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography>
         }
     }
 

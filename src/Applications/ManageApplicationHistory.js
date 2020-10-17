@@ -5,19 +5,15 @@ import {Grid, Typography, Box, IconButton} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {useSnackbar} from 'notistack';
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import LoopIcon from '@material-ui/icons/Loop';
-import LowPriorityIcon from '@material-ui/icons/LowPriority';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
-import AutorenewIcon from '@material-ui/icons/Autorenew';
 import tableIcons from '../tableIcons';
 import {useHistory, useParams} from 'react-router-dom';
 import {format} from 'date-fns';
 import Tooltip from "@material-ui/core/Tooltip";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -70,20 +66,6 @@ function ManageApplicationHistory() {
             });
     }
 
-    function deleteItem(selectedRecord) {
-        setLoading(true);
-        let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/user/${userName}`)
-            .then((response) => {
-                setLoading(false);
-                reloadTabularData();
-                // message.success('User deleted successfully.');
-            })
-            .catch((error) => {
-                setLoading(false);
-            });
-    }
-
     function deployApplication() {
         setLoading(true);
         axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
@@ -96,19 +78,6 @@ function ManageApplicationHistory() {
             .catch((error) => {
                 setLoading(false);
                 enqueueSnackbar('Deployment failed!', {variant: 'error'});
-            });
-    }
-
-    function cleanupPipelineResource(releaseResourceId) {
-        setLoading(true);
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/cleanup?releaseId=${releaseResourceId}`)
-            .then((response) => {
-                setLoading(false);
-                enqueueSnackbar('Pipeline resources successfully cleaned up!', {variant: 'success'});
-            })
-            .catch((error) => {
-                setLoading(false);
-                enqueueSnackbar('Pipeline resources cleaned up failed!', {variant: 'error'});
             });
     }
 
@@ -126,13 +95,13 @@ function ManageApplicationHistory() {
 
     function renderStatus(rowData) {
         if (rowData?.status === "SUCCESS") {
-            return <Typography color="primary" variant="inherit">{rowData?.status}</Typography>
+            return <Typography style={{ fontWeight: "bold", color: 'green'}} variant="inherit">{rowData?.status}</Typography>
         } else if (rowData?.status === "FAILED") {
-            return <Typography color="secondary" variant="inherit">{rowData?.status}</Typography>
+            return <Typography style={{ fontWeight: "bold", color: '#f44336'}} variant="inherit">{rowData?.status}</Typography>
         } else {
             return (
                 <React.Fragment>
-                    <Typography variant="inherit">{rowData?.status}</Typography> &nbsp;
+                    <Typography style={{ fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography> &nbsp;
                     <Tooltip title="Refresh Status">
                         <RefreshIcon
                             onClick={() => refreshReleaseStatus(rowData.id.releaseResourceId)}
@@ -167,14 +136,17 @@ function ManageApplicationHistory() {
                             field: 'createdOn',
                             render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
                         },
+                        {
+                            title: 'Actions', width: 100, render: (rowData) => <ActionMenu rowData={rowData} refreshReleaseStatus={refreshReleaseStatus} />
+                        },
                     ]}
                     data={dataSource}
                     actions={[
-                        {
-                            icon: () => <LowPriorityIcon color="action" fontSize="small"/>,
-                            tooltip: 'Pipeline',
-                            onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
-                        },
+                        // {
+                        //     icon: () => <LowPriorityIcon color="action" fontSize="small"/>,
+                        //     tooltip: 'Pipeline',
+                        //     onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
+                        // },
                         {
                             icon: () => <PlayCircleOutlineIcon color="action" fontSize="small"/>,
                             tooltip: 'Deploy Now',
@@ -206,6 +178,79 @@ function ManageApplicationHistory() {
 
             </Grid>
         </Container>
+    );
+}
+
+
+const ITEM_HEIGHT = 30;
+
+function ActionMenu(props) {
+    let history = useHistory();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const useStyles = makeStyles((theme) => ({
+        actionIcon: {
+            '& svg': {
+                fontSize: 17,
+            },
+            margin: 0,
+            padding: 0,
+            paddingInline: 0,
+            marginInline: 0,
+        },
+    }));
+
+    const classes = useStyles();
+    return (
+        <div style={{display: "flex"}}>
+            <IconButton onClick={handleClick} className={classes.actionIcon}>
+                <MoreVertIcon/>
+            </IconButton>
+
+            <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    style: {
+                        maxHeight: ITEM_HEIGHT * 4.5 + 1,
+                        width: '15ch',
+                    },
+                }}
+            >
+
+                <MenuItem
+                    style={{fontSize: 12}}
+                    key="pipeline"
+                    onClick={() => {
+                        setAnchorEl(null);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/release//release/${props.rowData.id.releaseResourceId}`);
+                    }}>
+                    View Pipeline
+                </MenuItem>
+                {props.rowData?.status === "SUCCESS" || props.rowData?.status === "FAILED" ? null :
+                    <MenuItem
+                        style={{fontSize: 12}}
+                        key="refresh-status"
+                        onClick={() => {
+                            setAnchorEl(null);
+                            props.refreshReleaseStatus(props.rowData.id.releaseResourceId);
+                        }}>
+                        Refresh Status
+                    </MenuItem>}
+            </Menu>
+        </div>
     );
 }
 

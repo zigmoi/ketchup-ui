@@ -127,6 +127,18 @@ function ViewApplication() {
             });
     }
 
+    function deleteApplication() {
+        setLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/${deploymentResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                enqueueSnackbar('Deployment deleted successfully!', {variant: 'success'});
+            })
+            .catch((error) => {
+                setLoading(false);
+            });
+    }
+
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
@@ -179,7 +191,7 @@ function ViewApplication() {
                         size="small"
                         variant="text"
                         color="secondary"
-                        onClick={() => console.log("delete")}
+                        onClick={() => deleteApplication()}
                     >Delete</Button>
                 </Toolbar>
             </AppBar>
