@@ -77,7 +77,7 @@ function ViewApplicationLogs() {
 
     function getAllInstances(selectedDeploymentResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/${selectedDeploymentResourceId}/instances`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${selectedDeploymentResourceId}/instances`)
             .then((response) => {
                 setLoading(false);
                 setInstances(response.data);
@@ -92,7 +92,7 @@ function ViewApplicationLogs() {
 
     function getAllApplications() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/basic-spring-boot/list`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/list`)
             .then((response) => {
                 setLoading(false);
                 setApplications(response.data);
@@ -105,9 +105,9 @@ function ViewApplicationLogs() {
     function startStreaming() {
         let url;
         if (deploymentResourceId) {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1/release/active/application/logs/stream?deploymentResourceId=${deploymentResourceId}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/active/application/logs/stream?deploymentResourceId=${deploymentResourceId}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         } else {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1/release/active/application/logs/stream?deploymentResourceId=${selectedApplication}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/active/application/logs/stream?deploymentResourceId=${selectedApplication}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         }
         setLogUrl(url);
     }

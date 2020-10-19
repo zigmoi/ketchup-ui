@@ -108,7 +108,7 @@ export default function PipelineStepView(props) {
                                 startFollowing={true}
                                 render={({ follow, onScroll }) => (
                                     <LazyLog
-                                        url={`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/logs/stream/direct?releaseId=${releaseResourceId}&podName=${props.step?.podName}&containerName=${props.step?.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
+                                        url={`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/pipeline/logs/stream/direct?releaseId=${releaseResourceId}&podName=${props.step?.podName}&containerName=${props.step?.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
                                         height={logViewerHeight}
                                         // width={logViewerWidth}
                                         style={{ textAlign: 'left' }}

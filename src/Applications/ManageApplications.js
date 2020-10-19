@@ -51,7 +51,7 @@ function ManageApplications() {
 
     function loadAll() {
         setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/basic-spring-boot/list`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/list`)
             .then((response) => {
                 setIconLoading(false);
                 setDataSource(response.data);
@@ -64,7 +64,7 @@ function ManageApplications() {
     function deleteItem(selectedRecord) {
         setIconLoading(true);
         let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/user/${userName}`)
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/${userName}`)
             .then((response) => {
                 setIconLoading(false);
                 reloadTabularData();

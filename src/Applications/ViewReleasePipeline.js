@@ -96,7 +96,7 @@ function ViewReleasePipeline() {
         if (access_token === "") {
             return;
         }
-        statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1/release/pipeline/status/stream/sse?releaseId=${releaseResourceId}&access_token=${access_token}`);
+        statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/pipeline/status/stream/sse?releaseId=${releaseResourceId}&access_token=${access_token}`);
         statusSource.addEventListener('data', function (e) {
             streamPipelineStatus(e);
         }, false);
@@ -156,7 +156,7 @@ function ViewReleasePipeline() {
 
     function stopPipeline() {
         setCancellingPipeline(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/stop?releaseResourceId=${releaseResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/stop?releaseResourceId=${releaseResourceId}`)
             .then((response) => {
                 setCancellingPipeline(false);
                 enqueueSnackbar('Pipeline cancelled successfully.', {variant: 'success'});

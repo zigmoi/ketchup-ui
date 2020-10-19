@@ -83,7 +83,7 @@ function EditApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/basic-spring-boot/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -116,7 +116,7 @@ function EditApplication() {
 
     function loadAllK8sClusters() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/list-all-kubernetes-cluster/${projectResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-kubernetes-cluster/${projectResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setK8sClusters(response.data);
@@ -128,7 +128,7 @@ function EditApplication() {
 
     function loadAllContainerRegistries() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/list-all-container-registry/${projectResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-container-registry/${projectResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setContainerRegistries(response.data);
@@ -140,7 +140,7 @@ function EditApplication() {
 
     function loadAllBuildTools() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/list-all-build-tool/${projectResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-build-tool/${projectResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setBuildTools(response.data);
@@ -182,7 +182,7 @@ function EditApplication() {
             "prodKubernetesNamespace": ""
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/${deploymentResourceId}`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -205,7 +205,7 @@ function EditApplication() {
             password: formValues.gitRepoPassword
         }
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/project/test-connection/git-remote/basic-auth`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/test-connection/git-remote/basic-auth`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);

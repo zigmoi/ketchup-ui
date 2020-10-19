@@ -54,7 +54,7 @@ function ManagePipelineRuns() {
 
     function loadAll() {
         setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/pipelines?projectResourceId=${projectResourceId}&status=IN PROGRESS`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/pipelines?projectResourceId=${projectResourceId}&status=IN PROGRESS`)
             .then((response) => {
                 setIconLoading(false);
                 setDataSource(response.data);

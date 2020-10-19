@@ -44,7 +44,7 @@ function RecentReleases(props) {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/pipelines/recent?projectResourceId=${projectId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/pipelines/recent?projectResourceId=${projectId}`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);

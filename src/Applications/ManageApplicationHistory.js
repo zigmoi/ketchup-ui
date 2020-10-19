@@ -56,7 +56,7 @@ function ManageApplicationHistory() {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/releases?deploymentId=${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/releases?deploymentId=${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -68,7 +68,7 @@ function ManageApplicationHistory() {
 
     function deployApplication() {
         setLoading(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -83,7 +83,7 @@ function ManageApplicationHistory() {
 
     function refreshReleaseStatus(releaseResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/refresh?releaseResourceId=${releaseResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/refresh?releaseResourceId=${releaseResourceId}`)
             .then((response) => {
                 setLoading(false);
                 reloadTabularData();
@@ -95,7 +95,7 @@ function ManageApplicationHistory() {
 
     function rollbackRelease(releaseResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/rollback?releaseResourceId=${releaseResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/rollback?releaseResourceId=${releaseResourceId}`)
             .then((response) => {
                 setLoading(false);
                 enqueueSnackbar('Rollback successful!', {variant: 'success'});
@@ -247,7 +247,7 @@ function ActionMenu(props) {
                     key="pipeline"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/release//release/${props.rowData.id.releaseResourceId}`);
+                        history.push(`/app/project/${props.rowData.projectResourceId}/application/${props.rowData.deploymentResourceId}/release/${props.rowData.id.releaseResourceId}`);
                     }}>
                     View Pipeline
                 </MenuItem>

@@ -192,7 +192,7 @@ function Login() {
                 "Authorization": "Bearer " + accessToken
             }
         }
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/user/my/profile`, config)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/my/profile`, config)
             .then((response) => {
                 console.log("getUserInfo", response);
                 setLoading(false);

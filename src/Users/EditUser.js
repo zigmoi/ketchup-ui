@@ -76,7 +76,7 @@ function EditUser() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/user/${userName}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/${userName}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -114,7 +114,7 @@ function EditUser() {
             'password': '', //will be ignored
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1/user/`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

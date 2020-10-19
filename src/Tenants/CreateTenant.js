@@ -59,7 +59,7 @@ function CreateTenant() {
             'defaultUserPassword': formValues.defaultUserPassword,
         };
         //  alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/tenant/`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/tenant/`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

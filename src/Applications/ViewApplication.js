@@ -74,7 +74,7 @@ function ViewApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/basic-spring-boot/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setResponse(response.data);
@@ -90,7 +90,7 @@ function ViewApplication() {
 
     function getActiveRelease() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/release/active?deploymentResourceId=${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/active?deploymentResourceId=${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setActiveReleaseResponse(response.data);
@@ -102,7 +102,7 @@ function ViewApplication() {
 
     function getInstances() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/${deploymentResourceId}/instances`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}/instances`)
             .then((response) => {
                 setLoading(false);
                 setInstances(response.data);
@@ -114,7 +114,7 @@ function ViewApplication() {
 
     function deployApplication() {
         setDeploying(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setDeploying(false);
@@ -129,7 +129,7 @@ function ViewApplication() {
 
     function deleteApplication() {
         setLoading(true);
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/project/${projectResourceId}/deployments/${deploymentResourceId}`)
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 enqueueSnackbar('Deployment deleted successfully!', {variant: 'success'});

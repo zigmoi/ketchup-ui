@@ -52,7 +52,7 @@ function ManageK8sCusters() {
 
     function loadAll() {
         setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1/settings/list-all-kubernetes-cluster/${projectResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-kubernetes-cluster/${projectResourceId}`)
             .then((response) => {
                 setIconLoading(false);
                 setDataSource(response.data);
@@ -65,7 +65,7 @@ function ManageK8sCusters() {
     function deleteItem(selectedRecord) {
         setIconLoading(true);
         let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1/user/${userName}`)
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/${userName}`)
             .then((response) => {
                 setIconLoading(false);
                 reloadTabularData();
