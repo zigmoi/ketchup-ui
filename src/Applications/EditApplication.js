@@ -83,7 +83,7 @@ function EditApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -155,7 +155,7 @@ function EditApplication() {
         setLoading(true);
 
         let data = {
-            "applicationType": "basic-spring-boot",
+            "applicationType": "WEB-APPLICATION",
             "displayName": formValues.displayName,
             "description": formValues.description,
             "serviceName": formValues.serviceName,

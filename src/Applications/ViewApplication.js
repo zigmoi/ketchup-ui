@@ -74,7 +74,7 @@ function ViewApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setResponse(response.data);

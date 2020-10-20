@@ -51,7 +51,7 @@ function ManageApplications() {
 
     function loadAll() {
         setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/list`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments`)
             .then((response) => {
                 setIconLoading(false);
                 setDataSource(response.data);

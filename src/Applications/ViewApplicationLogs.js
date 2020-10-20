@@ -92,7 +92,7 @@ function ViewApplicationLogs() {
 
     function getAllApplications() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot/list`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments`)
             .then((response) => {
                 setLoading(false);
                 setApplications(response.data);

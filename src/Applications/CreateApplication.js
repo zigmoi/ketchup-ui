@@ -113,7 +113,7 @@ function CreateApplication() {
         setLoading(true);
 
         let data = {
-            "applicationType": "basic-spring-boot",
+            "applicationType": "WEB-APPLICATION",
             "displayName": formValues.displayName,
             "description": formValues.description,
             "serviceName": formValues.serviceName,
@@ -140,7 +140,7 @@ function CreateApplication() {
             "prodKubernetesNamespace": ""
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/basic-spring-boot`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployment`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
