@@ -58,7 +58,7 @@ function EditContainerRegistry() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/container-registry/${projectResourceId}/${settingId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName",response.data.displayName);
@@ -251,7 +251,7 @@ function EditContainerRegistry() {
         setLoading(true);
 
         let data = {
-            'projectId': projectResourceId,
+            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'type': formValues.type,
             'registryUrl': formValues.registryUrl,
@@ -260,7 +260,7 @@ function EditContainerRegistry() {
             'registryPassword': formValues.password ? formValues.password : "",
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/container-registry/${projectResourceId}/${settingId}`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

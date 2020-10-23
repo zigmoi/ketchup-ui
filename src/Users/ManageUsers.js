@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import MaterialTable from 'material-table';
 import { Grid } from '@material-ui/core';
@@ -13,6 +13,7 @@ import { useHistory } from 'react-router-dom';
 import VpnKey from "@material-ui/icons/VpnKey";
 import useCurrentProject from "../useCurrentProject";
 import {format} from "date-fns";
+import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -39,8 +40,9 @@ function ManageUsers() {
     let history = useHistory();
 
     const currentProject = useCurrentProject();
-    const [iconLoading, setIconLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     useEffect(() => {
         console.log("in effect Users");
@@ -53,28 +55,27 @@ function ManageUsers() {
     }
 
     function loadAll() {
-        setIconLoading(true);
+        setLoading(true);
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 setDataSource(response.data);
             })
             .catch(() => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
-    function deleteUser(selectedRecord) {
-        setIconLoading(true);
-        let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/${userName}`)
+    function deleteUser(userName) {
+        setLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 reloadTabularData();
-                // message.success('User deleted successfully.');
+                enqueueSnackbar('User deleted successfully.', { variant: 'success' });
             })
             .catch((error) => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
@@ -88,7 +89,7 @@ function ManageUsers() {
                         <MaterialTable
                             title="Users"
                             icons={tableIcons}
-                            isLoading={iconLoading}
+                            isLoading={loading}
                             components={{ Container: props => props.children }}
                             columns={[
                                 { title: 'Name', field: 'displayName' },
@@ -116,7 +117,7 @@ function ManageUsers() {
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,
                                     tooltip: 'Delete User',
-                                    onClick: (event, rowData) => alert("Are you sure you want to delete user " + rowData.userName)
+                                    onClick: (event, rowData) => deleteUser(rowData.userName)
                                 },
                                 {
                                     icon: () => <AddIcon color="action" fontSize="small" />,

@@ -88,7 +88,7 @@ function CreateUser() {
             'roles': selectedRoles,
         };
         //  alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

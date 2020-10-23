@@ -11,6 +11,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
 import { useHistory, useParams } from 'react-router-dom';
 import {format} from "date-fns";
+import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -37,8 +38,9 @@ function ManageContainerRegistries() {
     let history = useHistory();
     let { projectResourceId } = useParams();
     
-    const [iconLoading, setIconLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     useEffect(() => {
         console.log("in effect Manage Container Registries");
@@ -51,33 +53,29 @@ function ManageContainerRegistries() {
     }
 
     function loadAll() {
-        setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-container-registry/${projectResourceId}`)
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 setDataSource(response.data);
             })
             .catch(() => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
-    function deleteItem(selectedRecord) {
-        setIconLoading(true);
-        let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/${userName}`)
+    function deleteSetting(settingResourceId) {
+        setLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
+                enqueueSnackbar('Setting deleted successfully.', { variant: 'success' });
                 reloadTabularData();
-                // message.success('User deleted successfully.');
             })
             .catch((error) => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
-
-
-
 
 
     return (
@@ -86,11 +84,11 @@ function ManageContainerRegistries() {
                         <MaterialTable
                             title="Container Registries"
                             icons={tableIcons}
-                            isLoading={iconLoading}
+                            isLoading={loading}
                             components={{ Container: props => props.children }}
                             columns={[
                                 { title: 'Name', field: 'displayName', width: 160 },
-                                { title: 'ID', field: 'settingId', width: 280 },
+                                { title: 'ID', field: 'settingResourceId', width: 280 },
                                 { title: 'Type', field: 'type', width: 102 },
                                 { title: 'URL', field: 'registryUrl'},
                                 { title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
@@ -100,12 +98,12 @@ function ManageContainerRegistries() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Registry',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/container-registry/${rowData.settingId}/edit`)
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/container-registry/${rowData.settingResourceId}/edit`)
                                 },
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,
                                     tooltip: 'Delete Registry',
-                                    onClick: (event, rowData) => alert("Are you sure you want to delete registry " + rowData.displayName)
+                                    onClick: (event, rowData) => deleteSetting(rowData.settingResourceId)
                                 },
                                 {
                                     icon: () => <AddIcon color="action" fontSize="small" />,

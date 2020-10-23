@@ -227,7 +227,7 @@ function AddContainerRegistry() {
         setLoading(true);
 
         let data = {
-            'projectId': projectResourceId,
+            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'type': formValues.type,
             'registryUrl': formValues.registryUrl,
@@ -236,7 +236,7 @@ function AddContainerRegistry() {
             'registryPassword': formValues.password ? formValues.password : "",
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/container-registry`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

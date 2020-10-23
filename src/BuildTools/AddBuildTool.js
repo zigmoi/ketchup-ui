@@ -56,13 +56,13 @@ function AddBuildTool() {
         setLoading(true);
 
         let data = {
-            'projectId': projectResourceId,
+            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'type': formValues.type,
             'fileData': btoa(formValues.buildconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/build-tool`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

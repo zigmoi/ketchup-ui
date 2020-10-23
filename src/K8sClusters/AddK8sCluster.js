@@ -72,12 +72,12 @@ function AddK8sCluster() {
         setLoading(true);
 
         let data = {
-            'projectId': projectResourceId,
+            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'fileData': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/kubernetes-cluster`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -99,14 +99,14 @@ function AddK8sCluster() {
             'fileData': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/test-connection/kubernetes-cluster/kubeconfig-auth`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/test-connection`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
                 if (response.data.status === "success") {
-                    enqueueSnackbar('Connection test successful.', {variant: 'success'});
+                    enqueueSnackbar('Test connection successful.', {variant: 'success'});
                 } else {
-                    enqueueSnackbar('Connection test failed.', {variant: 'error'});
+                    enqueueSnackbar('Test connection failed.', {variant: 'error'});
                 }
             })
             .catch(() => {

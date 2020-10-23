@@ -66,7 +66,7 @@ function ManageProjectPermissions() {
             return;
         }
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceIdentifier}/user/${userName}/permissions`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/${userName}`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -102,7 +102,7 @@ function ManageProjectPermissions() {
             permissions: selectedPermissions.map(p => p.permission)
         };
         console.log(data);
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/assign/permissions`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/assign`, data)
             .then((response) => {
                 setLoading(false);
                 loadPermissions();
@@ -138,7 +138,7 @@ function ManageProjectPermissions() {
             permissions: selectedPermissions.map(p => p.permission)
         };
         console.log(data);
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/revoke/permissions`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/revoke`, data)
             .then((response) => {
                 setLoading(false);
                 loadPermissions();

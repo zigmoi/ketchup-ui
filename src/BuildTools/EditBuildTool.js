@@ -57,7 +57,7 @@ function EditBuildTool() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/build-tool/${projectResourceId}/${settingId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -77,13 +77,13 @@ function EditBuildTool() {
         setLoading(true);
 
         let data = {
-            'projectId': projectResourceId,
+            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'type': formValues.type,
             'fileData': btoa(formValues.buildconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/build-tool/${projectResourceId}/${settingId}`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

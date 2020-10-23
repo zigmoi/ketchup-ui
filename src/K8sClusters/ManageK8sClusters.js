@@ -11,6 +11,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
 import { useHistory, useParams } from 'react-router-dom';
 import {format} from "date-fns";
+import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -37,8 +38,9 @@ function ManageK8sCusters() {
     let history = useHistory();
     let { projectResourceId } = useParams();
     
-    const [iconLoading, setIconLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     useEffect(() => {
         console.log("in effect Manage K8s Clusters");
@@ -51,28 +53,27 @@ function ManageK8sCusters() {
     }
 
     function loadAll() {
-        setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-kubernetes-cluster/${projectResourceId}`)
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 setDataSource(response.data);
             })
             .catch(() => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
-    function deleteItem(selectedRecord) {
-        setIconLoading(true);
-        let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/${userName}`)
+    function deleteSetting(settingResourceId) {
+        setLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
+                enqueueSnackbar('Setting deleted successfully.', { variant: 'success' });
                 reloadTabularData();
-                // message.success('User deleted successfully.');
             })
             .catch((error) => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
@@ -83,11 +84,11 @@ function ManageK8sCusters() {
                         <MaterialTable
                             title="Kubernetes Clusters"
                             icons={tableIcons}
-                            isLoading={iconLoading}
+                            isLoading={loading}
                             components={{ Container: props => props.children }}
                             columns={[
                                 { title: 'Name', field: 'displayName' },
-                                { title: 'ID', field: 'settingId' },
+                                { title: 'ID', field: 'settingResourceId' },
                                 { title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
                             ]}
                             data={dataSource}
@@ -95,12 +96,12 @@ function ManageK8sCusters() {
                                 {
                                     icon: () => <EditIcon color="action" fontSize="small" />,
                                     tooltip: 'Edit Cluster',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/kubernetes-cluster/${rowData.settingId}/edit`)
+                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/kubernetes-cluster/${rowData.settingResourceId}/edit`)
                                 },
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,
                                     tooltip: 'Delete Cluster',
-                                    onClick: (event, rowData) => alert("Are you sure you want to delete cluster " + rowData.displayName)
+                                    onClick: (event, rowData) => deleteSetting(rowData.settingResourceId)
                                 },
                                 {
                                     icon: () => <AddIcon color="action" fontSize="small" />,
