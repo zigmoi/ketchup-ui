@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 function ManageApplicationHistory() {
     const classes = useStyles();
     let history = useHistory();
-    const {projectResourceId, deploymentResourceId} = useParams();
+    const {projectResourceId, applicationResourceId} = useParams();
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ function ManageApplicationHistory() {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -68,12 +68,12 @@ function ManageApplicationHistory() {
 
     function deployApplication() {
         setLoading(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setLoading(false);
                 enqueueSnackbar('Application deployment started successfully!', {variant: 'success'});
-                history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.releaseResourceId}`);
+                history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${response.data.revisionResourceId}`);
             })
             .catch((error) => {
                 setLoading(false);
@@ -83,7 +83,7 @@ function ManageApplicationHistory() {
 
     function refreshRevisionStatus(revisionResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
             .then((response) => {
                 setLoading(false);
                 reloadTabularData();
@@ -95,7 +95,7 @@ function ManageApplicationHistory() {
 
     function rollbackRevision(revisionResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${revisionResourceId}/rollback`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/rollback`)
             .then((response) => {
                 setLoading(false);
                 enqueueSnackbar('Rollback successful!', {variant: 'success'});
@@ -132,7 +132,7 @@ function ManageApplicationHistory() {
                         <Typography variant="h6">
                             Application History
                             <Typography variant="caption">
-                                &nbsp; {deploymentResourceId}
+                                &nbsp; {applicationResourceId}
                             </Typography>
                         </Typography>}
                     icons={tableIcons}
@@ -248,7 +248,7 @@ function ActionMenu(props) {
                     key="pipeline"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/release/${props.rowData.id.revisionResourceId}`);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}`);
                     }}>
                     View Pipeline
                 </MenuItem>

@@ -59,7 +59,7 @@ function EditK8sCluster() {
     const classes = useStyles();
     const {control, register, handleSubmit, watch, reset, setValue, errors} = useForm({mode: 'onBlur'});
 
-    let {projectResourceId, settingId} = useParams();
+    let {projectResourceId, settingResourceId} = useParams();
 
     const [loading, setLoading] = useState(false);
     const [testConnectionLoading, setTestConnectionLoading] = useState(false);
@@ -68,12 +68,12 @@ function EditK8sCluster() {
 
     useEffect(() => {
         loadDetails();
-    }, [projectResourceId, settingId]);
+    }, [projectResourceId, settingResourceId]);
 
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -97,7 +97,7 @@ function EditK8sCluster() {
             'fileData': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingId}`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -140,7 +140,7 @@ function EditK8sCluster() {
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Edit Kubernetes Cluster
                         <Typography variant="caption">
-                            &nbsp; {settingId}
+                            &nbsp; {settingResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}

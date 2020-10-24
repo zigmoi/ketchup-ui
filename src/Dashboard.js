@@ -71,7 +71,7 @@ export default function Dashboard(props) {
                         <Grid item xs={12} md={4} lg={3}>
                             <Paper className={fixedHeightPaper}>
                                 <React.Fragment>
-                                    <Title>Releases</Title>
+                                    <Title>Revisions</Title>
                                     <Typography component="p" variant="h4">
                                         100
                                     </Typography>

@@ -55,24 +55,24 @@ function ViewApplication() {
     document.title = "View Application";
     const classes = useStyles();
 
-    let {projectResourceId, deploymentResourceId} = useParams();
+    let {projectResourceId, applicationResourceId} = useParams();
     let history = useHistory();
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
-    const [activeReleaseResponse, setActiveReleaseResponse] = useState({});
+    const [activeRevisionResponse, setActiveRevisionResponse] = useState({});
     const [deploying, setDeploying] = useState(false);
 
     useEffect(() => {
         loadDetails();
-        getActiveRelease();
-    }, [projectResourceId, deploymentResourceId]);
+        getActiveRevision();
+    }, [projectResourceId, applicationResourceId]);
 
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setResponse(response.data);
@@ -86,12 +86,12 @@ function ViewApplication() {
             });
     }
 
-    function getActiveRelease() {
+    function getActiveRevision() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/active-revision`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/active-revision`)
             .then((response) => {
                 setLoading(false);
-                setActiveReleaseResponse(response.data);
+                setActiveRevisionResponse(response.data);
             })
             .catch(() => {
                 setLoading(false);
@@ -100,12 +100,12 @@ function ViewApplication() {
 
     function deployApplication() {
         setDeploying(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setDeploying(false);
                 enqueueSnackbar('Application deployment started successfully!', {variant: 'success'});
-                history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.revisionResourceId}`);
+                history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${response.data.revisionResourceId}`);
             })
             .catch((error) => {
                 setDeploying(false);
@@ -115,10 +115,10 @@ function ViewApplication() {
 
     function deleteApplication() {
         setLoading(true);
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`)
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
                 setLoading(false);
-                enqueueSnackbar('Deployment deleted successfully!', {variant: 'success'});
+                enqueueSnackbar('Application deleted successfully!', {variant: 'success'});
             })
             .catch((error) => {
                 setLoading(false);
@@ -131,7 +131,7 @@ function ViewApplication() {
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Application Details
                         <Typography variant="caption">
-                            &nbsp; {deploymentResourceId}
+                            &nbsp; {applicationResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
@@ -141,7 +141,7 @@ function ViewApplication() {
                         size="small"
                         variant="text"
                         color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/edit`)}
+                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/edit`)}
                     >Edit</Button>
                     <Button
                         className={classes.button}
@@ -163,14 +163,14 @@ function ViewApplication() {
                         size="small"
                         variant="text"
                         color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/logs`)}
+                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/logs`)}
                     >Logs</Button>
                     <Button
                         className={classes.button}
                         size="small"
                         variant="text"
                         color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/history`)}
+                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/history`)}
                     >History</Button>
                     <Button
                         className={classes.button}
@@ -211,19 +211,19 @@ function ViewApplication() {
                                     <Typography variant="subtitle2">
                                         Version Number: &nbsp;
                                         <Typography variant="caption">
-                                            {activeReleaseResponse?.version}
+                                            {activeRevisionResponse?.version}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        Release ID: &nbsp;
+                                        Revision ID: &nbsp;
                                         <Typography variant="caption">
-                                            {activeReleaseResponse?.id?.revisionResourceId}
+                                            {activeRevisionResponse?.id?.revisionResourceId}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Commit ID : &nbsp;
                                         <Typography variant="caption">
-                                            {activeReleaseResponse?.commitId}
+                                            {activeRevisionResponse?.commitId}
                                         </Typography>
                                     </Typography>
                                     <br/>

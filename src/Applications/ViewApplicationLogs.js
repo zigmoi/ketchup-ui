@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 function ViewApplicationLogs() {
     document.title = "Application Logs";
     const classes = useStyles();
-    let {projectResourceId, deploymentResourceId} = useParams();
+    let {projectResourceId, applicationResourceId} = useParams();
 
     let history = useHistory();
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -68,16 +68,16 @@ function ViewApplicationLogs() {
     const [logUrl, setLogUrl] = useState("");
 
     useEffect(() => {
-        if (deploymentResourceId) {
-            getAllInstances(deploymentResourceId);
+        if (applicationResourceId) {
+            getAllInstances(applicationResourceId);
         } else {
             getAllApplications();
         }
-    }, [projectResourceId, deploymentResourceId]);
+    }, [projectResourceId, applicationResourceId]);
 
-    function getAllInstances(selectedDeploymentResourceId) {
+    function getAllInstances(selectedApplicationResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedDeploymentResourceId}/instances`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplicationResourceId}/instances`)
             .then((response) => {
                 setLoading(false);
                 setInstances(response.data);
@@ -104,8 +104,8 @@ function ViewApplicationLogs() {
 
     function startStreaming() {
         let url;
-        if (deploymentResourceId) {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+        if (applicationResourceId) {
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         } else {
             url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplication}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         }
@@ -119,7 +119,7 @@ function ViewApplicationLogs() {
                     <Typography variant="h6" color="inherit">
                         Application Logs
                         <Typography variant="caption">
-                            &nbsp; {deploymentResourceId}
+                            &nbsp; {applicationResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
@@ -129,7 +129,7 @@ function ViewApplicationLogs() {
                 <Grid item md={9} lg={12} xl={5}>
                     <Box m={2}>
                         <Box width="100%" display="flex" alignItems="center">
-                            {deploymentResourceId ? null :
+                            {applicationResourceId ? null :
                                 <TextField
                                     name="applications"
                                     variant="outlined" size="small" fullWidth margin="normal"

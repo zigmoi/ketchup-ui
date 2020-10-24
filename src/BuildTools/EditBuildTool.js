@@ -44,7 +44,7 @@ function EditBuildTool() {
     const classes = useStyles();
     const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
 
-    let { projectResourceId, settingId } = useParams();
+    let { projectResourceId, settingResourceId } = useParams();
 
     const [loading, setLoading] = useState(false);
     let history = useHistory();
@@ -52,12 +52,12 @@ function EditBuildTool() {
 
     useEffect(() => {
         loadDetails();
-    }, [projectResourceId, settingId]);
+    }, [projectResourceId, settingResourceId]);
 
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -83,7 +83,7 @@ function EditBuildTool() {
             'fileData': btoa(formValues.buildconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingId}`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -101,7 +101,7 @@ function EditBuildTool() {
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Edit Build Tool
                     <Typography variant="caption" >
-                            &nbsp; {settingId}
+                            &nbsp; {settingResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}

@@ -14,7 +14,7 @@ function RecentPipelines(props) {
     const {projectResourceId} = props;
 
     useEffect(() => {
-        console.log("in effect Recent Releases");
+        console.log("in effect Recent Revisions");
         loadAll();
     }, [projectResourceId]);
 
@@ -64,7 +64,7 @@ function RecentPipelines(props) {
                 {
                     icon: () => <LaunchIcon color="action" fontSize="small"/>,
                     tooltip: 'View Pipeline',
-                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
+                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.applicationResourceId}/revision/${rowData.id.revisionResourceId}`)
                 },
             ]}
             options={{

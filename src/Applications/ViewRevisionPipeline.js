@@ -68,12 +68,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function ViewReleasePipeline() {
+function ViewRevisionPipeline() {
     document.title = "Deployment Pipeline";
     const classes = useStyles();
     const logViewerHeight = 350;
 
-    let {projectResourceId, deploymentResourceId, releaseResourceId} = useParams();
+    let {projectResourceId, applicationResourceId, revisionResourceId} = useParams();
     let history = useHistory();
     const userContext = useContext(UserContext);
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -89,7 +89,7 @@ function ViewReleasePipeline() {
         if (access_token === "") {
             return;
         }
-        statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${releaseResourceId}/pipeline/status/stream?access_token=${access_token}`);
+        statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/stream?access_token=${access_token}`);
         statusSource.addEventListener('data', function (e) {
             streamPipelineStatus(e);
         }, false);
@@ -108,7 +108,7 @@ function ViewReleasePipeline() {
             console.log("clearing status stream.")
             statusSource.close();
         }
-    }, [releaseResourceId, userContext.currentUser]);
+    }, [revisionResourceId, userContext.currentUser]);
 
 
     function streamPipelineStatus(event) {
@@ -149,7 +149,7 @@ function ViewReleasePipeline() {
 
     function stopPipeline() {
         setCancellingPipeline(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${releaseResourceId}/pipeline/stop`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/stop`)
             .then((response) => {
                 setCancellingPipeline(false);
                 enqueueSnackbar('Pipeline cancelled successfully.', {variant: 'success'});
@@ -166,7 +166,7 @@ function ViewReleasePipeline() {
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Deployment Pipeline
                         <Typography variant="caption">
-                            &nbsp; {releaseResourceId}
+                            &nbsp; {revisionResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
@@ -181,13 +181,13 @@ function ViewReleasePipeline() {
                                     <Typography variant="subtitle2">
                                         Application ID: &nbsp;
                                         <Typography variant="caption">
-                                            {deploymentResourceId}
+                                            {applicationResourceId}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        Release ID: &nbsp;
+                                        Revision ID: &nbsp;
                                         <Typography variant="caption">
-                                            {releaseResourceId}
+                                            {revisionResourceId}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
@@ -286,8 +286,8 @@ function ViewReleasePipeline() {
                                                                 <PipelineStepView
                                                                     step={step}
                                                                     projectResourceId={projectResourceId}
-                                                                    applicationResourceId={deploymentResourceId}
-                                                                    revisionResourceId={releaseResourceId}/>
+                                                                    applicationResourceId={applicationResourceId}
+                                                                    revisionResourceId={revisionResourceId}/>
                                                             </React.Fragment>
                                                         )
                                                     })}
@@ -307,4 +307,4 @@ function ViewReleasePipeline() {
 
 }
 
-export default ViewReleasePipeline;
+export default ViewRevisionPipeline;

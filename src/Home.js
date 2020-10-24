@@ -79,7 +79,7 @@ import CreateProject from './Projects/CreateProject';
 import LoadProject from './Projects/LoadProject';
 import ManageProjectPermissions from "./Users/ManageProjectPermissions";
 
-import ViewReleasePipeline from './Applications/ViewReleasePipeline';
+import ViewRevisionPipeline from './Applications/ViewRevisionPipeline';
 import ManagePipelineRuns from "./Applications/ManagePipelineRuns";
 import {validateHasAllRoles} from './Util';
 
@@ -467,7 +467,7 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/kubernetes-cluster/add"
                        render={() => <ProtectedRoute component={AddK8sCluster}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/kubernetes-cluster/:settingId/edit"
+                <Route path="/app/project/:projectResourceId/kubernetes-cluster/:settingResourceId/edit"
                        render={() => <ProtectedRoute component={EditK8sCluster}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/kubernetes-clusters"
@@ -476,7 +476,7 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/container-registry/add"
                        render={() => <ProtectedRoute component={AddContainerRegistry}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/container-registry/:settingId/edit"
+                <Route path="/app/project/:projectResourceId/container-registry/:settingResourceId/edit"
                        render={() => <ProtectedRoute component={EditContainerRegistry}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/container-registries"
@@ -485,7 +485,7 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/build-tool/add"
                        render={() => <ProtectedRoute component={AddBuildTool}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/build-tool/:settingId/edit"
+                <Route path="/app/project/:projectResourceId/build-tool/:settingResourceId/edit"
                        render={() => <ProtectedRoute component={EditBuildTool}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/build-tools"
@@ -494,21 +494,21 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/application/create"
                        render={() => <ProtectedRoute component={CreateApplication}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/history"
+                <Route path="/app/project/:projectResourceId/application/:applicationResourceId/history"
                        render={() => <ProtectedRoute component={ManageApplicationHistory}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/edit"
+                <Route path="/app/project/:projectResourceId/application/:applicationResourceId/edit"
                        render={() => <ProtectedRoute component={EditApplication}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/application/:deploymentResourceId/view"
+                <Route path="/app/project/:projectResourceId/application/:applicationResourceId/view"
                        render={() => <ProtectedRoute component={ViewApplication}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/application/:deploymentResourceId?/logs"
+                <Route path="/app/project/:projectResourceId/application/:applicationResourceId?/logs"
                        render={() => <ProtectedRoute component={ViewApplicationLogs}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route
-                    path="/app/project/:projectResourceId/application/:deploymentResourceId/release/:releaseResourceId"
-                    render={() => <ProtectedRoute component={ViewReleasePipeline}
+                    path="/app/project/:projectResourceId/application/:applicationResourceId/revision/:revisionResourceId"
+                    render={() => <ProtectedRoute component={ViewRevisionPipeline}
                                                   roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/applications"
                        render={() => <ProtectedRoute component={ManageApplications}

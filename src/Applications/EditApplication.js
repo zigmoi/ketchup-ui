@@ -55,7 +55,7 @@ function EditApplication() {
     const classes = useStyles();
     const {control, register, handleSubmit, watch, reset, setValue, errors} = useForm({mode: 'onBlur'});
 
-    let {projectResourceId, deploymentResourceId} = useParams();
+    let {projectResourceId, applicationResourceId} = useParams();
 
     let history = useHistory();
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -75,7 +75,7 @@ function EditApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -174,7 +174,7 @@ function EditApplication() {
             "prodKubernetesNamespace": ""
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -218,7 +218,7 @@ function EditApplication() {
                     <Typography variant="h6" color="inherit">
                         Edit Application
                         <Typography variant="caption">
-                            &nbsp; {deploymentResourceId}
+                            &nbsp; {applicationResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
