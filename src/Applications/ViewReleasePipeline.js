@@ -12,8 +12,6 @@ import {
     AccordionSummary,
     AccordionDetails,
     Paper,
-    Icon,
-    IconButton
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
@@ -24,7 +22,6 @@ import UserContext from '../UserContext';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PipelineTaskStatusView from './PipelineTaskStatusView';
 import PipelineStepView from './PipelineStepView';
-import CancelIcon from '@material-ui/icons/Cancel';
 import {format, formatDistanceStrict} from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
@@ -88,15 +85,11 @@ function ViewReleasePipeline() {
 
     let statusSource;
     useEffect(() => {
-        document.title = "Build Pipeline Details";
-    }, []);
-
-    useEffect(() => {
         let access_token = userContext.currentUser ? userContext.currentUser.accessToken : "";
         if (access_token === "") {
             return;
         }
-        statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/pipeline/status/stream/sse?releaseId=${releaseResourceId}&access_token=${access_token}`);
+        statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${releaseResourceId}/pipeline/status/stream?access_token=${access_token}`);
         statusSource.addEventListener('data', function (e) {
             streamPipelineStatus(e);
         }, false);
@@ -156,7 +149,7 @@ function ViewReleasePipeline() {
 
     function stopPipeline() {
         setCancellingPipeline(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/stop?releaseResourceId=${releaseResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${releaseResourceId}/pipeline/stop`)
             .then((response) => {
                 setCancellingPipeline(false);
                 enqueueSnackbar('Pipeline cancelled successfully.', {variant: 'success'});
@@ -290,7 +283,11 @@ function ViewReleasePipeline() {
                                                                         {task?.reason}{task?.message ? "," : ""} {task?.message}
                                                                     </Typography>
                                                                 </Typography>
-                                                                <PipelineStepView step={step} releaseResourceId={releaseResourceId}/>
+                                                                <PipelineStepView
+                                                                    step={step}
+                                                                    projectResourceId={projectResourceId}
+                                                                    applicationResourceId={deploymentResourceId}
+                                                                    revisionResourceId={releaseResourceId}/>
                                                             </React.Fragment>
                                                         )
                                                     })}

@@ -54,7 +54,7 @@ function ManagePipelineRuns() {
 
     function loadAll() {
         setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/pipelines?projectResourceId=${projectResourceId}&status=IN PROGRESS`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/pipelines?status=IN PROGRESS`)
             .then((response) => {
                 setIconLoading(false);
                 setDataSource(response.data);
@@ -73,7 +73,7 @@ function ManagePipelineRuns() {
                     isLoading={iconLoading}
                     components={{Container: props => props.children}}
                     columns={[
-                        {title: 'Application ID', field: 'deploymentResourceId', width: 280},
+                        {title: 'Application ID', field: 'id.applicationResourceId', width: 280},
                         {title: 'Version', field: 'version'},
                         {title: 'Commit Id', field: 'commitId', width: 320},
                         {title: 'Status', field: 'status'},
@@ -91,7 +91,7 @@ function ManagePipelineRuns() {
                         {
                             icon: () => <LaunchIcon color="action" fontSize="small"/>,
                             tooltip: 'View Pipeline',
-                            onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.deploymentResourceId}/release/${rowData.id.releaseResourceId}`)
+                            onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.applicationResourceId}/release/${rowData.id.revisionResourceId}`)
                         },
                         {
                             icon: () => <RefreshIcon color="action" fontSize="small"/>,

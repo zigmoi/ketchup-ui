@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { LazyLog, ScrollFollow } from 'react-lazylog';
 import PipelineStepStatusView from './PipelineStepStatusView';
-import { useParams } from 'react-router-dom';
 import UserContext from '../UserContext';
 import {format, formatDistanceStrict} from "date-fns";
 
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 export default function PipelineStepView(props) {
-    let { releaseResourceId } = props;
+    let { projectResourceId, applicationResourceId, revisionResourceId } = props;
     const classes = useStyles();
     const logViewerHeight = 350;
     const userContext = useContext(UserContext);
@@ -108,7 +107,7 @@ export default function PipelineStepView(props) {
                                 startFollowing={true}
                                 render={({ follow, onScroll }) => (
                                     <LazyLog
-                                        url={`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/pipeline/logs/stream/direct?releaseId=${releaseResourceId}&podName=${props.step?.podName}&containerName=${props.step?.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
+                                        url={`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/logs/stream/direct?podName=${props.step?.podName}&containerName=${props.step?.containerName}&access_token=${userContext?.currentUser?.accessToken}`}
                                         height={logViewerHeight}
                                         // width={logViewerWidth}
                                         style={{ textAlign: 'left' }}

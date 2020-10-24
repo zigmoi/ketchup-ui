@@ -77,7 +77,7 @@ function ViewApplicationLogs() {
 
     function getAllInstances(selectedDeploymentResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${selectedDeploymentResourceId}/instances`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedDeploymentResourceId}/instances`)
             .then((response) => {
                 setLoading(false);
                 setInstances(response.data);
@@ -92,7 +92,7 @@ function ViewApplicationLogs() {
 
     function getAllApplications() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`)
             .then((response) => {
                 setLoading(false);
                 setApplications(response.data);
@@ -105,9 +105,9 @@ function ViewApplicationLogs() {
     function startStreaming() {
         let url;
         if (deploymentResourceId) {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/active/application/logs/stream?deploymentResourceId=${deploymentResourceId}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         } else {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/active/application/logs/stream?deploymentResourceId=${selectedApplication}&podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplication}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         }
         setLogUrl(url);
     }
@@ -147,8 +147,8 @@ function ViewApplicationLogs() {
                                         getAllInstances(e.target.value);
                                     }}
                                 >
-                                    {applications.map(application => <MenuItem key={application.id.deploymentResourceId}
-                                                                               value={application.id.deploymentResourceId}> {application.displayName} - {application.id.deploymentResourceId}</MenuItem>)}
+                                    {applications.map(application => <MenuItem key={application.id.applicationResourceId}
+                                                                               value={application.id.applicationResourceId}> {application.displayName} - {application.id.applicationResourceId}</MenuItem>)}
                                 </TextField>}
 
 

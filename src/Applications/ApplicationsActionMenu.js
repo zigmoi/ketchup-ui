@@ -41,7 +41,7 @@ export default function ApplicationsActionMenu(props) {
             <Tooltip title="View Application">
                 <IconButton
                     className={classes.actionIcon}
-                    onClick={() => history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/view`)}
+                    onClick={() => history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/view`)}
                 >
                     <LaunchIcon color="action"/>
                 </IconButton>
@@ -50,7 +50,7 @@ export default function ApplicationsActionMenu(props) {
             <Tooltip title="Edit Application">
                 <IconButton
                     className={classes.actionIcon}
-                    onClick={() => history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/edit`)}
+                    onClick={() => history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/edit`)}
                 >
                     <EditIcon color="action"/>
                 </IconButton>
@@ -78,7 +78,7 @@ export default function ApplicationsActionMenu(props) {
                     key="view"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/view`);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/view`);
                     }}>
                     View
                 </MenuItem>
@@ -87,7 +87,7 @@ export default function ApplicationsActionMenu(props) {
                     key="edit"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/edit`);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/edit`);
                     }}>
                     Edit
                 </MenuItem>
@@ -96,7 +96,7 @@ export default function ApplicationsActionMenu(props) {
                     key="history"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/history`);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/history`);
                     }}>
                     History
                 </MenuItem>
@@ -105,7 +105,7 @@ export default function ApplicationsActionMenu(props) {
                     key="logs"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.deploymentResourceId}/logs`);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/logs`);
                     }}>
                     Logs
                 </MenuItem>

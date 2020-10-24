@@ -8,14 +8,7 @@ import {
     TextField,
     Toolbar,
     Typography,
-    MenuItem,
-    Select,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    Tabs,
-    Tab,
-    IconButton
+    MenuItem
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
@@ -23,7 +16,6 @@ import {useSnackbar} from 'notistack';
 import React, {useState, useEffect} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
 import {useForm, Controller} from "react-hook-form";
-import MenuIcon from "@material-ui/icons/Menu";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +75,7 @@ function EditApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -116,7 +108,7 @@ function EditApplication() {
 
     function loadAllK8sClusters() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-kubernetes-cluster/${projectResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
             .then((response) => {
                 setLoading(false);
                 setK8sClusters(response.data);
@@ -128,7 +120,7 @@ function EditApplication() {
 
     function loadAllContainerRegistries() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-container-registry/${projectResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`)
             .then((response) => {
                 setLoading(false);
                 setContainerRegistries(response.data);
@@ -140,7 +132,7 @@ function EditApplication() {
 
     function loadAllBuildTools() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/settings/list-all-build-tool/${projectResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings`)
             .then((response) => {
                 setLoading(false);
                 setBuildTools(response.data);
@@ -182,7 +174,7 @@ function EditApplication() {
             "prodKubernetesNamespace": ""
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -198,21 +190,20 @@ function EditApplication() {
         console.log(formValues);
         setTestConnectionLoading(true);
 
-       // let params = "?repoURL=" + encodeURI(formValues.gitRepoUrl) + "&username=" + encodeURIComponent(formValues.gitRepoUsername) + "&password=" + encodeURIComponent(formValues.gitRepoPassword);
         let data = {
             repoUrl: formValues.gitRepoUrl,
             username: formValues.gitRepoUsername,
             password: formValues.gitRepoPassword
         }
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/test-connection/git-remote/basic-auth`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/git-repo/test-connection`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
                 if (response.data.status === "success") {
-                    enqueueSnackbar('Connection test successful.', {variant: 'success'});
+                    enqueueSnackbar('Test connection successful.', {variant: 'success'});
                 } else {
-                    enqueueSnackbar('Connection test failed.', {variant: 'error'});
+                    enqueueSnackbar('Test connection failed.', {variant: 'error'});
                 }
             })
             .catch(() => {
@@ -376,8 +367,8 @@ function EditApplication() {
                                     helperText={errors.containerRegistrySettingId?.message}
                                 >
                                     {containerRegistries.map(registry =>
-                                        <MenuItem key={registry.settingId}
-                                                  value={registry.settingId}> {`${registry.displayName} (${registry.settingId})`} </MenuItem>)}
+                                        <MenuItem key={registry.settingResourceId}
+                                                  value={registry.settingResourceId}> {`${registry.displayName} (${registry.settingResourceId})`} </MenuItem>)}
                                 </TextField>}
                             />
                             <TextField
@@ -463,8 +454,8 @@ function EditApplication() {
                                     helperText={errors.devKubernetesClusterSettingId?.message}
                                 >
                                     {k8sClusters.map(cluster =>
-                                        <MenuItem key={cluster.settingId}
-                                                  value={cluster.settingId}> {`${cluster.displayName} (${cluster.settingId})`} </MenuItem>)}
+                                        <MenuItem key={cluster.settingResourceId}
+                                                  value={cluster.settingResourceId}> {`${cluster.displayName} (${cluster.settingResourceId})`} </MenuItem>)}
                                 </TextField>}
                             />
                             <TextField
@@ -547,8 +538,8 @@ function EditApplication() {
                                     helperText={errors.buildToolSettingId?.message}
                                 >
                                     {buildTools.map(buildTool =>
-                                        <MenuItem key={buildTool.settingId}
-                                                  value={buildTool.settingId}> {`${buildTool.displayName} (${buildTool.settingId})`} </MenuItem>)}
+                                        <MenuItem key={buildTool.settingResourceId}
+                                                  value={buildTool.settingResourceId}> {`${buildTool.displayName} (${buildTool.settingResourceId})`} </MenuItem>)}
                                 </TextField>}
                             />
                             <TextField

@@ -56,7 +56,7 @@ function ManageApplicationHistory() {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/releases?deploymentId=${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -68,22 +68,22 @@ function ManageApplicationHistory() {
 
     function deployApplication() {
         setLoading(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Deployment started successfully!', {variant: 'success'});
+                enqueueSnackbar('Application deployment started successfully!', {variant: 'success'});
                 history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.releaseResourceId}`);
             })
             .catch((error) => {
                 setLoading(false);
-                enqueueSnackbar('Deployment failed!', {variant: 'error'});
+                enqueueSnackbar('Application deployment failed!', {variant: 'error'});
             });
     }
 
-    function refreshReleaseStatus(releaseResourceId) {
+    function refreshRevisionStatus(revisionResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/refresh?releaseResourceId=${releaseResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
             .then((response) => {
                 setLoading(false);
                 reloadTabularData();
@@ -93,9 +93,9 @@ function ManageApplicationHistory() {
             });
     }
 
-    function rollbackRelease(releaseResourceId) {
+    function rollbackRevision(revisionResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/rollback?releaseResourceId=${releaseResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions/${revisionResourceId}/rollback`)
             .then((response) => {
                 setLoading(false);
                 enqueueSnackbar('Rollback successful!', {variant: 'success'});
@@ -116,7 +116,7 @@ function ManageApplicationHistory() {
                     <Typography style={{ fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography> &nbsp;
                     <Tooltip title="Refresh Status">
                         <RefreshIcon
-                            onClick={() => refreshReleaseStatus(rowData.id.releaseResourceId)}
+                            onClick={() => refreshRevisionStatus(rowData.id.revisionResourceId)}
                             color="action"
                             fontSize="inherit"/>
                     </Tooltip>
@@ -139,7 +139,7 @@ function ManageApplicationHistory() {
                     isLoading={loading}
                     components={{Container: props => props.children}}
                     columns={[
-                        {title: 'ID', field: 'id.releaseResourceId', width: 280},
+                        {title: 'ID', field: 'id.revisionResourceId', width: 280},
                         {title: 'Version', field: 'version', width: 50},
                         {title: 'Commit', field: 'commitId', width: 320},
                         {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
@@ -149,7 +149,7 @@ function ManageApplicationHistory() {
                             render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
                         },
                         {
-                            title: 'Actions', width: 100, render: (rowData) => <ActionMenu rowData={rowData} refreshReleaseStatus={refreshReleaseStatus} rollbackRelease={rollbackRelease} />
+                            title: 'Actions', width: 100, render: (rowData) => <ActionMenu rowData={rowData} refreshRevisionStatus={refreshRevisionStatus} rollbackRevision={rollbackRevision} />
                         },
                     ]}
                     data={dataSource}
@@ -197,6 +197,7 @@ function ManageApplicationHistory() {
 const ITEM_HEIGHT = 30;
 
 function ActionMenu(props) {
+    console.log(props);
     let history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -247,7 +248,7 @@ function ActionMenu(props) {
                     key="pipeline"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.projectResourceId}/application/${props.rowData.deploymentResourceId}/release/${props.rowData.id.releaseResourceId}`);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/release/${props.rowData.id.revisionResourceId}`);
                     }}>
                     View Pipeline
                 </MenuItem>
@@ -256,7 +257,7 @@ function ActionMenu(props) {
                     key="rollback"
                     onClick={() => {
                         setAnchorEl(null);
-                        props.rollbackRelease(props.rowData.id.releaseResourceId);
+                        props.rollbackRevision(props.rowData.id.revisionResourceId);
                     }}>
                     Rollback
                 </MenuItem>
@@ -266,7 +267,7 @@ function ActionMenu(props) {
                         key="refresh-status"
                         onClick={() => {
                             setAnchorEl(null);
-                            props.refreshReleaseStatus(props.rowData.id.releaseResourceId);
+                            props.refreshRevisionStatus(props.rowData.id.revisionResourceId);
                         }}>
                         Refresh Status
                     </MenuItem>}

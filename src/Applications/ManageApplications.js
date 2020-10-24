@@ -36,7 +36,7 @@ function ManageApplications() {
     let history = useHistory();
     let {projectResourceId} = useParams();
 
-    const [iconLoading, setIconLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
@@ -45,33 +45,15 @@ function ManageApplications() {
         loadAll();
     }, [projectResourceId]);
 
-    function reloadTabularData() {
-        loadAll();
-    }
-
     function loadAll() {
-        setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments`)
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`)
             .then((response) => {
-                setIconLoading(false);
+                setLoading(false);
                 setDataSource(response.data);
             })
             .catch(() => {
-                setIconLoading(false);
-            });
-    }
-
-    function deleteItem(selectedRecord) {
-        setIconLoading(true);
-        let userName = selectedRecord.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/user/${userName}`)
-            .then((response) => {
-                setIconLoading(false);
-                reloadTabularData();
-                // message.success('User deleted successfully.');
-            })
-            .catch((error) => {
-                setIconLoading(false);
+                setLoading(false);
             });
     }
 
@@ -81,11 +63,11 @@ function ManageApplications() {
                 <MaterialTable
                     title="Applications"
                     icons={tableIcons}
-                    isLoading={iconLoading}
+                    isLoading={loading}
                     components={{Container: props => props.children}}
                     columns={[
                         {title: 'Name', field: 'displayName'},
-                        {title: 'ID', field: 'id.deploymentResourceId', width: 280},
+                        {title: 'ID', field: 'id.applicationResourceId', width: 280},
                         {title: 'Type', field: 'type'},
                         {
                             title: 'Updated On',

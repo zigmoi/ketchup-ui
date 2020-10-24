@@ -62,19 +62,17 @@ function ViewApplication() {
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
     const [activeReleaseResponse, setActiveReleaseResponse] = useState({});
-    const [instances, setInstances] = useState([]);
     const [deploying, setDeploying] = useState(false);
 
     useEffect(() => {
         loadDetails();
-        getInstances();
         getActiveRelease();
     }, [projectResourceId, deploymentResourceId]);
 
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setResponse(response.data);
@@ -90,7 +88,7 @@ function ViewApplication() {
 
     function getActiveRelease() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release/active?deploymentResourceId=${deploymentResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/active-revision`)
             .then((response) => {
                 setLoading(false);
                 setActiveReleaseResponse(response.data);
@@ -100,36 +98,24 @@ function ViewApplication() {
             });
     }
 
-    function getInstances() {
-        setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}/instances`)
-            .then((response) => {
-                setLoading(false);
-                setInstances(response.data);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    }
-
     function deployApplication() {
         setDeploying(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/release?deploymentId=${deploymentResourceId}`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}/revisions`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setDeploying(false);
-                enqueueSnackbar('Deployment started successfully!', {variant: 'success'});
-                history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.releaseResourceId}`);
+                enqueueSnackbar('Application deployment started successfully!', {variant: 'success'});
+                history.push(`/app/project/${projectResourceId}/application/${deploymentResourceId}/release/${response.data.revisionResourceId}`);
             })
             .catch((error) => {
                 setDeploying(false);
-                enqueueSnackbar('Deployment failed!', {variant: 'error'});
+                enqueueSnackbar('Application deployment failed!', {variant: 'error'});
             });
     }
 
     function deleteApplication() {
         setLoading(true);
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/project/${projectResourceId}/deployments/${deploymentResourceId}`)
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${deploymentResourceId}`)
             .then((response) => {
                 setLoading(false);
                 enqueueSnackbar('Deployment deleted successfully!', {variant: 'success'});
@@ -231,7 +217,7 @@ function ViewApplication() {
                                     <Typography variant="subtitle2">
                                         Release ID: &nbsp;
                                         <Typography variant="caption">
-                                            {activeReleaseResponse?.id?.releaseResourceId}
+                                            {activeReleaseResponse?.id?.revisionResourceId}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
