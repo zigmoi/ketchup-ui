@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Title from "./Title";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import RecentReleases from "./Applications/RecentReleases";
+import RecentPipelines from "./Applications/RecentPipelines";
 import {Box, Button} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 
@@ -116,8 +116,8 @@ export default function Dashboard(props) {
 
                         <Grid item xs={12}>
                             <Paper className={classes.paper}>
-                                <Title>Recent Releases</Title>
-                                <RecentReleases projectId={projectId}/>
+                                <Title>Recent Revisions</Title>
+                                <RecentPipelines projectResourceId={projectId}/>
                             </Paper>
                         </Grid>
                     </Grid>
