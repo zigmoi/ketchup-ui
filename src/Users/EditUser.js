@@ -126,6 +126,19 @@ function EditUser() {
             });
     }
 
+    function deleteUser() {
+        setLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
+            .then((response) => {
+                setLoading(false);
+                enqueueSnackbar('user deleted successfully!', {variant: 'success'});
+                history.push(`/app/manage-users`);
+            })
+            .catch((error) => {
+                setLoading(false);
+            });
+    }
+
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
@@ -136,6 +149,14 @@ function EditUser() {
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    <div style={{flexGrow: 1}}/>
+                    <Button
+                        className={classes.button}
+                        size="small"
+                        variant="text"
+                        color="secondary"
+                        onClick={() => deleteUser()}
+                    >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>

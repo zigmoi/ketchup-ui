@@ -95,6 +95,19 @@ function EditBuildTool() {
             });
     }
 
+    function deleteSetting() {
+        setLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                enqueueSnackbar('Setting deleted successfully!', {variant: 'success'});
+                history.push(`/app/project/${projectResourceId}/build-tools`);
+            })
+            .catch((error) => {
+                setLoading(false);
+            });
+    }
+
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
@@ -105,6 +118,14 @@ function EditBuildTool() {
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    <div style={{flexGrow: 1}}/>
+                    <Button
+                        className={classes.button}
+                        size="small"
+                        variant="text"
+                        color="secondary"
+                        onClick={() => deleteSetting()}
+                    >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>

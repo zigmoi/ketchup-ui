@@ -211,17 +211,37 @@ function EditApplication() {
             });
     }
 
+    function deleteApplication() {
+        setLoading(true);
+        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                enqueueSnackbar('Application deleted successfully!', {variant: 'success'});
+                history.push(`/app/project/${projectResourceId}/applications`);
+            })
+            .catch((error) => {
+                setLoading(false);
+            });
+    }
+
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
-                    <Typography variant="h6" color="inherit">
-                        Edit Application
+                    <Typography variant="h6" color="inherit">Application Details
                         <Typography variant="caption">
                             &nbsp; {applicationResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
+                    <div style={{flexGrow: 1}}/>
+                    <Button
+                        className={classes.button}
+                        size="small"
+                        variant="text"
+                        color="secondary"
+                        onClick={() => deleteApplication()}
+                    >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>

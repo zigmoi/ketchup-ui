@@ -48,6 +48,7 @@ import BugReportIcon from '@material-ui/icons/BugReport';
 import LineWeightIcon from '@material-ui/icons/LineWeight';
 import MemoryIcon from '@material-ui/icons/Memory';
 import LoopIcon from '@material-ui/icons/Loop';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import CreateUser from './Users/CreateUser';
 import EditUser from './Users/EditUser';
@@ -76,6 +77,7 @@ import ManageApplications from './Applications/ManageApplications';
 import ManageApplicationHistory from './Applications/ManageApplicationHistory';
 
 import CreateProject from './Projects/CreateProject';
+import EditProject from "./Projects/EditProject";
 import LoadProject from './Projects/LoadProject';
 import ManageProjectPermissions from "./Users/ManageProjectPermissions";
 
@@ -282,7 +284,7 @@ function Home() {
                         className={classes.button}
                         onClick={handleClickOpen}
                     >
-                        <Typography variant="subtitle1" noWrap>{projectId ? projectId: "Select Project"}</Typography>
+                        <Typography variant="subtitle1" noWrap>{projectId ? projectId : "Select Project"}</Typography>
                     </Button>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
@@ -317,7 +319,7 @@ function Home() {
                             aria-label="account of current user"
                             color="inherit"
                             onClick={() => {
-                               // projectContext.clearCurrentProject();
+                                // projectContext.clearCurrentProject();
                                 userContext.clearCurrentUser();
                                 history.push(`/login`);
                                 //not passing location because if user logouts he should go to default route.
@@ -349,52 +351,54 @@ function Home() {
                     {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']) === false ? null :
                         <React.Fragment>
                             {projectId ?
-                             <React.Fragment>
-                            <ListItem button component={Link} to={`/app/project/${projectId}/applications`}>
-                                <ListItemIcon>
-                                    <AppsIcon className={classes.drawerMenuIcon}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Applications"/>
-                            </ListItem>
-                            <ListItem button component={Link} to={`/app/project/${projectId}/pipelines`}>
-                                <ListItemIcon>
-                                    <LoopIcon className={classes.drawerMenuIcon}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Pipeline Runs"/>
-                            </ListItem>
-                            <ListItem button component={Link} to={`/app/project/${projectId}/application/logs`}>
-                                <ListItemIcon>
-                                    <BugReportIcon className={classes.drawerMenuIcon}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Logs"/>
-                            </ListItem>
-                            <ListItem button component={Link} to={`/app/project/${projectId}/kubernetes-clusters`}>
-                                <ListItemIcon>
-                                    <CloudIcon className={classes.drawerMenuIcon}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Kubernetes Clusters"/>
-                            </ListItem>
-                            <ListItem button component={Link} to={`/app/project/${projectId}/container-registries`}>
-                                <ListItemIcon>
-                                    <LineWeightIcon className={classes.drawerMenuIcon}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Container Registries"/>
-                            </ListItem>
-                            <ListItem button component={Link} to={`/app/project/${projectId}/build-tools`}>
-                                <ListItemIcon>
-                                    <MemoryIcon className={classes.drawerMenuIcon}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Build Tools"/>
-                            </ListItem>
-                            <ListItem button component={Link} to={`/app/project/${projectId}/permissions/`}>
-                                <ListItemIcon>
-                                    <VpnKeyIcon className={classes.drawerMenuIcon}/>
-                                </ListItemIcon>
-                                <ListItemText primary="Permissions"/>
-                            </ListItem>
-                        </React.Fragment> : null}
+                                <React.Fragment>
+                                    <ListItem button component={Link} to={`/app/project/${projectId}/applications`}>
+                                        <ListItemIcon>
+                                            <AppsIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Applications"/>
+                                    </ListItem>
+                                    <ListItem button component={Link} to={`/app/project/${projectId}/pipelines`}>
+                                        <ListItemIcon>
+                                            <LoopIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Pipeline Runs"/>
+                                    </ListItem>
+                                    <ListItem button component={Link} to={`/app/project/${projectId}/application/logs`}>
+                                        <ListItemIcon>
+                                            <BugReportIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Logs"/>
+                                    </ListItem>
+                                    <ListItem button component={Link}
+                                              to={`/app/project/${projectId}/kubernetes-clusters`}>
+                                        <ListItemIcon>
+                                            <CloudIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Kubernetes Clusters"/>
+                                    </ListItem>
+                                    <ListItem button component={Link}
+                                              to={`/app/project/${projectId}/container-registries`}>
+                                        <ListItemIcon>
+                                            <LineWeightIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Container Registries"/>
+                                    </ListItem>
+                                    <ListItem button component={Link} to={`/app/project/${projectId}/build-tools`}>
+                                        <ListItemIcon>
+                                            <MemoryIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Build Tools"/>
+                                    </ListItem>
+                                    <ListItem button component={Link} to={`/app/project/${projectId}/permissions/`}>
+                                        <ListItemIcon>
+                                            <VpnKeyIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Permissions"/>
+                                    </ListItem>
+                                </React.Fragment> : null}
                         </React.Fragment>
-                        }
+                    }
                     {useValidateUserHasAllRoles(['ROLE_SUPER_ADMIN']) === false ? null :
                         <ListItem button component={Link} to="/app/manage-tenants">
                             <ListItemIcon>
@@ -409,6 +413,16 @@ function Home() {
                             </ListItemIcon>
                             <ListItemText primary="Users"/>
                         </ListItem>}
+                    {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']) === false ? null :
+                        <React.Fragment>
+                            {projectId ?
+                                <ListItem button component={Link} to={`/app/project/${projectId}/settings/`}>
+                                    <ListItemIcon>
+                                        <SettingsIcon className={classes.drawerMenuIcon}/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Settings"/>
+                                </ListItem> : null}
+                        </React.Fragment>}
                     {/* <ListItem button>
             <ListItemIcon>
               <PortraitIcon className={classes.drawerMenuIcon}  />
@@ -461,6 +475,9 @@ function Home() {
                                                                               roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']}/>}/>
                 <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject}
                                                                                 roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
+                <Route path="/app/project/:projectResourceId/settings"
+                       render={() => <ProtectedRoute component={EditProject}
+                                                     roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/permissions/:userId?"
                        render={() => <ProtectedRoute component={ManageProjectPermissions}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
@@ -518,7 +535,8 @@ function Home() {
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route render={() => <ProtectedRoute component={Nomatch}/>}/>
             </Switch>
-            {openProjectLoader? <LoadProject activeProjectId={projectId} open={openProjectLoader} onClose={handleClose}/> : null}
+            {openProjectLoader ?
+                <LoadProject activeProjectId={projectId} open={openProjectLoader} onClose={handleClose}/> : null}
         </div>
     );
 }
