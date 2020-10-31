@@ -20,6 +20,12 @@ import {useSnackbar} from 'notistack';
 import React, {useState, useEffect} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
 import {useForm, Controller} from "react-hook-form";
+import DeleteDialog from "../Applications/DeleteDialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +69,7 @@ function EditK8sCluster() {
 
     const [loading, setLoading] = useState(false);
     const [testConnectionLoading, setTestConnectionLoading] = useState(false);
+    const [open, setOpen] = useState(false);
     let history = useHistory();
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
@@ -135,16 +142,23 @@ function EditK8sCluster() {
     }
 
     function deleteSetting() {
-        setLoading(true);
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
             .then((response) => {
-                setLoading(false);
+                closeDeleteDialog();
                 enqueueSnackbar('Setting deleted successfully!', {variant: 'success'});
                 history.push(`/app/project/${projectResourceId}/kubernetes-clusters`);
             })
             .catch((error) => {
-                setLoading(false);
+                closeDeleteDialog();
             });
+    }
+
+    function openDeleteDialog() {
+        setOpen(true);
+    }
+
+    function closeDeleteDialog() {
+        setOpen(false);
     }
 
 
@@ -164,13 +178,19 @@ function EditK8sCluster() {
                         size="small"
                         variant="text"
                         color="secondary"
-                        onClick={() => deleteSetting()}
+                        onClick={openDeleteDialog}
                     >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
+                        <DeleteDialog
+                            isOpen={open}
+                            title={"Confirm Delete"}
+                            description={`Do you want to delete this setting (${settingResourceId}) ?`}
+                            onDelete={deleteSetting}
+                            onClose={closeDeleteDialog}/>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"

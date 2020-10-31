@@ -16,6 +16,7 @@ import {useSnackbar} from 'notistack';
 import React, {useState, useEffect} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
 import {useForm, Controller} from "react-hook-form";
+import DeleteDialog from "./DeleteDialog";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,6 +66,7 @@ function EditApplication() {
     const [containerRegistries, setContainerRegistries] = useState([]);
     const [buildTools, setBuildTools] = useState([]);
     const [testConnectionLoading, setTestConnectionLoading] = useState(false);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         loadDetails();
@@ -212,16 +214,23 @@ function EditApplication() {
     }
 
     function deleteApplication() {
-        setLoading(true);
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
-                setLoading(false);
+                closeDeleteDialog();
                 enqueueSnackbar('Application deleted successfully!', {variant: 'success'});
                 history.push(`/app/project/${projectResourceId}/applications`);
             })
             .catch((error) => {
-                setLoading(false);
+                closeDeleteDialog();
             });
+    }
+
+    function openDeleteDialog() {
+        setOpen(true);
+    }
+
+    function closeDeleteDialog() {
+        setOpen(false);
     }
 
     return (
@@ -240,13 +249,19 @@ function EditApplication() {
                         size="small"
                         variant="text"
                         color="secondary"
-                        onClick={() => deleteApplication()}
+                        onClick={openDeleteDialog}
                     >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
+                        <DeleteDialog
+                            isOpen={open}
+                            title={"Confirm Delete"}
+                            description={`Do you want to delete this application (${applicationResourceId}) ?`}
+                            onDelete={deleteApplication}
+                            onClose={closeDeleteDialog}/>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"

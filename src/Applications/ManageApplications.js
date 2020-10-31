@@ -10,6 +10,7 @@ import {useHistory, useParams} from 'react-router-dom';
 import {format} from "date-fns";
 import ApplicationsActionMenu from "./ApplicationsActionMenu";
 import {Grid} from "@material-ui/core";
+import {useSnackbar} from "notistack";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function ManageApplications() {
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const classes = useStyles();
     let history = useHistory();
     let {projectResourceId} = useParams();
@@ -75,7 +77,7 @@ function ManageApplications() {
                             render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
                         },
                         {
-                            title: 'Actions', width: 100, render: (rowData) => <ApplicationsActionMenu rowData={rowData}/>
+                            title: 'Actions', width: 120, render: (rowData) => <ApplicationsActionMenu rowData={rowData}/>
                         },
                     ]}
                     data={dataSource}

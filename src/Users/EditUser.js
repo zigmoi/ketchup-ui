@@ -8,6 +8,7 @@ import { useForm, Controller } from "react-hook-form";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import DeleteDialog from "../Applications/DeleteDialog";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -54,6 +55,7 @@ function EditUser() {
     let { userName } = useParams();
 
     const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const roleOptions = [
         { 'value': 'ROLE_USER', 'label': 'USER' },
@@ -127,16 +129,23 @@ function EditUser() {
     }
 
     function deleteUser() {
-        setLoading(true);
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
             .then((response) => {
-                setLoading(false);
-                enqueueSnackbar('user deleted successfully!', {variant: 'success'});
+                closeDeleteDialog();
+                enqueueSnackbar('User deleted successfully!', {variant: 'success'});
                 history.push(`/app/manage-users`);
             })
             .catch((error) => {
-                setLoading(false);
+                closeDeleteDialog();
             });
+    }
+
+    function openDeleteDialog() {
+        setOpen(true);
+    }
+
+    function closeDeleteDialog() {
+        setOpen(false);
     }
 
     return (
@@ -155,13 +164,19 @@ function EditUser() {
                         size="small"
                         variant="text"
                         color="secondary"
-                        onClick={() => deleteUser()}
+                        onClick={openDeleteDialog}
                     >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
+                        <DeleteDialog
+                            isOpen={open}
+                            title={"Confirm Delete"}
+                            description={`Do you want to delete this user (${userName}) ?`}
+                            onDelete={deleteUser}
+                            onClose={closeDeleteDialog}/>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"

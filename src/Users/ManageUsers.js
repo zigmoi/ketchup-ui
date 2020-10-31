@@ -14,6 +14,7 @@ import VpnKey from "@material-ui/icons/VpnKey";
 import useCurrentProject from "../useCurrentProject";
 import {format} from "date-fns";
 import {useSnackbar} from "notistack";
+import DeleteDialog from "../Applications/DeleteDialog";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -36,13 +37,15 @@ const useStyles = makeStyles((theme) => ({
 
 
 function ManageUsers() {
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     let history = useHistory();
 
     const currentProject = useCurrentProject();
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [open, setOpen] = useState(false);
+    const [selectedRow, setSelectedRow] = useState({});
 
     useEffect(() => {
         console.log("in effect Users");
@@ -66,26 +69,36 @@ function ManageUsers() {
             });
     }
 
-    function deleteUser(userName) {
-        setLoading(true);
+    function deleteUser() {
+        const userName = selectedRow.userName;
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
             .then((response) => {
-                setLoading(false);
+                closeDeleteDialog();
                 reloadTabularData();
                 enqueueSnackbar('User deleted successfully.', { variant: 'success' });
             })
             .catch((error) => {
-                setLoading(false);
+                closeDeleteDialog();
             });
     }
 
+    function openDeleteDialog() {
+        setOpen(true);
+    }
 
-
-
+    function closeDeleteDialog() {
+        setOpen(false);
+    }
 
     return (
             <Container maxWidth="xl" className={classes.container}>
                     <Grid>
+                        <DeleteDialog
+                            isOpen={open}
+                            title={"Confirm Delete"}
+                            description={`Do you want to delete this user (${selectedRow.userName}) ?`}
+                            onDelete={deleteUser}
+                            onClose={closeDeleteDialog}/>
                         <MaterialTable
                             title="Users"
                             icons={tableIcons}
@@ -117,7 +130,7 @@ function ManageUsers() {
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,
                                     tooltip: 'Delete User',
-                                    onClick: (event, rowData) => deleteUser(rowData.userName)
+                                    onClick: (event, rowData) => {setSelectedRow(rowData);openDeleteDialog()}
                                 },
                                 {
                                     icon: () => <AddIcon color="action" fontSize="small" />,

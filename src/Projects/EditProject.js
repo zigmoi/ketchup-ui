@@ -7,6 +7,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useForm, Controller } from "react-hook-form";
 import ProjectContext from "../ProjectContext";
 import useCurrentUser from "../useCurrentUser";
+import DeleteDialog from "../Applications/DeleteDialog";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -49,6 +50,7 @@ function EditProject() {
     let { projectResourceId } = useParams();
 
     const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
     let history = useHistory();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const projectContext = useContext(ProjectContext);
@@ -91,17 +93,24 @@ function EditProject() {
     }
 
     function deleteProject() {
-        setLoading(true);
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}`)
             .then((response) => {
-                setLoading(false);
+                closeDeleteDialog();
                 enqueueSnackbar('Project deleted successfully!', {variant: 'success'});
                 projectContext.setCurrentProject(currentUser?.id, null);
                 history.push(`/app/dashboard`);
             })
             .catch((error) => {
-                setLoading(false);
+                closeDeleteDialog();
             });
+    }
+
+    function openDeleteDialog() {
+        setOpen(true);
+    }
+
+    function closeDeleteDialog() {
+        setOpen(false);
     }
 
     return (
@@ -120,13 +129,19 @@ function EditProject() {
                         size="small"
                         variant="text"
                         color="secondary"
-                        onClick={() => deleteProject()}
+                        onClick={openDeleteDialog}
                     >Delete</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
+                        <DeleteDialog
+                            isOpen={open}
+                            title={"Confirm Delete"}
+                            description={`Do you want to delete this project (${projectResourceId}) and all its content (applications, settings etc)?`}
+                            onDelete={deleteProject}
+                            onClose={closeDeleteDialog}/>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"

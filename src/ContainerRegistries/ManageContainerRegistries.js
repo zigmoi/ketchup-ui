@@ -12,6 +12,7 @@ import tableIcons from '../tableIcons';
 import { useHistory, useParams } from 'react-router-dom';
 import {format} from "date-fns";
 import {useSnackbar} from "notistack";
+import DeleteDialog from "../Applications/DeleteDialog";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -34,13 +35,15 @@ const useStyles = makeStyles((theme) => ({
 
 
 function ManageContainerRegistries() {
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const classes = useStyles();
     let history = useHistory();
     let { projectResourceId } = useParams();
-    
+
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [open, setOpen] = useState(false);
+    const [selectedRow, setSelectedRow] = useState({});
 
     useEffect(() => {
         console.log("in effect Manage Container Registries");
@@ -64,23 +67,37 @@ function ManageContainerRegistries() {
             });
     }
 
-    function deleteSetting(settingResourceId) {
-        setLoading(true);
+    function deleteSetting() {
+        const settingResourceId = selectedRow.settingResourceId;
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`)
             .then((response) => {
-                setLoading(false);
+                closeDeleteDialog()
                 enqueueSnackbar('Setting deleted successfully.', { variant: 'success' });
                 reloadTabularData();
             })
             .catch((error) => {
-                setLoading(false);
+                closeDeleteDialog()
             });
+    }
+
+    function openDeleteDialog() {
+        setOpen(true);
+    }
+
+    function closeDeleteDialog() {
+        setOpen(false);
     }
 
 
     return (
             <Container maxWidth="xl" className={classes.container}>
                     <Grid>
+                        <DeleteDialog
+                            isOpen={open}
+                            title={"Confirm Delete"}
+                            description={`Do you want to delete this setting (${selectedRow.settingResourceId}) ?`}
+                            onDelete={deleteSetting}
+                            onClose={closeDeleteDialog}/>
                         <MaterialTable
                             title="Container Registries"
                             icons={tableIcons}
@@ -103,7 +120,10 @@ function ManageContainerRegistries() {
                                 {
                                     icon: () => <DeleteIcon color="action" fontSize="small" />,
                                     tooltip: 'Delete Registry',
-                                    onClick: (event, rowData) => deleteSetting(rowData.settingResourceId)
+                                    onClick: (event, rowData) => {
+                                        setSelectedRow(rowData);
+                                        openDeleteDialog()
+                                    }
                                 },
                                 {
                                     icon: () => <AddIcon color="action" fontSize="small" />,
