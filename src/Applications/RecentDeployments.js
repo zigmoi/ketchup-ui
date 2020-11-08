@@ -7,14 +7,14 @@ import tableIcons from '../tableIcons';
 import {format} from 'date-fns';
 import {useHistory} from "react-router-dom";
 
-function RecentPipelines(props) {
+function RecentDeployments(props) {
     let history = useHistory();
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
     const {projectResourceId} = props;
 
     useEffect(() => {
-        console.log("in effect Recent Revisions");
+        console.log("in effect Recent Deployments");
         loadAll();
     }, [projectResourceId]);
 
@@ -86,4 +86,4 @@ function RecentPipelines(props) {
     );
 }
 
-export default RecentPipelines;
+export default RecentDeployments;

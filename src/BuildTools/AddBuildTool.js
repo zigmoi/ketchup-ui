@@ -97,7 +97,7 @@ function AddBuildTool() {
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: { value: 50, message: "Maximum 50 characters are allowed." }
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
@@ -138,7 +138,7 @@ function AddBuildTool() {
                                 rows={20}
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 65536, message: "Maximum 65536 characters are allowed." }
+                                    maxLength: { value: 65535, message: "Maximum 65535 characters are allowed." }
                                 })}
                                 error={errors.buildconfig ? true : false}
                                 helperText={errors.buildconfig?.message}

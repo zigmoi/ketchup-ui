@@ -115,6 +115,7 @@ export function UserProvider(props) {
                                         return <li key={index}>{value.field} : {value.message}</li>
                                     })}
                                 </ul>);
+                            enqueueSnackbar(errorView, {variant: 'error'});
                             // Modal.error({
                             //     width: 850,
                             //     title: 'Validation Errors:',

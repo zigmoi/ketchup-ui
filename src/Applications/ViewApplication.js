@@ -180,8 +180,8 @@ function ViewApplication() {
                         size="small"
                         variant="text"
                         color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/history`)}
-                    >History</Button>
+                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revisions`)}
+                    >Revisions</Button>
                     <Button
                         className={classes.button}
                         size="small"

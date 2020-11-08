@@ -106,7 +106,7 @@ function CreateProject() {
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
+                                    maxLength: {value: 20, message: "Maximum 20 characters are allowed."}
                                 })}
                                 error={errors.projectName ? true : false}
                                 helperText={errors.projectName?.message}

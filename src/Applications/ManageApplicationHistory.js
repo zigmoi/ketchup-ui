@@ -130,7 +130,7 @@ function ManageApplicationHistory() {
                 <MaterialTable
                     title={
                         <Typography variant="h6">
-                            Application History
+                            Application Revisions
                             <Typography variant="caption">
                                 &nbsp; {applicationResourceId}
                             </Typography>

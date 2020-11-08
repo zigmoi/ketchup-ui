@@ -130,12 +130,12 @@ export default function ApplicationsActionMenu(props) {
                 </MenuItem>
                 <MenuItem
                     style={{fontSize: 12}}
-                    key="history"
+                    key="revisions"
                     onClick={() => {
                         setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/history`);
+                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revisions`);
                     }}>
-                    History
+                    Revisions
                 </MenuItem>
                 <MenuItem
                     style={{fontSize: 12}}

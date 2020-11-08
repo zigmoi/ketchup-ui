@@ -125,7 +125,7 @@ function CreateApplication() {
             "gitRepoPassword": formValues.gitRepoPassword,
             "gitRepoBranchName": formValues.gitRepoBranchName,
             "continuousDeployment": false,
-            "gitRepoPollingInterval": 0,
+            "gitRepoPollingInterval": 1,
             "platform": formValues.platform,
             "containerRegistrySettingId": formValues.containerRegistrySettingId,
             "containerRegistryPath": formValues.containerRegistryPath,
@@ -200,7 +200,7 @@ function CreateApplication() {
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
+                                    maxLength: {value: 50, message: "Maximum 50 characters are allowed."}
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
@@ -473,7 +473,7 @@ function CreateApplication() {
                                 defaultValue="/"
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: {value: 200, message: "Maximum 200 characters are allowed."}
+                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
                                 })}
                                 error={errors.baseBuildPath ? true : false}
                                 helperText={errors.baseBuildPath?.message}
@@ -535,7 +535,7 @@ function CreateApplication() {
                                 inputRef={register({
                                     required: "Required.",
                                     min: {value: 1, message: "Minimum value allowed is 1."},
-                                    max: {value: 100, message: "Maximum value allowed is 100."}
+                                    max: {value: 99, message: "Maximum value allowed is 99."}
                                 })}
                                 error={errors.replicas ? true : false}
                                 helperText={errors.replicas?.message}

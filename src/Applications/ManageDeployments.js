@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function ManagePipelineRuns() {
+function ManageDeployments() {
     const classes = useStyles();
     let history = useHistory();
     let {projectResourceId} = useParams();
@@ -43,8 +43,8 @@ function ManagePipelineRuns() {
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
-        console.log("in effect Manage Pipeline Runs");
-        document.title = "Pipeline Runs";
+        console.log("in effect Manage Deployments");
+        document.title = "Deployments";
         loadAll();
     }, [projectResourceId]);
 
@@ -68,7 +68,7 @@ function ManagePipelineRuns() {
         <Container maxWidth="xl" className={classes.container}>
             <Grid>
                 <MaterialTable
-                    title="Pipeline Runs"
+                    title="Deployments"
                     icons={tableIcons}
                     isLoading={iconLoading}
                     components={{Container: props => props.children}}
@@ -90,7 +90,7 @@ function ManagePipelineRuns() {
                     actions={[
                         {
                             icon: () => <LaunchIcon color="action" fontSize="small"/>,
-                            tooltip: 'View Pipeline',
+                            tooltip: 'View Deployment',
                             onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.applicationResourceId}/revision/${rowData.id.revisionResourceId}`)
                         },
                         {
@@ -121,4 +121,4 @@ function ManagePipelineRuns() {
     );
 }
 
-export default ManagePipelineRuns;
+export default ManageDeployments;

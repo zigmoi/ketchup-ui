@@ -110,7 +110,7 @@ function CreateTenant() {
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: { value: 50, message: "Maximum 50 characters are allowed." }
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}

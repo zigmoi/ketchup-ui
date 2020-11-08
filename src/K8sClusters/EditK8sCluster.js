@@ -84,7 +84,7 @@ function EditK8sCluster() {
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
-                setValue("kubeconfig", atob(response.data.fileData));
+                setValue("kubeconfig", atob(response.data.kubeconfig));
                 // setLastUpdatedBy(response.data.lastUpdatedBy);
                 // setLastUpdatedOn(response.data.lastUpdatedOn);
             })
@@ -101,7 +101,7 @@ function EditK8sCluster() {
         let data = {
             'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
-            'fileData': btoa(formValues.kubeconfig),
+            'kubeconfig': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
         axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`, data)
@@ -123,10 +123,10 @@ function EditK8sCluster() {
         let data = {
             'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
-            'fileData': btoa(formValues.kubeconfig),
+            'kubeconfig': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`, data)
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/test-connection`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
@@ -203,7 +203,7 @@ function EditK8sCluster() {
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
+                                    maxLength: {value: 50, message: "Maximum 50 characters are allowed."}
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
@@ -221,7 +221,7 @@ function EditK8sCluster() {
                                 rows={20}
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: {value: 65536, message: "Maximum 65536 characters are allowed."}
+                                    maxLength: {value: 65535, message: "Maximum 65535 characters are allowed."}
                                 })}
                                 error={errors.kubeconfig ? true : false}
                                 helperText={errors.kubeconfig?.message}

@@ -82,7 +82,7 @@ import LoadProject from './Projects/LoadProject';
 import ManageProjectPermissions from "./Users/ManageProjectPermissions";
 
 import ViewRevisionPipeline from './Applications/ViewRevisionPipeline';
-import ManagePipelineRuns from "./Applications/ManagePipelineRuns";
+import ManageDeployments from "./Applications/ManageDeployments";
 import {validateHasAllRoles} from './Util';
 
 
@@ -358,11 +358,11 @@ function Home() {
                                         </ListItemIcon>
                                         <ListItemText primary="Applications"/>
                                     </ListItem>
-                                    <ListItem button component={Link} to={`/app/project/${projectId}/pipelines`}>
+                                    <ListItem button component={Link} to={`/app/project/${projectId}/deployments`}>
                                         <ListItemIcon>
                                             <LoopIcon className={classes.drawerMenuIcon}/>
                                         </ListItemIcon>
-                                        <ListItemText primary="Pipeline Runs"/>
+                                        <ListItemText primary="Deployments"/>
                                     </ListItem>
                                     <ListItem button component={Link} to={`/app/project/${projectId}/application/logs`}>
                                         <ListItemIcon>
@@ -511,7 +511,7 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/application/create"
                        render={() => <ProtectedRoute component={CreateApplication}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/application/:applicationResourceId/history"
+                <Route path="/app/project/:projectResourceId/application/:applicationResourceId/revisions"
                        render={() => <ProtectedRoute component={ManageApplicationHistory}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/edit"
@@ -530,8 +530,8 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/applications"
                        render={() => <ProtectedRoute component={ManageApplications}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/project/:projectResourceId/pipelines"
-                       render={() => <ProtectedRoute component={ManagePipelineRuns}
+                <Route path="/app/project/:projectResourceId/deployments"
+                       render={() => <ProtectedRoute component={ManageDeployments}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route render={() => <ProtectedRoute component={Nomatch}/>}/>
             </Switch>
