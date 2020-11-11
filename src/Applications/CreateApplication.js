@@ -200,6 +200,10 @@ function CreateApplication() {
                                 required
                                 inputRef={register({
                                     required: "Required.",
+                                    pattern: {
+                                        value: /^[a-z0-9- ]+$/i,
+                                        message: "Only alphabets, numbers, space and dash (-) are allowed."
+                                    },
                                     maxLength: {value: 50, message: "Maximum 50 characters are allowed."}
                                 })}
                                 error={errors.displayName ? true : false}

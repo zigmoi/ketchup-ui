@@ -1,17 +1,36 @@
-import { AppBar, Box, Button, Checkbox, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, InputAdornment, useScrollTrigger, Chip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+    AppBar,
+    Box,
+    Button,
+    Checkbox,
+    CircularProgress,
+    Container,
+    Grid,
+    TextField,
+    Toolbar,
+    Typography,
+    MenuItem,
+    Select,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    InputAdornment,
+    useScrollTrigger,
+    Chip
+} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
-import React, { useState, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import {useSnackbar} from 'notistack';
+import React, {useState, useEffect, useContext} from 'react';
+import {useHistory} from 'react-router-dom';
+import {useForm, Controller} from "react-hook-form";
 import UserContext from '../UserContext';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
+const icon = <CheckBoxOutlineBlankIcon fontSize="small"/>;
+const checkedIcon = <CheckBoxIcon fontSize="small"/>;
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -48,23 +67,24 @@ const useStyles = makeStyles((theme) => ({
 function CreateUser() {
     document.title = "Create User";
     const classes = useStyles();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const { control, register, handleSubmit, watch, reset, getValues, setValue, errors, trigger } = useForm({ mode: 'onBlur' });
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const {control, register, handleSubmit, watch, reset, getValues, setValue, errors, trigger} = useForm({mode: 'onBlur'});
 
     let history = useHistory();
 
     const [loading, setLoading] = useState(false);
     const userContext = useContext(UserContext);
     const tenantId = "@".concat(userContext.currentUser?.tenantId);
+    const maxUsernameLength = 100 - tenantId.length;
 
     const roleOptions = [
-        { 'value': 'ROLE_USER', 'label': 'USER' },
-        { 'value': 'ROLE_USER_READER', 'label': 'USER READER' },
-        { 'value': 'ROLE_USER_ADMIN', 'label': 'USER ADMIN' },
-        { 'value': 'ROLE_TENANT_ADMIN', 'label': 'TENANT ADMIN' }
+        {'value': 'ROLE_USER', 'label': 'USER'},
+        {'value': 'ROLE_USER_READER', 'label': 'USER READER'},
+        {'value': 'ROLE_USER_ADMIN', 'label': 'USER ADMIN'},
+        {'value': 'ROLE_TENANT_ADMIN', 'label': 'TENANT ADMIN'}
     ];
 
-    const { roles } = watch();
+    const {roles} = watch();
 
     useEffect(() => {
         console.log(roles);
@@ -92,7 +112,7 @@ function CreateUser() {
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('User created successfully.', { variant: 'success' });
+                enqueueSnackbar('User created successfully.', {variant: 'success'});
                 history.push("/app/manage-users");
             })
             .catch(() => {
@@ -105,7 +125,7 @@ function CreateUser() {
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Create User</Typography>
-                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
                 </Toolbar>
             </AppBar>
             <Grid container>
@@ -114,9 +134,9 @@ function CreateUser() {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                     endAdornment: <InputAdornment position="end">{tenantId}</InputAdornment>
                                 }}
                                 name="userName"
@@ -124,7 +144,10 @@ function CreateUser() {
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {
+                                        value: maxUsernameLength,
+                                        message: `Maximum ${maxUsernameLength} characters are allowed.`
+                                    }
                                 })}
                                 error={errors.userName ? true : false}
                                 helperText={errors.userName?.message}
@@ -132,16 +155,20 @@ function CreateUser() {
 
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="displayName"
                                 label="Display Name"
                                 required
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 50, message: "Maximum 50 characters are allowed." }
+                                    pattern: {
+                                        value: /^[a-z0-9- ]+$/i,
+                                        message: "Only alphabets, numbers, space and dash (-) are allowed."
+                                    },
+                                    maxLength: {value: 50, message: "Maximum 50 characters are allowed."}
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
@@ -149,61 +176,64 @@ function CreateUser() {
 
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
-                                InputProps={{ classes: { input: classes.textField } }}
+                                InputLabelProps={{shrink: true,}}
+                                InputProps={{classes: {input: classes.textField}}}
                                 name="password"
                                 label="Password"
                                 required
                                 type="password"
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.password ? true : false}
                                 helperText={errors.password?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="firstName"
                                 label="First Name"
                                 required
                                 inputRef={register({
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.firstName ? true : false}
                                 helperText={errors.firstName?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="lastName"
                                 label="Last Name"
                                 required
                                 inputRef={register({
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.lastName ? true : false}
                                 helperText={errors.lastName?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="email"
                                 label="Email"
                                 required
                                 inputRef={register({
-                                    pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" },
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: "Invalid email address"
+                                    },
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.email ? true : false}
                                 helperText={errors.email?.message}
@@ -215,14 +245,17 @@ function CreateUser() {
                                 rules={{
                                     validate: value => {
                                         console.log("value:", value);
-                                        return value.length > 0 || "Required."},
+                                        return value.length > 0 || "Required."
+                                    },
                                 }}
-                                render={({ onChange, onBlur, name, value }) => {
+                                render={({onChange, onBlur, name, value}) => {
                                     return <Autocomplete
                                         name={name}
-                                        onChange={(event, value) => { onChange(value) }}
-                                        onBlur={()=> onBlur()} 
-                                       // onBlur={() => {trigger('roles')}} 
+                                        onChange={(event, value) => {
+                                            onChange(value)
+                                        }}
+                                        onBlur={() => onBlur()}
+                                        // onBlur={() => {trigger('roles')}}
                                         // onblur doesnt work when value is removed using chip close button, because focus is already lost.
                                         // either use change form validation mode or manaully call trigger to initiate validation on onchange.
                                         //or make chip non deletable.
@@ -232,12 +265,12 @@ function CreateUser() {
                                         options={roleOptions}
                                         getOptionLabel={(option) => option.label}
                                         getOptionSelected={(option, value) => option.value === value.value}
-                                        renderOption={(option, { selected }) => (
+                                        renderOption={(option, {selected}) => (
                                             <React.Fragment>
                                                 <Checkbox
                                                     icon={icon}
                                                     checkedIcon={checkedIcon}
-                                                    style={{ marginRight: 8 }}
+                                                    style={{marginRight: 8}}
                                                     checked={selected}
                                                 />
                                                 {option.label}
@@ -245,15 +278,15 @@ function CreateUser() {
                                         )}
                                         renderTags={(value, getTagProps) =>
                                             value.map((option, index) => (
-                                              <Chip size="small" label={option.label} />
+                                                <Chip size="small" label={option.label}/>
                                             ))
-                                          }
+                                        }
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
                                                 variant="outlined"
                                                 margin="normal"
-                                                InputLabelProps={{ shrink: true, }}
+                                                InputLabelProps={{shrink: true,}}
                                                 label="Roles"
                                                 error={errors.roles ? true : false}
                                                 helperText={errors.roles?.message}
@@ -281,8 +314,9 @@ function CreateUser() {
                     </Box>
                 </Grid>
             </Grid>
-        </Container >
+        </Container>
     )
 
 }
+
 export default CreateUser;
