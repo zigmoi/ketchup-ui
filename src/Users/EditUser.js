@@ -106,17 +106,15 @@ function EditUser() {
 
         let selectedRoles = formValues.roles.map((role) => role.value);
         let data = {
-            'userName': userName,
-            'enabled': new Boolean(formValues.status),
+            'enabled': formValues.status === "true" ? true : false,
             'displayName': formValues.displayName,
             'firstName': formValues.firstName,
             'lastName': formValues.lastName,
             'email': formValues.email,
             'roles': selectedRoles,
-            'password': '', //will be ignored
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/`, data)
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -263,8 +261,8 @@ function EditUser() {
                                     error={errors.status ? true : false}
                                     helperText={errors.status?.message}
                                 >
-                                    <MenuItem key="true" value={"true"}> Enabled </MenuItem>
-                                    <MenuItem key="false" value={"false"}> Disabled </MenuItem>
+                                    <MenuItem key="true" value="true"> Enabled </MenuItem>
+                                    <MenuItem key="false" value="false"> Disabled </MenuItem>
                                 </TextField>}
                             />
                             <Controller
