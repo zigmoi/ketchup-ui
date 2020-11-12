@@ -10,7 +10,7 @@ import useValidateUserHasAnyRole from './useValidateUserHasAnyRole';
 import useValidateUserHasAllRoles from './useValidateUserHasAllRoles';
 
 import Nomatch from './Nomatch';
-import Dashboard from './Dashboard';
+import Dashboard from './Projects/Dashboard';
 
 import clsx from 'clsx';
 import {fade, makeStyles} from '@material-ui/core/styles';
@@ -269,7 +269,6 @@ function Home() {
                     <IconButton
                         edge="start"
                         color="inherit"
-                        aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         className={classes.menuButton}
                     >
@@ -278,6 +277,9 @@ function Home() {
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         Ketchup
                     </Typography>
+                    <div className={classes.grow}/>
+                    {userContext?.currentUser?.tenantId === "zigmoi.com" ? null :
+                    <React.Fragment>
                     <Button
                         startIcon={<DynamicFeedIcon/>}
                         endIcon={<ArrowDropDownIcon/>}
@@ -286,38 +288,32 @@ function Home() {
                     >
                         <Typography variant="subtitle1" noWrap>{projectId ? projectId : "Select Project"}</Typography>
                     </Button>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon/>
-                        </div>
-                        <InputBase
-                            placeholder="Search applications and resources."
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{'aria-label': 'search'}}
-                        />
-                    </div>
-                    <div className={classes.grow}/>
+                    {/*<div className={classes.search}>*/}
+                    {/*    <div className={classes.searchIcon}>*/}
+                    {/*        <SearchIcon/>*/}
+                    {/*    </div>*/}
+                    {/*    <InputBase*/}
+                    {/*        placeholder="Search applications and resources."*/}
+                    {/*        classes={{*/}
+                    {/*            root: classes.inputRoot,*/}
+                    {/*            input: classes.inputInput,*/}
+                    {/*        }}*/}
+                    {/*        inputProps={{'aria-label': 'search'}}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
+                    </React.Fragment>}
+                    {/*<div className={classes.grow}/>*/}
                     <div className={classes.sectionDesktop}>
                         {/* <IconButton aria-label="show 17 new notifications" color="inherit">
               <Badge badgeContent={17} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            color="inherit"
-                        >
+                        <IconButton color="inherit">
                             <AccountCircle/>
                             <Typography variant="body2">{userContext?.currentUser?.displayName}</Typography>
                         </IconButton>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            color="inherit"
+                        <IconButton color="inherit"
                             onClick={() => {
                                 // projectContext.clearCurrentProject();
                                 userContext.clearCurrentUser();
@@ -326,9 +322,10 @@ function Home() {
                                 //setting location can redirect different users to route set by previous users.
                             }}
                         >
-                            <Tooltip title="Logout" aria-label="logout">
+                            {/*<Tooltip title="Logout" aria-label="logout">*/}
                                 <ExitToAppIcon/>
-                            </Tooltip>
+                            {/*</Tooltip>*/}
+                                <Typography variant="body2">Logout</Typography>
                         </IconButton>
                     </div>
                 </Toolbar>
@@ -342,16 +339,16 @@ function Home() {
             >
                 <div className={classes.appBarSpacer}/>
                 <List dense={true}>
-                    <ListItem button component={Link} to="/app/dashboard">
-                        <ListItemIcon>
-                            <AssessmentIcon className={classes.drawerMenuIcon}/>
-                        </ListItemIcon>
-                        <ListItemText primary="Dashboard"/>
-                    </ListItem>
                     {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']) === false ? null :
                         <React.Fragment>
                             {projectId ?
                                 <React.Fragment>
+                                    <ListItem button component={Link} to="/app/dashboard">
+                                        <ListItemIcon>
+                                            <AssessmentIcon className={classes.drawerMenuIcon}/>
+                                        </ListItemIcon>
+                                        <ListItemText primary="Dashboard"/>
+                                    </ListItem>
                                     <ListItem button component={Link} to={`/app/project/${projectId}/applications`}>
                                         <ListItemIcon>
                                             <AppsIcon className={classes.drawerMenuIcon}/>

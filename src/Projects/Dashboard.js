@@ -1,15 +1,16 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Title from "./Title";
+import Title from "../Title";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import RecentDeployments from "./Applications/RecentDeployments";
-import {Box, Button} from "@material-ui/core";
+import RecentDeployments from "../Applications/RecentDeployments";
+import {Box, Button, CircularProgress} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -48,6 +49,31 @@ export default function Dashboard(props) {
     let history = useHistory();
     const {projectId} = props;
     console.log("Project ID:", projectId);
+    const [loading, setLoading] = useState(false);
+    const [totalApplications, setTotalApplications] = useState(0);
+    const [totalDeployments, setTotalDeployments] = useState(0);
+    const [totalClusters, setTotalClusters] = useState(0);
+    const [totalRegistries, setTotalRegistries] = useState(0);
+
+
+    useEffect(() => {
+        loadDashboardDetails();
+    }, [projectId]);
+
+    function loadDashboardDetails() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectId}/dashboard-data`)
+            .then((response) => {
+                setLoading(false);
+                setTotalApplications(response.data.totalApplicationsCount);
+                setTotalDeployments(response.data.totalDeploymentsCount);
+                setTotalClusters(response.data.totalKubernetesClusterCount);
+                setTotalRegistries(response.data.totalContainerRegistriesCount);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
     return (
         <main className={classes.content}>
             {projectId ?
@@ -58,7 +84,7 @@ export default function Dashboard(props) {
                                 <React.Fragment>
                                     <Title>Applications</Title>
                                     <Typography component="p" variant="h4">
-                                        30
+                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalApplications}
                                     </Typography>
                                     <div>
                                         <Link color="primary" href="#">
@@ -71,9 +97,9 @@ export default function Dashboard(props) {
                         <Grid item xs={12} md={4} lg={3}>
                             <Paper className={fixedHeightPaper}>
                                 <React.Fragment>
-                                    <Title>Revisions</Title>
+                                    <Title>Deployments</Title>
                                     <Typography component="p" variant="h4">
-                                        100
+                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalDeployments}
                                     </Typography>
                                     <div>
                                         <Link color="primary" href="#">
@@ -88,7 +114,7 @@ export default function Dashboard(props) {
                                 <React.Fragment>
                                     <Title>Clusters</Title>
                                     <Typography component="p" variant="h4">
-                                        3
+                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalClusters}
                                     </Typography>
                                     <div>
                                         <Link color="primary" href="#">
@@ -103,7 +129,7 @@ export default function Dashboard(props) {
                                 <React.Fragment>
                                     <Title>Registries</Title>
                                     <Typography component="p" variant="h4">
-                                        7
+                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalRegistries}
                                     </Typography>
                                     <div>
                                         <Link color="primary" href="#">

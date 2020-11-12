@@ -47,6 +47,7 @@ function Login() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const [loading, setLoading] = useState(false);
     const defaultRoute = "/app/dashboard";
+    const rootTenantDefaultRoute = "/app/manage-tenants";
 
     let history = useHistory();
     let location = useLocation();
@@ -64,6 +65,24 @@ function Login() {
                 const currentUser = JSON.parse(user);
                 projectContext.setCurrentProject(currentUser?.id, loadProjectDetailsFromLocalStore(currentUser?.id));
                 userContext.setCurrentUser(currentUser);
+                if (currentUser?.tenantId === "zigmoi.com") {
+                    console.log("redirecting to root tenant default route: ", rootTenantDefaultRoute);
+                    history.replace(rootTenantDefaultRoute);
+                } else {
+                    if (location?.state?.from) {
+                        console.log("redirecting to: ", location.state.from);
+                        history.replace(location.state.from);
+                    } else {
+                        console.log("redirecting to: ", defaultRoute);
+                        history.replace(defaultRoute);
+                    }
+                }
+            }
+        } else {
+            if (userContext?.currentUser?.tenantId === "zigmoi.com") {
+                console.log("redirecting to root tenant default route: ", rootTenantDefaultRoute);
+                history.replace(rootTenantDefaultRoute);
+            } else {
                 if (location?.state?.from) {
                     console.log("redirecting to: ", location.state.from);
                     history.replace(location.state.from);
@@ -71,14 +90,6 @@ function Login() {
                     console.log("redirecting to: ", defaultRoute);
                     history.replace(defaultRoute);
                 }
-            }
-        }else{
-            if (location?.state?.from) {
-                console.log("redirecting to: ", location.state.from);
-                history.replace(location.state.from);
-            } else {
-                console.log("redirecting to: ", defaultRoute);
-                history.replace(defaultRoute);
             }
         }
     }, [userContext.currentUser]);
@@ -207,12 +218,17 @@ function Login() {
 
                 projectContext.setCurrentProject(loggedInUserName, loadProjectDetailsFromLocalStore(loggedInUserName));
                 userContext.setCurrentUser(user);
-                if (location?.state?.from) {
-                    console.log("redirecting to: ", location.state.from);
-                    history.replace(location.state.from);
+                if (user?.tenantId === "zigmoi.com") {
+                    console.log("redirecting to root tenant default route: ", rootTenantDefaultRoute);
+                    history.replace(rootTenantDefaultRoute);
                 } else {
-                    console.log("redirecting to: ", defaultRoute);
-                    history.replace(defaultRoute);
+                    if (location?.state?.from) {
+                        console.log("redirecting to: ", location.state.from);
+                        history.replace(location.state.from);
+                    } else {
+                        console.log("redirecting to: ", defaultRoute);
+                        history.replace(defaultRoute);
+                    }
                 }
             })
             .catch(() => {
