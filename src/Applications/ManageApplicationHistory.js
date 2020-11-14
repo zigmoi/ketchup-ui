@@ -99,6 +99,7 @@ function ManageApplicationHistory() {
             .then((response) => {
                 setLoading(false);
                 enqueueSnackbar('Rollback successful!', {variant: 'success'});
+                reloadTabularData();
             })
             .catch(() => {
                 setLoading(false);
