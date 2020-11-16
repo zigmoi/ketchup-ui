@@ -1,13 +1,31 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+    AppBar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    TextField,
+    Toolbar,
+    Typography,
+    MenuItem,
+    Select,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    IconButton
+} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
+import {useSnackbar} from 'notistack';
 import React, {useState, useEffect, useContext} from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import {useHistory, useParams} from 'react-router-dom';
+import {useForm, Controller} from "react-hook-form";
 import ProjectContext from "../ProjectContext";
 import useCurrentUser from "../useCurrentUser";
 import DeleteDialog from "../Applications/DeleteDialog";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +48,15 @@ const useStyles = makeStyles((theme) => ({
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
     },
+    actionsBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        borderBottom: "thin",
+        borderBottomColor: "GrayText",
+        borderBottomStyle: "solid",
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        // maxHeight: "40px"
+    },
     textField: {
         fontSize: '12px'
     },
@@ -45,14 +72,14 @@ const useStyles = makeStyles((theme) => ({
 function EditProject() {
     document.title = "Project Settings";
     const classes = useStyles();
-    const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
+    const {control, register, handleSubmit, watch, reset, setValue, errors} = useForm({mode: 'onBlur'});
 
-    let { projectResourceId } = useParams();
+    let {projectResourceId} = useParams();
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     let history = useHistory();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const projectContext = useContext(ProjectContext);
     const currentUser = useCurrentUser();
 
@@ -85,7 +112,7 @@ function EditProject() {
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Project updated successfully.', { variant: 'success' });
+                enqueueSnackbar('Project updated successfully.', {variant: 'success'});
             })
             .catch(() => {
                 setLoading(false);
@@ -117,12 +144,15 @@ function EditProject() {
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
+                    {/*<IconButton onClick={() => history.goBack()}>*/}
+                    {/*    <ArrowBackIcon fontSize="default"/>*/}
+                    {/*</IconButton>*/}
                     <Typography variant="h6" color="inherit">Project Settings
-                    <Typography variant="caption" >
+                        <Typography variant="caption">
                             &nbsp; {projectResourceId}
                         </Typography>
                     </Typography>
-                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
                     <div style={{flexGrow: 1}}/>
                     <Button
                         className={classes.button}
@@ -131,8 +161,31 @@ function EditProject() {
                         color="secondary"
                         onClick={openDeleteDialog}
                     >Delete</Button>
+                    <Button
+                        size="small"
+                        variant="text"
+                        color="primary"
+                        onClick={loadDetails}
+                    >Refresh</Button>
                 </Toolbar>
             </AppBar>
+            {/*<AppBar position="static" color="transparent" elevation={0} >*/}
+            {/*    <Toolbar variant="dense" className={classes.actionsBar}>*/}
+            {/*        <Button*/}
+            {/*            className={classes.button}*/}
+            {/*            size="small"*/}
+            {/*            variant="text"*/}
+            {/*            color="secondary"*/}
+            {/*            onClick={openDeleteDialog}*/}
+            {/*        >Delete</Button>*/}
+            {/*        <Button*/}
+            {/*            size="small"*/}
+            {/*            variant="text"*/}
+            {/*            color="primary"*/}
+            {/*            onClick={loadDetails}*/}
+            {/*        >Refresh</Button>*/}
+            {/*    </Toolbar>*/}
+            {/*</AppBar>*/}
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
@@ -179,8 +232,9 @@ function EditProject() {
                     </Box>
                 </Grid>
             </Grid>
-        </Container >
+        </Container>
     )
 
 }
+
 export default EditProject;

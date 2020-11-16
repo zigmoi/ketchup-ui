@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import RecentDeployments from "../Applications/RecentDeployments";
 import {Box, Button, CircularProgress} from "@material-ui/core";
-import {useHistory} from "react-router-dom";
+import {useHistory, Link as RouterLink} from "react-router-dom";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +87,7 @@ export default function Dashboard(props) {
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalApplications}
                                     </Typography>
                                     <div>
-                                        <Link color="primary" href="#">
+                                        <Link color="primary" component={RouterLink} to="/app/project/a1/applications">
                                             View
                                         </Link>
                                     </div>
@@ -102,7 +102,7 @@ export default function Dashboard(props) {
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalDeployments}
                                     </Typography>
                                     <div>
-                                        <Link color="primary" href="#">
+                                        <Link color="primary" component={RouterLink} to="/app/project/a1/deployments">
                                             View
                                         </Link>
                                     </div>
@@ -117,7 +117,7 @@ export default function Dashboard(props) {
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalClusters}
                                     </Typography>
                                     <div>
-                                        <Link color="primary" href="#">
+                                        <Link color="primary" component={RouterLink} to="/app/project/a1/kubernetes-clusters">
                                             View
                                         </Link>
                                     </div>
@@ -132,7 +132,7 @@ export default function Dashboard(props) {
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalRegistries}
                                     </Typography>
                                     <div>
-                                        <Link color="primary" href="#">
+                                        <Link color="primary" component={RouterLink} to="/app/project/a1/container-registries">
                                             View
                                         </Link>
                                     </div>

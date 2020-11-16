@@ -74,7 +74,7 @@ import EditApplication from "./Applications/EditApplication";
 import ViewApplication from './Applications/ViewApplication';
 import ViewApplicationLogs from './Applications/ViewApplicationLogs';
 import ManageApplications from './Applications/ManageApplications';
-import ManageApplicationHistory from './Applications/ManageApplicationHistory';
+import ManageApplicationRevisions from './Applications/ManageApplicationRevisions';
 
 import CreateProject from './Projects/CreateProject';
 import EditProject from "./Projects/EditProject";
@@ -509,7 +509,7 @@ function Home() {
                        render={() => <ProtectedRoute component={CreateApplication}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/revisions"
-                       render={() => <ProtectedRoute component={ManageApplicationHistory}
+                       render={() => <ProtectedRoute component={ManageApplicationRevisions}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/edit"
                        render={() => <ProtectedRoute component={EditApplication}

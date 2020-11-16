@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function ManageApplicationHistory() {
+function ManageApplicationRevisions() {
     const classes = useStyles();
     let history = useHistory();
     const {projectResourceId, applicationResourceId} = useParams();
@@ -45,8 +45,8 @@ function ManageApplicationHistory() {
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
-        console.log("in effect Manage Application History");
-        document.title = "Application History";
+        console.log("in effect Manage Application Revisions");
+        document.title = "Application Revisions";
         loadAll();
     }, []);
 
@@ -142,8 +142,9 @@ function ManageApplicationHistory() {
                     columns={[
                         {title: 'ID', field: 'id.revisionResourceId', width: 280},
                         {title: 'Version', field: 'version', width: 50},
-                        {title: 'Commit', field: 'commitId', width: 320},
+                        {title: 'Commit', field: 'commitId', width: 100, render: (rowData) => rowData?.commitId?.substring(0, 8)},
                         {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
+                        {title: 'Rollback', field: 'rollback', render: (rowData) => rowData?.rollback ? `Rollback to ${rowData?.originalRevisionVersionId}`  : "No"},
                         {
                             title: 'Created On',
                             field: 'createdOn',
@@ -277,4 +278,4 @@ function ActionMenu(props) {
     );
 }
 
-export default ManageApplicationHistory;
+export default ManageApplicationRevisions;

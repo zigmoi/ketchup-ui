@@ -9,8 +9,9 @@ import tableIcons from '../tableIcons';
 import {useHistory, useParams} from 'react-router-dom';
 import {format} from "date-fns";
 import ApplicationsActionMenu from "./ApplicationsActionMenu";
-import {Grid} from "@material-ui/core";
+import {Grid, IconButton, Typography} from "@material-ui/core";
 import {useSnackbar} from "notistack";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -63,7 +64,16 @@ function ManageApplications() {
         <Container maxWidth="xl" className={classes.container}>
             <Grid>
                 <MaterialTable
-                    title="Applications"
+                    // title={
+                    //     <React.Fragment>
+                    //         <Typography>
+                    //             <IconButton onClick={() => history.goBack()}>
+                    //                 <ArrowBackIcon fontSize="default"/>
+                    //             </IconButton>
+                    //             Applications
+                    //         </Typography>
+                    //     </React.Fragment>}
+                    title={"Applications"}
                     icons={tableIcons}
                     isLoading={loading}
                     components={{Container: props => props.children}}
@@ -77,7 +87,9 @@ function ManageApplications() {
                             render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
                         },
                         {
-                            title: 'Actions', width: 120, render: (rowData) => <ApplicationsActionMenu rowData={rowData}/>
+                            title: 'Actions',
+                            width: 120,
+                            render: (rowData) => <ApplicationsActionMenu rowData={rowData}/>
                         },
                     ]}
                     data={dataSource}
