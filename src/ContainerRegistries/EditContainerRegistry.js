@@ -78,8 +78,12 @@ function EditContainerRegistry() {
     }
 
     useEffect(() => {
+        setValue("repository", "");
+        setValue("username", "");
+        setValue("password", "");
         if(type === "docker-hub"){
             setValue("registryUrl", "index.docker.io");
+
         }else if(type === "gcr"){
             setValue("registryUrl", "gcr.io");
         }else{

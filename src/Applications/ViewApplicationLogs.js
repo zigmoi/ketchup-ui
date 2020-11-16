@@ -68,6 +68,10 @@ function ViewApplicationLogs() {
     const [logUrl, setLogUrl] = useState("");
 
     useEffect(() => {
+        setInstances([]);
+        setSelectedInstance('');
+        setApplications([]);
+        setSelectedApplication('');
         if (applicationResourceId) {
             getAllInstances(applicationResourceId);
         } else {

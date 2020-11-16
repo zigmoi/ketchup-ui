@@ -52,6 +52,9 @@ function AddContainerRegistry() {
     const { type } = watch();
 
     useEffect(() => {
+        setValue("repository", "");
+        setValue("username", "");
+        setValue("password", "");
         if(type === "docker-hub"){
             setValue("registryUrl", "index.docker.io");
         }else if(type === "gcr"){
