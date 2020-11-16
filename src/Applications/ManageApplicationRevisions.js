@@ -108,20 +108,22 @@ function ManageApplicationRevisions() {
 
     function renderStatus(rowData) {
         if (rowData?.status === "SUCCESS") {
-            return <Typography style={{ fontWeight: "bold", color: 'green'}} variant="inherit">{rowData?.status}</Typography>
+            return <Typography style={{fontWeight: "bold", color: 'green'}}
+                               variant="inherit">{rowData?.status}</Typography>
         } else if (rowData?.status === "FAILED") {
-            return <Typography style={{ fontWeight: "bold", color: '#f44336'}} variant="inherit">{rowData?.status}</Typography>
+            return <Typography style={{fontWeight: "bold", color: '#f44336'}}
+                               variant="inherit">{rowData?.status}</Typography>
         } else {
             return (
                 <React.Fragment>
-                    <Typography style={{ fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography> &nbsp;
-                    {rowData?.rollback ? null:
-                    <Tooltip title="Refresh Status">
-                        <RefreshIcon
-                            onClick={() => refreshRevisionStatus(rowData.id.revisionResourceId)}
-                            color="action"
-                            fontSize="inherit"/>
-                    </Tooltip>}
+                    <Typography style={{fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography> &nbsp;
+                    {rowData?.rollback ? null :
+                        <Tooltip title="Refresh Status">
+                            <RefreshIcon
+                                onClick={() => refreshRevisionStatus(rowData.id.revisionResourceId)}
+                                color="action"
+                                fontSize="inherit"/>
+                        </Tooltip>}
                 </React.Fragment>);
         }
     }
@@ -143,16 +145,29 @@ function ManageApplicationRevisions() {
                     columns={[
                         {title: 'ID', field: 'id.revisionResourceId', width: 280},
                         {title: 'Version', field: 'version', width: 50},
-                        {title: 'Commit', field: 'commitId', width: 100, render: (rowData) => rowData?.commitId?.substring(0, 8)},
+                        {
+                            title: 'Commit',
+                            field: 'commitId',
+                            width: 100,
+                            render: (rowData) => rowData?.commitId?.substring(0, 8)
+                        },
                         {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
-                        {title: 'Rollback', field: 'rollback', render: (rowData) => rowData?.rollback ? `Rollback to ${rowData?.originalRevisionVersionId}`  : "No"},
+                        {
+                            title: 'Rollback',
+                            field: 'rollback',
+                            render: (rowData) => rowData?.rollback ? `Rollback to ${rowData?.originalRevisionVersionId}` : "No"
+                        },
                         {
                             title: 'Created On',
                             field: 'createdOn',
                             render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
                         },
                         {
-                            title: 'Actions', width: 100, render: (rowData) => <ActionMenu rowData={rowData} refreshRevisionStatus={refreshRevisionStatus} rollbackRevision={rollbackRevision} />
+                            title: 'Actions',
+                            width: 100,
+                            render: (rowData) => <ActionMenu rowData={rowData}
+                                                             refreshRevisionStatus={refreshRevisionStatus}
+                                                             rollbackRevision={rollbackRevision}/>
                         },
                     ]}
                     data={dataSource}
@@ -246,16 +261,16 @@ function ActionMenu(props) {
                 }}
             >
 
-                {props?.rowData?.rollback? null:
-                <MenuItem
-                    style={{fontSize: 12}}
-                    key="pipeline"
-                    onClick={() => {
-                        setAnchorEl(null);
-                        history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}`);
-                    }}>
-                    View Pipeline
-                </MenuItem>}
+                {props?.rowData?.rollback ? null :
+                    <MenuItem
+                        style={{fontSize: 12}}
+                        key="pipeline"
+                        onClick={() => {
+                            setAnchorEl(null);
+                            history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}`);
+                        }}>
+                        View Pipeline
+                    </MenuItem>}
                 <MenuItem
                     style={{fontSize: 12}}
                     key="rollback"
