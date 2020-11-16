@@ -83,7 +83,7 @@ export default function Dashboard(props) {
                             <Paper className={fixedHeightPaper}>
                                 <React.Fragment>
                                     <Title>Applications</Title>
-                                    <Typography component="p" variant="h4">
+                                    <Typography variant="h4">
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalApplications}
                                     </Typography>
                                     <div>
@@ -98,7 +98,7 @@ export default function Dashboard(props) {
                             <Paper className={fixedHeightPaper}>
                                 <React.Fragment>
                                     <Title>Deployments</Title>
-                                    <Typography component="p" variant="h4">
+                                    <Typography variant="h4">
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalDeployments}
                                     </Typography>
                                     <div>
@@ -113,7 +113,7 @@ export default function Dashboard(props) {
                             <Paper className={fixedHeightPaper}>
                                 <React.Fragment>
                                     <Title>Clusters</Title>
-                                    <Typography component="p" variant="h4">
+                                    <Typography variant="h4">
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalClusters}
                                     </Typography>
                                     <div>
@@ -128,7 +128,7 @@ export default function Dashboard(props) {
                             <Paper className={fixedHeightPaper}>
                                 <React.Fragment>
                                     <Title>Registries</Title>
-                                    <Typography component="p" variant="h4">
+                                    <Typography variant="h4">
                                         {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalRegistries}
                                     </Typography>
                                     <div>
@@ -154,7 +154,7 @@ export default function Dashboard(props) {
                             <Paper className={fixedHeightGetStarted}>
                                 <React.Fragment>
                                     <Title>Get Started</Title>
-                                    <Typography component="p" variant="body1">
+                                    <Typography variant="body1">
                                         Create a new project or select a existing project in menu bar.
                                     </Typography>
                                     <div>
@@ -178,7 +178,7 @@ export default function Dashboard(props) {
                             <Paper className={fixedHeightGetStarted}>
                                 <React.Fragment>
                                     <Title>Documentation</Title>
-                                    <Typography component="p" variant="body1">
+                                    <Typography variant="body1">
                                         For more information refer to documentation.
                                     </Typography>
                                     <Box textAlign={"left"}>
