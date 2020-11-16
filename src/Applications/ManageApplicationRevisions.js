@@ -115,12 +115,13 @@ function ManageApplicationRevisions() {
             return (
                 <React.Fragment>
                     <Typography style={{ fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography> &nbsp;
+                    {rowData?.rollback ? null:
                     <Tooltip title="Refresh Status">
                         <RefreshIcon
                             onClick={() => refreshRevisionStatus(rowData.id.revisionResourceId)}
                             color="action"
                             fontSize="inherit"/>
-                    </Tooltip>
+                    </Tooltip>}
                 </React.Fragment>);
         }
     }
@@ -245,6 +246,7 @@ function ActionMenu(props) {
                 }}
             >
 
+                {props?.rowData?.rollback? null:
                 <MenuItem
                     style={{fontSize: 12}}
                     key="pipeline"
@@ -253,7 +255,7 @@ function ActionMenu(props) {
                         history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}`);
                     }}>
                     View Pipeline
-                </MenuItem>
+                </MenuItem>}
                 <MenuItem
                     style={{fontSize: 12}}
                     key="rollback"
@@ -263,7 +265,7 @@ function ActionMenu(props) {
                     }}>
                     Rollback
                 </MenuItem>
-                {props.rowData?.status === "SUCCESS" || props.rowData?.status === "FAILED" ? null :
+                {(props.rowData?.status === "SUCCESS" || props.rowData?.status === "FAILED" || props?.rowData?.rollback) ? null :
                     <MenuItem
                         style={{fontSize: 12}}
                         key="refresh-status"
