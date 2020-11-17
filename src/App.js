@@ -9,6 +9,7 @@ import { UserProvider } from './UserContext.js';
 import { ProjectProvider } from './ProjectContext.js'
 import { SnackbarProvider } from 'notistack';
 import {Button} from "@material-ui/core";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
 
@@ -34,10 +35,10 @@ function App() {
         <ProjectProvider>
           <div className="App">
             <Switch>
-              <Route path="/" exact component={() => <Home />} />
-              <Route path="/app" component={() => <Home />} />
-              <Route path="/login" component={Login} />
-              <Route component={Nomatch} />
+                <Route path="/" exact render={() => <ProtectedRoute component={Home} />} />
+                <Route path="/app" render={() => <ProtectedRoute component={Home} />} />
+                <Route path="/login" component={Login} />
+                <Route component={Nomatch} />
             </Switch>
           </div>
         </ProjectProvider>

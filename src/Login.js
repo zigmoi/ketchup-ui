@@ -46,6 +46,7 @@ function Login() {
     const {register, handleSubmit, errors} = useForm({mode: 'onBlur'});
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const [loading, setLoading] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(true);
     const defaultRoute = "/app/dashboard";
     const rootTenantDefaultRoute = "/app/manage-tenants";
 
@@ -77,6 +78,9 @@ function Login() {
                         history.replace(defaultRoute);
                     }
                 }
+            } else {
+                console.log("not logged in.");
+                setLoggedIn(false);
             }
         } else {
             if (userContext?.currentUser?.tenantId === "zigmoi.com") {
@@ -239,68 +243,69 @@ function Login() {
 
 
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline/>
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon/>
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign in
-                </Typography>
-                <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-                    <TextField
-                        variant="outlined" fullWidth margin="normal"
-                        name="username"
-                        label="User Name"
-                        required
-                        inputRef={register({
-                            required: "Required.",
-                            maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
-                        })}
-                        error={errors.username ? true : false}
-                        helperText={errors.username?.message}
-                    />
-                    <TextField
-                        variant="outlined" fullWidth margin="normal"
-                        name="password"
-                        label="Password"
-                        type="password"
-                        required
-                        inputRef={register({
-                            required: "Required.",
-                            maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
-                        })}
-                        error={errors.password ? true : false}
-                        helperText={errors.password?.message}
-                    />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary"/>}
-                        label="Remember me"
-                    />
-                    <Button
-                        fullWidth variant="contained" color="primary"
-                        className={classes.submit}
-                        type="submit"
-                        disabled={loading}
-                    >
-                        Sign In
-                    </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2">
-                                Forgot password?
-                            </Link>
+        loggedIn ? null :
+            <Container component="main" maxWidth="xs">
+                <CssBaseline/>
+                <div className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon/>
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Sign in
+                    </Typography>
+                    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+                        <TextField
+                            variant="outlined" fullWidth margin="normal"
+                            name="username"
+                            label="User Name"
+                            required
+                            inputRef={register({
+                                required: "Required.",
+                                maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
+                            })}
+                            error={errors.username ? true : false}
+                            helperText={errors.username?.message}
+                        />
+                        <TextField
+                            variant="outlined" fullWidth margin="normal"
+                            name="password"
+                            label="Password"
+                            type="password"
+                            required
+                            inputRef={register({
+                                required: "Required.",
+                                maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
+                            })}
+                            error={errors.password ? true : false}
+                            helperText={errors.password?.message}
+                        />
+                        <FormControlLabel
+                            control={<Checkbox value="remember" color="primary"/>}
+                            label="Remember me"
+                        />
+                        <Button
+                            fullWidth variant="contained" color="primary"
+                            className={classes.submit}
+                            type="submit"
+                            disabled={loading}
+                        >
+                            Sign In
+                        </Button>
+                        <Grid container>
+                            <Grid item xs>
+                                <Link href="#" variant="body2">
+                                    Forgot password?
+                                </Link>
+                            </Grid>
+                            <Grid item>
+                                <Link href="#" variant="body2">
+                                    {"Don't have an account? Sign Up"}
+                                </Link>
+                            </Grid>
                         </Grid>
-                        <Grid item>
-                            <Link href="#" variant="body2">
-                                {"Don't have an account? Sign Up"}
-                            </Link>
-                        </Grid>
-                    </Grid>
-                </form>
-            </div>
-        </Container>
+                    </form>
+                </div>
+            </Container>
     );
 }
 

@@ -95,9 +95,8 @@ export function UserProvider(props) {
                         enqueueSnackbar('Authentication required, Please login to continue.', {variant: 'error'});
                         setTimeout(function () {
                             //Allows promise to resolve before history.push executes 
-                            //and hence avoids set state executing after component unmounts. 
-                            clearCurrentUser();
-                            history.push("/login", {from: location.pathname});
+                            //and hence avoids set state executing after component unmounts.
+                            clearCurrentUser(); //this will clear user and re render usercontext consumers and will lead to redirect to login automatically.
                         }, 500);
                     } else if (responseStatus === 403) {
                         // message.error('Access denied, If you think you should have access to this resource, please contact support.', 5);

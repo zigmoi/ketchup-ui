@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import './App.css';
-import {Switch, useHistory, useLocation, Route, Link} from 'react-router-dom';
+import {Switch, useHistory, Route, Link} from 'react-router-dom';
 
 import UserContext from './UserContext';
 import useCurrentProject from './useCurrentProject';
@@ -83,7 +83,6 @@ import ManageProjectPermissions from "./Users/ManageProjectPermissions";
 
 import ViewRevisionPipeline from './Applications/ViewRevisionPipeline';
 import ManageDeployments from "./Applications/ManageDeployments";
-import {validateHasAllRoles} from './Util';
 
 
 const drawerWidth = 220;
@@ -230,15 +229,7 @@ const useStyles = makeStyles((theme) => ({
 function Home() {
     const classes = useStyles();
     let history = useHistory();
-    let location = useLocation();
     const userContext = useContext(UserContext);
-
-    useEffect(() => {
-        if (!userContext.currentUser) {
-            history.push("/login", {from: location.pathname});
-        }
-    }, [userContext.currentUser]);
-
 
     const projectId = useCurrentProject();
 
@@ -402,14 +393,16 @@ function Home() {
                                 <AccountTreeIcon className={classes.drawerMenuIcon}/>
                             </ListItemIcon>
                             <ListItemText primary="Tenants"/>
-                        </ListItem>}
+                        </ListItem>
+                    }
                     {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER']) === false ? null :
                         <ListItem button component={Link} to="/app/manage-users">
                             <ListItemIcon>
                                 <PeopleIcon className={classes.drawerMenuIcon}/>
                             </ListItemIcon>
                             <ListItemText primary="Users"/>
-                        </ListItem>}
+                        </ListItem>
+                    }
                     {useValidateUserHasAnyRole(['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']) === false ? null :
                         <React.Fragment>
                             {projectId ?
@@ -419,7 +412,8 @@ function Home() {
                                     </ListItemIcon>
                                     <ListItemText primary="Settings"/>
                                 </ListItem> : null}
-                        </React.Fragment>}
+                        </React.Fragment>
+                    }
                     {/* <ListItem button>
             <ListItemIcon>
               <PortraitIcon className={classes.drawerMenuIcon}  />
