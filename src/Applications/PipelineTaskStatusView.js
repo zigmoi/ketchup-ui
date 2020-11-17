@@ -33,7 +33,7 @@ export default function PipelineTaskStatusView(props) {
         return statusView = (<CircularProgress size={23} />);
     } else if (props.statusJson?.status === "True") {
         return statusView = (<CheckIcon style={{ color: green[500] }} />);
-    } else if (props.statusJson?.state === "False") {
+    } else if (props.statusJson?.status === "False") {
         if(!props.statusJson?.completionTime){
             return statusView = (<CircularProgress size={23} />);
         }else{

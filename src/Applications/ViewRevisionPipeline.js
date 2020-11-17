@@ -89,6 +89,7 @@ function ViewRevisionPipeline() {
         if (access_token === "") {
             return;
         }
+        setLoading(true);
         statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/stream?access_token=${access_token}`);
         statusSource.addEventListener('data', function (e) {
             streamPipelineStatus(e);
@@ -97,11 +98,15 @@ function ViewRevisionPipeline() {
         statusSource.addEventListener('close', function (e) {
             console.log("closing.");
             this.close();
+            enqueueSnackbar('Status streaming completed successfully.', {variant: 'info'});
+            setLoading(false);
             console.log("closed.");
         }, false);
 
         statusSource.addEventListener('error', function (e) {
             console.log("error, closed.");
+            enqueueSnackbar('Something went wrong, retrying...', {variant: 'warning'});
+            setLoading(false);
         }, false);
 
         return () => {
@@ -120,6 +125,8 @@ function ViewRevisionPipeline() {
         if (parsedStatusJson.reason && (parsedStatusJson.reason === 'Succeeded' || parsedStatusJson.reason === 'Failed')) {
             console.log('closing status source.');
             statusSource.close();
+            enqueueSnackbar('Status streaming completed successfully.', {variant: 'success'});
+            setLoading(false);
         }
     }
 
