@@ -160,7 +160,7 @@ function ManageApplicationRevisions() {
                         {
                             title: 'Created On',
                             field: 'createdOn',
-                            render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
+                            render: (rowData) => format(new Date(rowData.createdOn), "PPpp")
                         },
                         {
                             title: 'Actions',
