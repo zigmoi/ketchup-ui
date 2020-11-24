@@ -109,7 +109,9 @@ function ManageUsers() {
                                 { title: 'User Name', field: 'userName' },
                                 { title: 'Email', field: 'email' },
                                 {
-                                    title: 'Status', field: 'enabled',
+                                    title: 'Status',
+                                    field: 'enabled',
+                                    width: 100,
                                     //   render: rowData => rowData.enabled ? <Chip variant="outlined" size="small" label="Active" color="primary" /> : <Chip variant="outlined" size="small" label="Disabled" />
                                     render: rowData => rowData.enabled ? "Active" : "Disabled"
                                 },

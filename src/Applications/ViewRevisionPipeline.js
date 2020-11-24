@@ -81,16 +81,45 @@ function ViewRevisionPipeline() {
     const [loading, setLoading] = useState(false);
     const [cancellingPipeline, setCancellingPipeline] = useState(false);
     const [statusJson, setStatusJson] = useState("");
-
+    const [version, setVersion] = useState("");
+    const [commitId, setCommitId] = useState("");
 
     let statusSource;
     useEffect(() => {
+        console.log("in effect View Revision Pipeline.");
+        //this also helps if redirecting user to login page in case of 401 in status streaming api.
+        //user will refresh page and this api will get 401 and will cause redirection.
+        fetchRevisionData();
+        return () => {
+            if(statusSource){
+                console.log("clearing status stream.")
+                statusSource.close();
+            }
+        }
+    }, [projectResourceId, applicationResourceId, revisionResourceId, userContext.currentUser]);
+
+    function fetchRevisionData() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}`)
+            .then((response) => {
+                setLoading(false);
+                setVersion(response.data.version);
+                setCommitId(response.data.commitId);
+                startStatusStreaming();
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
+
+    function startStatusStreaming() {
         let access_token = userContext.currentUser ? userContext.currentUser.accessToken : "";
         if (access_token === "") {
             return;
         }
         setLoading(true);
         statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/stream?access_token=${access_token}`);
+
         statusSource.addEventListener('data', function (e) {
             streamPipelineStatus(e);
         }, false);
@@ -98,23 +127,19 @@ function ViewRevisionPipeline() {
         statusSource.addEventListener('close', function (e) {
             console.log("closing.");
             this.close();
-            enqueueSnackbar('Status streaming completed successfully.', {variant: 'info'});
             setLoading(false);
+            enqueueSnackbar('Status streaming finished.', {variant: 'info'});
+
             console.log("closed.");
         }, false);
 
         statusSource.addEventListener('error', function (e) {
-            console.log("error, closed.");
-            enqueueSnackbar('Something went wrong, retrying...', {variant: 'warning'});
+            console.log("error, closing connection. (if still open)");
+            this.close();
             setLoading(false);
+            enqueueSnackbar('Something went wrong, connection closed, refresh to try again.', {variant: 'error'});
         }, false);
-
-        return () => {
-            console.log("clearing status stream.")
-            statusSource.close();
-        }
-    }, [revisionResourceId, userContext.currentUser]);
-
+    }
 
     function streamPipelineStatus(event) {
         console.log(event);
@@ -122,14 +147,25 @@ function ViewRevisionPipeline() {
         let parsedStatusJson = JSON.parse(event.data);
         console.log(parsedStatusJson);
 
-        if (parsedStatusJson.reason && (parsedStatusJson.reason === 'Succeeded' || parsedStatusJson.reason === 'Failed')) {
+        if (parsedStatusJson.reason && (parsedStatusJson.reason === 'Succeeded' || parsedStatusJson.reason === 'Failed' || parsedStatusJson.reason === 'PipelineRunCancelled')) {
             console.log('closing status source.');
             statusSource.close();
-            enqueueSnackbar('Status streaming completed successfully.', {variant: 'success'});
             setLoading(false);
+            enqueueSnackbar('Pipeline has finished, stopping status streaming.', {variant: 'info'});
         }
     }
 
+    function stopPipeline() {
+        setCancellingPipeline(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/stop`)
+            .then((response) => {
+                setCancellingPipeline(false);
+                enqueueSnackbar('Pipeline cancelled successfully.', {variant: 'success'});
+            })
+            .catch((error) => {
+                setCancellingPipeline(false);
+            });
+    }
 
     let pipelineStatusView;
     if (statusJson?.status === "True") {
@@ -152,18 +188,6 @@ function ViewRevisionPipeline() {
                     <Typography variant="subtitle2">Cancelling &nbsp;<CircularProgress size={12}/></Typography> :
                     <Button color="secondary" onClick={stopPipeline}>Cancel</Button>}
             </React.Fragment>);
-    }
-
-    function stopPipeline() {
-        setCancellingPipeline(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/stop`)
-            .then((response) => {
-                setCancellingPipeline(false);
-                enqueueSnackbar('Pipeline cancelled successfully.', {variant: 'success'});
-            })
-            .catch((error) => {
-                setCancellingPipeline(false);
-            });
     }
 
 
@@ -194,7 +218,13 @@ function ViewRevisionPipeline() {
                                     <Typography variant="subtitle2">
                                         Revision ID: &nbsp;
                                         <Typography variant="caption">
-                                            {revisionResourceId}
+                                            {revisionResourceId} {version ? `(${version})` : null}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Commit ID: &nbsp;
+                                        <Typography variant="caption">
+                                            {commitId}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">

@@ -161,12 +161,12 @@ function EditProject() {
                         color="secondary"
                         onClick={openDeleteDialog}
                     >Delete</Button>
-                    <Button
-                        size="small"
-                        variant="text"
-                        color="primary"
-                        onClick={loadDetails}
-                    >Refresh</Button>
+                    {/*<Button*/}
+                    {/*    size="small"*/}
+                    {/*    variant="text"*/}
+                    {/*    color="primary"*/}
+                    {/*    onClick={loadDetails}*/}
+                    {/*>Refresh</Button>*/}
                 </Toolbar>
             </AppBar>
             {/*<AppBar position="static" color="transparent" elevation={0} >*/}

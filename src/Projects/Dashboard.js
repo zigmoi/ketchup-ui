@@ -57,7 +57,12 @@ export default function Dashboard(props) {
 
 
     useEffect(() => {
-        loadDashboardDetails();
+        if (projectId) {
+            document.title = "Dashboard"
+            loadDashboardDetails();
+        }else{
+            document.title = "Get Started"
+        }
     }, [projectId]);
 
     function loadDashboardDetails() {
@@ -74,6 +79,7 @@ export default function Dashboard(props) {
                 setLoading(false);
             });
     }
+
     return (
         <main className={classes.content}>
             {projectId ?
@@ -84,7 +90,8 @@ export default function Dashboard(props) {
                                 <React.Fragment>
                                     <Title>Applications</Title>
                                     <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalApplications}
+                                        {loading ? <CircularProgress size={30}
+                                                                     className={classes.circularProgress}/> : totalApplications}
                                     </Typography>
                                     <div>
                                         <Link color="primary" component={RouterLink} to="/app/project/a1/applications">
@@ -99,7 +106,8 @@ export default function Dashboard(props) {
                                 <React.Fragment>
                                     <Title>Deployments</Title>
                                     <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalDeployments}
+                                        {loading ? <CircularProgress size={30}
+                                                                     className={classes.circularProgress}/> : totalDeployments}
                                     </Typography>
                                     <div>
                                         <Link color="primary" component={RouterLink} to="/app/project/a1/deployments">
@@ -114,10 +122,12 @@ export default function Dashboard(props) {
                                 <React.Fragment>
                                     <Title>Clusters</Title>
                                     <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalClusters}
+                                        {loading ? <CircularProgress size={30}
+                                                                     className={classes.circularProgress}/> : totalClusters}
                                     </Typography>
                                     <div>
-                                        <Link color="primary" component={RouterLink} to="/app/project/a1/kubernetes-clusters">
+                                        <Link color="primary" component={RouterLink}
+                                              to="/app/project/a1/kubernetes-clusters">
                                             View
                                         </Link>
                                     </div>
@@ -129,10 +139,12 @@ export default function Dashboard(props) {
                                 <React.Fragment>
                                     <Title>Registries</Title>
                                     <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30} className={classes.circularProgress}/> : totalRegistries}
+                                        {loading ? <CircularProgress size={30}
+                                                                     className={classes.circularProgress}/> : totalRegistries}
                                     </Typography>
                                     <div>
-                                        <Link color="primary" component={RouterLink} to="/app/project/a1/container-registries">
+                                        <Link color="primary" component={RouterLink}
+                                              to="/app/project/a1/container-registries">
                                             View
                                         </Link>
                                     </div>
@@ -168,60 +180,60 @@ export default function Dashboard(props) {
                                             size="small"
                                             variant="contained"
                                             color="primary"
-                                            onClick={()=> history.push("/app/project/create")}
-                                            >Create Project</Button>
+                                            onClick={() => history.push("/app/project/create")}
+                                        >Create Project</Button>
                                     </div>
                                 </React.Fragment>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <Paper className={fixedHeightGetStarted}>
-                                <React.Fragment>
-                                    <Title>Documentation</Title>
-                                    <Typography variant="body1">
-                                        For more information refer to documentation.
-                                    </Typography>
-                                    <Box textAlign={"left"}>
-                                        <ul>
-                                            <li>
-                                                <Link color="inherit" href="http://google.com" target="_blank"
-                                                      rel="noopener" rel="noreferrer">
-                                                    Create User.
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link color="inherit" href="http://google.com" target="_blank"
-                                                      rel="noopener" rel="noreferrer">
-                                                    Create Project.
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link color="inherit" href="http://google.com" target="_blank"
-                                                      rel="noopener" rel="noreferrer">
-                                                    Create Application.
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link color="inherit" href="http://google.com" target="_blank"
-                                                      rel="noopener" rel="noreferrer">
-                                                    Manage Permissions.
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link color="inherit" href="http://google.com" target="_blank"
-                                                      rel="noopener" rel="noreferrer">
-                                                    Check Application Logs.
-                                                </Link>
-                                            </li>
-                                        </ul>
-                                    </Box>
-                                    <Link color="primary" href="http://google.com" target="_blank" rel="noopener"
-                                          rel="noreferrer">
-                                        More...
-                                    </Link>
-                                </React.Fragment>
-                            </Paper>
-                        </Grid>
+                        {/*<Grid item xs={12} md={6} lg={4}>*/}
+                        {/*    <Paper className={fixedHeightGetStarted}>*/}
+                        {/*        <React.Fragment>*/}
+                        {/*            <Title>Documentation</Title>*/}
+                        {/*            <Typography variant="body1">*/}
+                        {/*                For more information refer to documentation.*/}
+                        {/*            </Typography>*/}
+                        {/*            <Box textAlign={"left"}>*/}
+                        {/*                <ul>*/}
+                        {/*                    <li>*/}
+                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
+                        {/*                              rel="noopener" rel="noreferrer">*/}
+                        {/*                            Create User.*/}
+                        {/*                        </Link>*/}
+                        {/*                    </li>*/}
+                        {/*                    <li>*/}
+                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
+                        {/*                              rel="noopener" rel="noreferrer">*/}
+                        {/*                            Create Project.*/}
+                        {/*                        </Link>*/}
+                        {/*                    </li>*/}
+                        {/*                    <li>*/}
+                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
+                        {/*                              rel="noopener" rel="noreferrer">*/}
+                        {/*                            Create Application.*/}
+                        {/*                        </Link>*/}
+                        {/*                    </li>*/}
+                        {/*                    <li>*/}
+                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
+                        {/*                              rel="noopener" rel="noreferrer">*/}
+                        {/*                            Manage Permissions.*/}
+                        {/*                        </Link>*/}
+                        {/*                    </li>*/}
+                        {/*                    <li>*/}
+                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
+                        {/*                              rel="noopener" rel="noreferrer">*/}
+                        {/*                            Check Application Logs.*/}
+                        {/*                        </Link>*/}
+                        {/*                    </li>*/}
+                        {/*                </ul>*/}
+                        {/*            </Box>*/}
+                        {/*            <Link color="primary" href="http://google.com" target="_blank" rel="noopener"*/}
+                        {/*                  rel="noreferrer">*/}
+                        {/*                More...*/}
+                        {/*            </Link>*/}
+                        {/*        </React.Fragment>*/}
+                        {/*    </Paper>*/}
+                        {/*</Grid>*/}
                     </Grid>
                 </Container>
             }

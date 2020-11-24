@@ -143,23 +143,35 @@ function ManageApplicationRevisions() {
                     isLoading={loading}
                     components={{Container: props => props.children}}
                     columns={[
-                        {title: 'ID', field: 'id.revisionResourceId', width: 280},
-                        {title: 'Version', field: 'version', width: 50},
+                        {
+                            title: 'ID',
+                            field: 'id.revisionResourceId',
+                            width: 280},
+                        {
+                            title: 'Version',
+                            field: 'version',
+                            width: 50},
                         {
                             title: 'Commit',
                             field: 'commitId',
                             width: 100,
                             render: (rowData) => rowData?.commitId?.substring(0, 8)
                         },
-                        {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
+                        {
+                            title: 'Status',
+                            field: 'status',
+                            width: 100,
+                            render: (rowData) => renderStatus(rowData)},
                         {
                             title: 'Rollback',
                             field: 'rollback',
+                            width: 100,
                             render: (rowData) => rowData?.rollback ? `Rollback to ${rowData?.originalRevisionVersionId}` : "No"
                         },
                         {
                             title: 'Created On',
                             field: 'createdOn',
+                            width: 200,
                             render: (rowData) => format(new Date(rowData.createdOn), "PPpp")
                         },
                         {

@@ -268,43 +268,47 @@ function Home() {
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         Ketchup
                     </Typography>
-                    <div className={classes.grow}/>
                     {userContext?.currentUser?.tenantId === "zigmoi.com" ? null :
-                    <React.Fragment>
-                    <Button
-                        startIcon={<DynamicFeedIcon/>}
-                        endIcon={<ArrowDropDownIcon/>}
-                        className={classes.button}
-                        onClick={handleClickOpen}
-                    >
-                        <Typography variant="subtitle1" noWrap>{projectId ? projectId : "Select Project"}</Typography>
-                    </Button>
-                    {/*<div className={classes.search}>*/}
-                    {/*    <div className={classes.searchIcon}>*/}
-                    {/*        <SearchIcon/>*/}
-                    {/*    </div>*/}
-                    {/*    <InputBase*/}
-                    {/*        placeholder="Search applications and resources."*/}
-                    {/*        classes={{*/}
-                    {/*            root: classes.inputRoot,*/}
-                    {/*            input: classes.inputInput,*/}
-                    {/*        }}*/}
-                    {/*        inputProps={{'aria-label': 'search'}}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
-                    </React.Fragment>}
-                    {/*<div className={classes.grow}/>*/}
-                    <div className={classes.sectionDesktop}>
+                        <React.Fragment>
+                            <Button
+                                startIcon={<DynamicFeedIcon/>}
+                                endIcon={<ArrowDropDownIcon/>}
+                                className={classes.button}
+                                onClick={handleClickOpen}
+                            >
+                                 {projectId ? projectId : "Select Project"}
+                            </Button>
+                            {/*<div className={classes.search}>*/}
+                            {/*    <div className={classes.searchIcon}>*/}
+                            {/*        <SearchIcon/>*/}
+                            {/*    </div>*/}
+                            {/*    <InputBase*/}
+                            {/*        placeholder="Search applications and resources."*/}
+                            {/*        classes={{*/}
+                            {/*            root: classes.inputRoot,*/}
+                            {/*            input: classes.inputInput,*/}
+                            {/*        }}*/}
+                            {/*        inputProps={{'aria-label': 'search'}}*/}
+                            {/*    />*/}
+                            {/*</div>*/}
+                        </React.Fragment>}
+                    <div className={classes.grow}/>
+                    <div>
                         {/* <IconButton aria-label="show 17 new notifications" color="inherit">
               <Badge badgeContent={17} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
-                        <IconButton color="inherit">
-                            <AccountCircle/>
-                            <Typography variant="body2">{userContext?.currentUser?.displayName}</Typography>
-                        </IconButton>
-                        <IconButton color="inherit"
+
+                        <Button
+                            color="inherit"
+                            startIcon={<AccountCircle/>}
+                            style={{textTransform: 'none'}}
+                        >{userContext?.currentUser?.displayName}</Button>
+                        <Button
+                            color="inherit"
+                            startIcon={<ExitToAppIcon/>}
+                            style={{textTransform: 'none'}}
                             onClick={() => {
                                 // projectContext.clearCurrentProject();
                                 userContext.clearCurrentUser();
@@ -312,12 +316,7 @@ function Home() {
                                 //not passing location because if user logouts he should go to default route.
                                 //setting location can redirect different users to route set by previous users.
                             }}
-                        >
-                            {/*<Tooltip title="Logout" aria-label="logout">*/}
-                                <ExitToAppIcon/>
-                            {/*</Tooltip>*/}
-                                <Typography variant="body2">Logout</Typography>
-                        </IconButton>
+                        >Logout</Button>
                     </div>
                 </Toolbar>
             </AppBar>
@@ -384,7 +383,13 @@ function Home() {
                                         </ListItemIcon>
                                         <ListItemText primary="Permissions"/>
                                     </ListItem>
-                                </React.Fragment> : null}
+                                </React.Fragment> :
+                                <ListItem button component={Link} to="/app/dashboard">
+                                    <ListItemIcon>
+                                        <AssessmentIcon className={classes.drawerMenuIcon}/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Get Started"/>
+                                </ListItem>}
                         </React.Fragment>
                     }
                     {useValidateUserHasAllRoles(['ROLE_SUPER_ADMIN']) === false ? null :
