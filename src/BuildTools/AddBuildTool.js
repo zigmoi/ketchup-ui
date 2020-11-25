@@ -56,7 +56,6 @@ function AddBuildTool() {
         setLoading(true);
 
         let data = {
-            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'type': formValues.type,
             'fileData': btoa(formValues.buildconfig),

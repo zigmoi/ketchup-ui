@@ -230,7 +230,6 @@ function AddContainerRegistry() {
         setLoading(true);
 
         let data = {
-            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'type': formValues.type,
             'registryUrl': formValues.registryUrl,

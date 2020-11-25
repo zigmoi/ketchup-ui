@@ -72,7 +72,6 @@ function AddK8sCluster() {
         setLoading(true);
 
         let data = {
-            'projectResourceId': projectResourceId,
             'displayName': formValues.displayName,
             'kubeconfig': btoa(formValues.kubeconfig),
         };
@@ -94,7 +93,6 @@ function AddK8sCluster() {
         setTestConnectionLoading(true);
 
         let data = {
-            'projectId': projectResourceId,
             'displayName': formValues.displayName,
             'kubeconfig': btoa(formValues.kubeconfig),
         };
