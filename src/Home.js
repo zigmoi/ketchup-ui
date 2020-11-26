@@ -350,7 +350,7 @@ function Home() {
                                         <ListItemIcon>
                                             <LoopIcon className={classes.drawerMenuIcon}/>
                                         </ListItemIcon>
-                                        <ListItemText primary="Deployments"/>
+                                        <ListItemText primary=" Active Deployments"/>
                                     </ListItem>
                                     <ListItem button component={Link} to={`/app/project/${projectId}/application/logs`}>
                                         <ListItemIcon>

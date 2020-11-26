@@ -43,8 +43,8 @@ function ManageDeployments() {
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
-        console.log("in effect Manage Deployments");
-        document.title = "Deployments";
+        console.log("in effect Active Deployments");
+        document.title = "Active Deployments";
         loadAll();
     }, [projectResourceId]);
 
@@ -68,7 +68,7 @@ function ManageDeployments() {
         <Container maxWidth="xl" className={classes.container}>
             <Grid>
                 <MaterialTable
-                    title="Deployments"
+                    title="Active Deployments"
                     icons={tableIcons}
                     isLoading={iconLoading}
                     components={{Container: props => props.children}}

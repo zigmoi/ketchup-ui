@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column',
-        height: 260
+        height: 500
     },
     fixedHeight: {
         height: 160,
@@ -104,22 +104,6 @@ export default function Dashboard(props) {
                         <Grid item xs={12} md={4} lg={3}>
                             <Paper className={fixedHeightPaper}>
                                 <React.Fragment>
-                                    <Title>Deployments</Title>
-                                    <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30}
-                                                                     className={classes.circularProgress}/> : totalDeployments}
-                                    </Typography>
-                                    <div>
-                                        <Link color="primary" component={RouterLink} to="/app/project/a1/deployments">
-                                            View
-                                        </Link>
-                                    </div>
-                                </React.Fragment>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={4} lg={3}>
-                            <Paper className={fixedHeightPaper}>
-                                <React.Fragment>
                                     <Title>Clusters</Title>
                                     <Typography variant="h4">
                                         {loading ? <CircularProgress size={30}
@@ -148,6 +132,22 @@ export default function Dashboard(props) {
                                             View
                                         </Link>
                                     </div>
+                                </React.Fragment>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={4} lg={3}>
+                            <Paper className={fixedHeightPaper}>
+                                <React.Fragment>
+                                    <Title>Deployments</Title>
+                                    <Typography variant="h4">
+                                        {loading ? <CircularProgress size={30}
+                                                                     className={classes.circularProgress}/> : totalDeployments}
+                                    </Typography>
+                                    {/*<div>*/}
+                                    {/*    <Link color="primary" component={RouterLink} to="/app/project/a1/deployments">*/}
+                                    {/*        View*/}
+                                    {/*    </Link>*/}
+                                    {/*</div>*/}
                                 </React.Fragment>
                             </Paper>
                         </Grid>
