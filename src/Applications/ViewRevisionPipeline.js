@@ -83,6 +83,7 @@ function ViewRevisionPipeline() {
     const [statusJson, setStatusJson] = useState("");
     const [version, setVersion] = useState("");
     const [commitId, setCommitId] = useState("");
+    const [deploymentTriggerType, setDeploymentTriggerType] = useState("");
 
     let statusSource;
     useEffect(() => {
@@ -105,6 +106,7 @@ function ViewRevisionPipeline() {
                 setLoading(false);
                 setVersion(response.data.version);
                 setCommitId(response.data.commitId);
+                setDeploymentTriggerType(response.data.deploymentTriggerType);
                 startStatusStreaming();
             })
             .catch(() => {
@@ -225,6 +227,12 @@ function ViewRevisionPipeline() {
                                         Commit ID: &nbsp;
                                         <Typography variant="caption">
                                             {commitId}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Trigger Type: &nbsp;
+                                        <Typography variant="caption">
+                                            {deploymentTriggerType}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
