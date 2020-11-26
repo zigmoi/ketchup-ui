@@ -186,6 +186,13 @@ function ViewApplication() {
                         className={classes.button}
                         size="small"
                         variant="text"
+                        color="primary"
+                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/git-web-hook/generate`)}
+                    >Git Web Hook URL</Button>
+                    <Button
+                        className={classes.button}
+                        size="small"
+                        variant="text"
                         color="secondary"
                         onClick={openDeleteDialog}
                     >Delete</Button>

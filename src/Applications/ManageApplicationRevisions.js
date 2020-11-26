@@ -160,7 +160,7 @@ function ManageApplicationRevisions() {
                         {
                             title: 'Status',
                             field: 'status',
-                            width: 100,
+                            width: 120,
                             render: (rowData) => renderStatus(rowData)},
                         {
                             title: 'Rollback',

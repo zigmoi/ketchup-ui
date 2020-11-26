@@ -6,6 +6,8 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import tableIcons from '../tableIcons';
 import {format} from 'date-fns';
 import {useHistory} from "react-router-dom";
+import Tooltip from "@material-ui/core/Tooltip";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 function RecentDeployments(props) {
     let history = useHistory();
@@ -30,6 +32,10 @@ function RecentDeployments(props) {
             });
     }
 
+    function reloadTabularData() {
+        loadAll();
+    }
+
     function renderStatus(rowData) {
         if (rowData?.status === "SUCCESS") {
             return <Typography style={{fontWeight: "bold", color: 'green'}}
@@ -38,8 +44,30 @@ function RecentDeployments(props) {
             return <Typography style={{fontWeight: "bold", color: '#f44336'}}
                                variant="inherit">{rowData?.status}</Typography>
         } else {
-            return <Typography style={{fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography>
+            return (
+                <React.Fragment>
+                    <Typography style={{fontWeight: "bold"}} variant="inherit">{rowData?.status}</Typography> &nbsp;
+                    {rowData?.rollback ? null :
+                        <Tooltip title="Refresh Status">
+                            <RefreshIcon
+                                onClick={() => refreshRevisionStatus(rowData.id.applicationResourceId, rowData.id.revisionResourceId)}
+                                color="action"
+                                fontSize="inherit"/>
+                        </Tooltip>}
+                </React.Fragment>);
         }
+    }
+
+    function refreshRevisionStatus(applicationResourceId, revisionResourceId) {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
+            .then((response) => {
+                setLoading(false);
+                reloadTabularData();
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }
 
     return (
@@ -51,7 +79,7 @@ function RecentDeployments(props) {
             columns={[
                 {title: 'Application ID', field: 'id.applicationResourceId', width: 280},
                 {title: 'Version', field: 'version'},
-                {title: 'Commit Id', field: 'commitId', render: (rowData) => rowData?.commitId?.substring(0, 8)},
+                {title: 'Commit Id', field: 'commitId', render: (rowData) => rowData?.commitId ? rowData?.commitId.substring(0, 8) : "-"},
                 {title: 'Status', field: 'status', render: (rowData) => renderStatus(rowData)},
                 {
                     title: 'Updated On',

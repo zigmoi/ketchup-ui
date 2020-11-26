@@ -83,6 +83,7 @@ import ManageProjectPermissions from "./Users/ManageProjectPermissions";
 
 import ViewRevisionPipeline from './Applications/ViewRevisionPipeline';
 import ManageDeployments from "./Applications/ManageDeployments";
+import GenerateGitWebHookUrl from "./Applications/GenerateGitWebHookUrl";
 
 
 const drawerWidth = 220;
@@ -515,6 +516,9 @@ function Home() {
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/view"
                        render={() => <ProtectedRoute component={ViewApplication}
+                                                     roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
+                <Route path="/app/project/:projectResourceId/application/:applicationResourceId/git-web-hook/generate"
+                       render={() => <ProtectedRoute component={GenerateGitWebHookUrl}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId?/logs"
                        render={() => <ProtectedRoute component={ViewApplicationLogs}
