@@ -66,6 +66,7 @@ function ViewApplicationLogs() {
     const [applications, setApplications] = useState([]);
     const [selectedApplication, setSelectedApplication] = useState('');
     const [logUrl, setLogUrl] = useState("");
+    const [streaming, setStreaming] = useState(false);
 
     useEffect(() => {
         setInstances([]);
@@ -81,6 +82,7 @@ function ViewApplicationLogs() {
 
     function getAllInstances(selectedApplicationResourceId) {
         setLoading(true);
+        setSelectedInstance('');
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplicationResourceId}/instances`)
             .then((response) => {
                 setLoading(false);
@@ -106,6 +108,16 @@ function ViewApplicationLogs() {
             });
     }
 
+    function toggleStreaming() {
+        if (streaming) {
+            setStreaming(false);
+            stopStreaming();
+        } else {
+            setStreaming(true);
+            startStreaming();
+        }
+    }
+
     function startStreaming() {
         let url;
         if (applicationResourceId) {
@@ -114,6 +126,15 @@ function ViewApplicationLogs() {
             url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplication}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         }
         setLogUrl(url);
+    }
+
+    function stopStreaming() {
+        setLogUrl("");
+    }
+
+    function handleStreamingError() {
+        toggleStreaming();
+        enqueueSnackbar('Error encountered, please try again.', {variant: 'error'});
     }
 
     return (
@@ -151,8 +172,9 @@ function ViewApplicationLogs() {
                                         getAllInstances(e.target.value);
                                     }}
                                 >
-                                    {applications.map(application => <MenuItem key={application.id.applicationResourceId}
-                                                                               value={application.id.applicationResourceId}> {application.displayName} - {application.id.applicationResourceId}</MenuItem>)}
+                                    {applications.map(application => <MenuItem
+                                        key={application.id.applicationResourceId}
+                                        value={application.id.applicationResourceId}> {application.displayName} - {application.id.applicationResourceId}</MenuItem>)}
                                 </TextField>}
 
 
@@ -173,16 +195,14 @@ function ViewApplicationLogs() {
                                 {instances.map(instance => <MenuItem key={instance}
                                                                      value={instance}> {instance}</MenuItem>)}
                             </TextField>
-
                             <Button
                                 className={classes.button}
-                                size="small"
+                                size="large"
                                 variant="outlined"
                                 color="primary"
-                                disabled={loading}
-                                onClick={startStreaming}
-                            >Stream Logs</Button>
-
+                                disabled={!((applicationResourceId || selectedApplication) && selectedInstance)}
+                                onClick={toggleStreaming}
+                            >{streaming ? "Stop" : "Stream Logs"}</Button>
                         </Box>
                         {logUrl === "" ? null :
                             <Box width="100%">
@@ -198,6 +218,7 @@ function ViewApplicationLogs() {
                                             selectableLines
                                             follow={follow}
                                             onScroll={onScroll}
+                                            onError={handleStreamingError}
                                             enableSearch/>
                                     )}
                                 />
