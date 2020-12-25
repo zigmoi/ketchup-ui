@@ -62,13 +62,15 @@ function ViewApplication() {
 
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
-    const [activeRevisionResponse, setActiveRevisionResponse] = useState({});
+    const [currentRevisionResponse, setCurrentRevisionResponse] = useState({});
+    const [lastSuccessfulRevisionResponse, setLastSuccessfulRevisionResponse] = useState({});
     const [deploying, setDeploying] = useState(false);
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
         loadDetails();
-        getActiveRevision();
+        getCurrentRevision();
+        getLastSuccessfulRevision();
     }, [projectResourceId, applicationResourceId]);
 
 
@@ -88,12 +90,24 @@ function ViewApplication() {
             });
     }
 
-    function getActiveRevision() {
+    function getCurrentRevision() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/active-revision`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/current-revision`)
             .then((response) => {
                 setLoading(false);
-                setActiveRevisionResponse(response.data);
+                setCurrentRevisionResponse(response.data);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
+
+    function getLastSuccessfulRevision() {
+        setLoading(true);
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/last-successful-revision`)
+            .then((response) => {
+                setLoading(false);
+                setLastSuccessfulRevisionResponse(response.data);
             })
             .catch(() => {
                 setLoading(false);
@@ -102,7 +116,7 @@ function ViewApplication() {
 
     function deployApplication() {
         setDeploying(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions?commit-id=latest`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setDeploying(false);
@@ -230,23 +244,79 @@ function ViewApplication() {
                                         </Typography>
                                     </Typography>
                                     <br/>
-                                    <label style={{fontWeight: 'bold'}}>Active Version Details</label>
+                                    <label style={{fontWeight: 'bold'}}>Health Status</label>
+                                    <Typography variant="subtitle2">
+                                        Application Health: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentStatus?.healthy ? "HEALTHY" : "UNHEALTHY"}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Deployed Version Number: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentStatus?.revisionVersionNo}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Required Replicas: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.replicas}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Available Replicas: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentStatus?.availableReplicas}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Ready Replicas: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentStatus?.readyReplicas}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Upto Date Replicas: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentStatus?.uptoDateReplicas}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Last Successful Deployment: &nbsp;
+                                        <Typography variant="caption">
+                                            {lastSuccessfulRevisionResponse?.version} &nbsp; {lastSuccessfulRevisionResponse?.rollback ? `(Rollbacked to: ${lastSuccessfulRevisionResponse?.originalRevisionVersionId})` : ""}
+                                        </Typography>
+                                    </Typography>
+                                    <br/>
+                                    <label style={{fontWeight: 'bold'}}>Current Version Details</label>
                                     <Typography variant="subtitle2">
                                         Version Number: &nbsp;
                                         <Typography variant="caption">
-                                            {activeRevisionResponse?.version}
+                                            {currentRevisionResponse?.version}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Revision ID: &nbsp;
                                         <Typography variant="caption">
-                                            {activeRevisionResponse?.id?.revisionResourceId}
+                                            {currentRevisionResponse?.id?.revisionResourceId}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Commit ID : &nbsp;
                                         <Typography variant="caption">
-                                            {activeRevisionResponse?.commitId}
+                                            {currentRevisionResponse?.commitId}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Deployment Status: &nbsp;
+                                        <Typography variant="caption">
+                                            {currentRevisionResponse?.status}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Is Rollback: &nbsp;
+                                        <Typography variant="caption">
+                                            {currentRevisionResponse?.rollback ? "Yes (To: " + currentRevisionResponse?.originalRevisionVersionId + ")" : "No"}
                                         </Typography>
                                     </Typography>
                                     <br/>
@@ -359,12 +429,6 @@ function ViewApplication() {
                                         Port: &nbsp;
                                         <Typography variant="caption">
                                             {response?.appServerPort}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Replicas: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.replicas}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">

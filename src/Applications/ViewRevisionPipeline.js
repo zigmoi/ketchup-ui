@@ -131,7 +131,7 @@ function ViewRevisionPipeline() {
             this.close();
             setLoading(false);
             enqueueSnackbar('Status streaming finished.', {variant: 'info'});
-
+            refreshRevisionStatus(revisionResourceId);
             console.log("closed.");
         }, false);
 
@@ -154,6 +154,7 @@ function ViewRevisionPipeline() {
             statusSource.close();
             setLoading(false);
             enqueueSnackbar('Pipeline has finished, stopping status streaming.', {variant: 'info'});
+            refreshRevisionStatus(revisionResourceId);
         }
     }
 
@@ -166,6 +167,14 @@ function ViewRevisionPipeline() {
             })
             .catch((error) => {
                 setCancellingPipeline(false);
+            });
+    }
+
+    function refreshRevisionStatus(revisionResourceId) {
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
+            .then((response) => {
+            })
+            .catch(() => {
             });
     }
 

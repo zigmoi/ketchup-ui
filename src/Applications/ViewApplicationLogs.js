@@ -121,9 +121,9 @@ function ViewApplicationLogs() {
     function startStreaming() {
         let url;
         if (applicationResourceId) {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/current/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         } else {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplication}/revisions/active/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplication}/revisions/current/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         }
         setLogUrl(url);
     }

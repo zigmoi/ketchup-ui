@@ -68,7 +68,7 @@ function ManageApplicationRevisions() {
 
     function deployApplication() {
         setLoading(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions`, null, {timeout: 60000})
+        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions?commit-id=latest`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setLoading(false);
