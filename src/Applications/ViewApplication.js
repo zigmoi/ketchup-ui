@@ -248,7 +248,7 @@ function ViewApplication() {
                                     <Typography variant="subtitle2">
                                         Application Health: &nbsp;
                                         <Typography variant="caption">
-                                            {response?.deploymentStatus?.healthy ? "HEALTHY" : "UNHEALTHY"}
+                                            {response?.deploymentStatus?.healthy ? response?.deploymentStatus?.healthy === true ? "HEALTHY" : "UNHEALTHY" : "-"}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
