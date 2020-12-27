@@ -140,21 +140,27 @@ function ViewRevisionPipeline() {
             this.close();
             setLoading(false);
             enqueueSnackbar('Something went wrong, connection closed, refresh to try again.', {variant: 'error'});
+            refreshRevisionStatus(revisionResourceId);
         }, false);
     }
 
     function streamPipelineStatus(event) {
         console.log(event);
-        setStatusJson(JSON.parse(event.data));
         let parsedStatusJson = JSON.parse(event.data);
         console.log(parsedStatusJson);
-
-        if (parsedStatusJson.reason && (parsedStatusJson.reason === 'Succeeded' || parsedStatusJson.reason === 'Failed' || parsedStatusJson.reason === 'PipelineRunCancelled')) {
+        //sort tasks & steps
+        parsedStatusJson.tasks.sort((a, b) => a.order - b.order);
+        for (const task of parsedStatusJson?.tasks) {
+            task.steps.sort((a, b) => a.order - b.order);
+        }
+        setStatusJson(parsedStatusJson);
+        if (parsedStatusJson.reason && (parsedStatusJson.reason === 'Succeeded' || parsedStatusJson.reason === 'Failed' || parsedStatusJson.reason === 'PipelineRunCancelled' || parsedStatusJson.reason === 'PipelineRunTimeout' || parsedStatusJson.reason === 'CouldntGetTask')) {
             console.log('closing status source.');
             statusSource.close();
             setLoading(false);
             enqueueSnackbar('Pipeline has finished, stopping status streaming.', {variant: 'info'});
             refreshRevisionStatus(revisionResourceId);
+            //refreshRevisionStatus(revisionResourceId);
         }
     }
 
@@ -164,6 +170,7 @@ function ViewRevisionPipeline() {
             .then((response) => {
                 setCancellingPipeline(false);
                 enqueueSnackbar('Pipeline cancelled successfully.', {variant: 'success'});
+                fetchRevisionData();
             })
             .catch((error) => {
                 setCancellingPipeline(false);
@@ -278,7 +285,7 @@ function ViewRevisionPipeline() {
                     </Box>
                     <Box m={2}>
                         <br/>
-                        {statusJson?.tasks?.sort((a, b) => a.order - b.order).map((task, taskIndex) => {
+                        {statusJson?.tasks?.map((task, taskIndex) => {
                             return (
                                 <React.Fragment key={taskIndex}>
                                     <Accordion style={{backgroundColor: '#e9e5df'}}>
@@ -328,7 +335,7 @@ function ViewRevisionPipeline() {
                                         <AccordionDetails>
                                             <Grid container>
                                                 <Grid item md={9} lg={12} xl={8}>
-                                                    {task?.steps.sort((a, b) => a.order - b.order).map((step, stepIndex) => {
+                                                    {task?.steps.map((step, stepIndex) => {
                                                         return (
                                                             <React.Fragment key={stepIndex}>
                                                                 <Typography variant="subtitle2">
