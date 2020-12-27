@@ -76,14 +76,10 @@ function ViewApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}?live-status=true`)
             .then((response) => {
                 setLoading(false);
                 setResponse(response.data);
-                // setValue("type", response.data.type);
-                // setValue("buildconfig", atob(response.data.fileData));
-                // setLastUpdatedBy(response.data.lastUpdatedBy);
-                // setLastUpdatedOn(response.data.lastUpdatedOn);
             })
             .catch(() => {
                 setLoading(false);
@@ -400,7 +396,7 @@ function ViewApplication() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        Cluster: &nbsp;
+                                        Cluster Settings: &nbsp;
                                         {response?.devKubernetesClusterSettingId ?
                                             <Link
                                                 component="button"
@@ -412,6 +408,12 @@ function ViewApplication() {
                                             >
                                                 {response?.devKubernetesClusterSettingId}
                                             </Link> : null}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Cluster Base Address: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.devKubernetesBaseAddress}
+                                        </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Namespace: &nbsp;

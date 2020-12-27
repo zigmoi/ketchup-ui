@@ -197,6 +197,30 @@ function ViewApplicationRevision() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
+                                        Container Registry Type: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.containerRegistryType}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Container Registry URL: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.containerRegistryUrl}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Container Registry Repository Name: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.containerRepositoryName}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Container Registry Username: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.containerRegistryUsername}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
                                         Platform: &nbsp;
                                         <Typography variant="caption">
                                             {response?.platform}
@@ -237,7 +261,7 @@ function ViewApplicationRevision() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        Cluster: &nbsp;
+                                        Cluster Settings: &nbsp;
                                         {response?.devKubernetesClusterSettingId ?
                                             <Link
                                                 component="button"
@@ -249,6 +273,12 @@ function ViewApplicationRevision() {
                                             >
                                                 {response?.devKubernetesClusterSettingId}
                                             </Link> : null}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Cluster Base Address: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.devKubernetesBaseAddress}
+                                        </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Namespace: &nbsp;
