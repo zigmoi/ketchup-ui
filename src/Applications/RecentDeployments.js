@@ -92,7 +92,7 @@ function RecentDeployments(props) {
                 {
                     icon: () => <LaunchIcon color="action" fontSize="small"/>,
                     tooltip: 'View Pipeline',
-                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.applicationResourceId}/revision/${rowData.id.revisionResourceId}`)
+                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.applicationResourceId}/revision/${rowData.id.revisionResourceId}/pipeline`)
                 },
             ]}
             options={{

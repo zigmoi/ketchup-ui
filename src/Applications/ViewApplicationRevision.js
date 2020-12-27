@@ -97,7 +97,7 @@ function ViewApplicationRevision() {
                         variant="text"
                         color="primary"
                         disabled={response?.rollback}
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${revisionResourceId}`)}
+                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${revisionResourceId}/pipeline`)}
                     >Pipeline</Button>
                 </Toolbar>
             </AppBar>

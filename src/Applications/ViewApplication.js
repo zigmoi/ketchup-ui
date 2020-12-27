@@ -121,7 +121,7 @@ function ViewApplication() {
                 console.log(response);
                 setDeploying(false);
                 enqueueSnackbar('Application deployment started successfully!', {variant: 'success'});
-                history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${response.data.revisionResourceId}`);
+                history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${response.data.revisionResourceId}/pipeline`);
             })
             .catch((error) => {
                 setDeploying(false);
@@ -202,7 +202,7 @@ function ViewApplication() {
                         variant="text"
                         color="primary"
                         onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/git-web-hook/generate`)}
-                    >Git Web Hook</Button>
+                    >Git-WebHook</Button>
                     <Button
                         className={classes.button}
                         size="small"

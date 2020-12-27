@@ -91,7 +91,7 @@ function ManageDeployments() {
                         {
                             icon: () => <LaunchIcon color="action" fontSize="small"/>,
                             tooltip: 'View Deployment',
-                            onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.applicationResourceId}/revision/${rowData.id.revisionResourceId}`)
+                            onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/application/${rowData.id.applicationResourceId}/revision/${rowData.id.revisionResourceId}/pipeline`)
                         },
                         {
                             icon: () => <RefreshIcon color="action" fontSize="small"/>,

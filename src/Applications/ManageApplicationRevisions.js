@@ -74,7 +74,7 @@ function ManageApplicationRevisions() {
                 console.log(response);
                 setLoading(false);
                 enqueueSnackbar('Application deployment started successfully!', {variant: 'success'});
-                history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${response.data.revisionResourceId}`);
+                history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${response.data.revisionResourceId}/pipeline`);
             })
             .catch((error) => {
                 setLoading(false);
@@ -292,7 +292,7 @@ function ActionMenu(props) {
                         key="pipeline"
                         onClick={() => {
                             setAnchorEl(null);
-                            history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}`);
+                            history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}/pipeline`);
                         }}>
                         View Pipeline
                     </MenuItem>

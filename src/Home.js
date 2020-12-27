@@ -522,6 +522,10 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/revision/:revisionResourceId/view"
                        render={() => <ProtectedRoute component={ViewApplicationRevision}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
+                <Route
+                    path="/app/project/:projectResourceId/application/:applicationResourceId/revision/:revisionResourceId/pipeline"
+                    render={() => <ProtectedRoute component={ViewRevisionPipeline}
+                                                  roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/edit"
                        render={() => <ProtectedRoute component={EditApplication}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
@@ -534,10 +538,6 @@ function Home() {
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId?/logs"
                        render={() => <ProtectedRoute component={ViewApplicationLogs}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route
-                    path="/app/project/:projectResourceId/application/:applicationResourceId/revision/:revisionResourceId"
-                    render={() => <ProtectedRoute component={ViewRevisionPipeline}
-                                                  roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/applications"
                        render={() => <ProtectedRoute component={ManageApplications}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
