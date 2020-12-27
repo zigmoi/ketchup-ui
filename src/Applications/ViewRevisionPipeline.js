@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ViewRevisionPipeline() {
-    document.title = "Deployment Pipeline";
+    document.title = "Deployment Pipeline Details";
     const classes = useStyles();
     const logViewerHeight = 350;
 
@@ -206,7 +206,7 @@ function ViewRevisionPipeline() {
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
-                    <Typography variant="h6" color="inherit">Deployment Pipeline
+                    <Typography variant="h6" color="inherit">Deployment Pipeline Details
                         <Typography variant="caption">
                             &nbsp; {revisionResourceId}
                         </Typography>

@@ -52,110 +52,41 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function ViewApplication() {
-    document.title = "Application Details";
+function ViewApplicationRevision() {
+    document.title = "Revision Details";
     const classes = useStyles();
 
-    let {projectResourceId, applicationResourceId} = useParams();
+    let {projectResourceId, applicationResourceId, revisionResourceId} = useParams();
     let history = useHistory();
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState({});
-    const [currentRevisionResponse, setCurrentRevisionResponse] = useState({});
-    const [lastSuccessfulRevisionResponse, setLastSuccessfulRevisionResponse] = useState({});
-    const [deploying, setDeploying] = useState(false);
-    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         loadDetails();
-        getCurrentRevision();
-        getLastSuccessfulRevision();
     }, [projectResourceId, applicationResourceId]);
 
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setResponse(response.data);
-                // setValue("type", response.data.type);
-                // setValue("buildconfig", atob(response.data.fileData));
-                // setLastUpdatedBy(response.data.lastUpdatedBy);
-                // setLastUpdatedOn(response.data.lastUpdatedOn);
             })
             .catch(() => {
                 setLoading(false);
             });
-    }
-
-    function getCurrentRevision() {
-        setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/current-revision`)
-            .then((response) => {
-                setLoading(false);
-                setCurrentRevisionResponse(response.data);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    }
-
-    function getLastSuccessfulRevision() {
-        setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/last-successful-revision`)
-            .then((response) => {
-                setLoading(false);
-                setLastSuccessfulRevisionResponse(response.data);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    }
-
-    function deployApplication() {
-        setDeploying(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions?commit-id=latest`, null, {timeout: 60000})
-            .then((response) => {
-                console.log(response);
-                setDeploying(false);
-                enqueueSnackbar('Application deployment started successfully!', {variant: 'success'});
-                history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${response.data.revisionResourceId}`);
-            })
-            .catch((error) => {
-                setDeploying(false);
-                enqueueSnackbar('Application deployment failed!', {variant: 'error'});
-            });
-    }
-
-    function deleteApplication() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
-            .then((response) => {
-                closeDeleteDialog();
-                enqueueSnackbar('Application deleted successfully!', {variant: 'success'});
-                history.push(`/app/project/${projectResourceId}/applications/`);
-            })
-            .catch((error) => {
-                closeDeleteDialog();
-            });
-    }
-
-    function openDeleteDialog() {
-        setOpen(true);
-    }
-
-    function closeDeleteDialog() {
-        setOpen(false);
     }
 
     return (
         <Container maxWidth="xl" disableGutters className={classes.container}>
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
-                    <Typography variant="h6" color="inherit">Application Details
+                    <Typography variant="h6" color="inherit">Revision Details
                         <Typography variant="caption">
-                            &nbsp; {applicationResourceId}
+                            &nbsp; {revisionResourceId}
                         </Typography>
                     </Typography>
                     {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
@@ -165,158 +96,64 @@ function ViewApplication() {
                         size="small"
                         variant="text"
                         color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/edit`)}
-                    >Edit</Button>
-                    <Button
-                        className={classes.button}
-                        size="small"
-                        variant="text"
-                        color="primary"
-                        disabled={deploying}
-                        onClick={() => deployApplication()}
-                    >{deploying ?
-                        <React.Fragment>
-                            <CircularProgress size={15} className={classes.circularProgress}/>
-                            <Typography variant="caption">
-                                &nbsp; Deploy
-                            </Typography>
-                        </React.Fragment>
-                        : "Deploy"}</Button>
-                    <Button
-                        className={classes.button}
-                        size="small"
-                        variant="text"
-                        color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/logs`)}
-                    >Logs</Button>
-                    <Button
-                        className={classes.button}
-                        size="small"
-                        variant="text"
-                        color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revisions`)}
-                    >Revisions</Button>
-                    <Button
-                        className={classes.button}
-                        size="small"
-                        variant="text"
-                        color="primary"
-                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/git-web-hook/generate`)}
-                    >Git Web Hook</Button>
-                    <Button
-                        className={classes.button}
-                        size="small"
-                        variant="text"
-                        color="secondary"
-                        onClick={openDeleteDialog}
-                    >Delete</Button>
+                        disabled={response?.rollback}
+                        onClick={() => history.push(`/app/project/${projectResourceId}/application/${applicationResourceId}/revision/${revisionResourceId}`)}
+                    >Pipeline</Button>
                 </Toolbar>
             </AppBar>
             <Grid container>
                 <Grid item md={9} lg={12} xl={5}>
-                    <DeleteDialog
-                        isOpen={open}
-                        title={"Confirm Delete"}
-                        description={`Do you want to delete this application (${applicationResourceId}) ?`}
-                        onDelete={deleteApplication}
-                        onClose={closeDeleteDialog}/>
                     <Box m={1}>
                         <Paper>
                             <Box width="100%" display="flex" alignItems="center">
                                 <Box width="80%" m={2} textAlign="left">
                                     <label style={{fontWeight: 'bold'}}>General Details</label>
                                     <Typography variant="subtitle2">
-                                        Display Name: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.displayName}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Description: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.description}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
                                         Application Type: &nbsp;
                                         <Typography variant="caption">
                                             {response?.applicationType}
                                         </Typography>
                                     </Typography>
-                                    <br/>
-                                    <label style={{fontWeight: 'bold'}}>Health Status</label>
-                                    <Typography variant="subtitle2">
-                                        Application Health: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.deploymentStatus?.healthy ? response?.deploymentStatus?.healthy === true ? "HEALTHY" : "UNHEALTHY" : "-"}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Deployed Version Number: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.deploymentStatus?.revisionVersionNo}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Required Replicas: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.replicas}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Available Replicas: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.deploymentStatus?.availableReplicas}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Ready Replicas: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.deploymentStatus?.readyReplicas}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Upto Date Replicas: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.deploymentStatus?.uptoDateReplicas}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Last Successful Deployment: &nbsp;
-                                        <Typography variant="caption">
-                                            {lastSuccessfulRevisionResponse?.version} &nbsp; {lastSuccessfulRevisionResponse?.rollback ? `(Rollbacked to: ${lastSuccessfulRevisionResponse?.originalRevisionVersionId})` : ""}
-                                        </Typography>
-                                    </Typography>
-                                    <br/>
-                                    <label style={{fontWeight: 'bold'}}>Current Version Details</label>
                                     <Typography variant="subtitle2">
                                         Version Number: &nbsp;
                                         <Typography variant="caption">
-                                            {currentRevisionResponse?.version}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Revision ID: &nbsp;
-                                        <Typography variant="caption">
-                                            {currentRevisionResponse?.id?.revisionResourceId}
+                                            {response?.version}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Commit ID : &nbsp;
                                         <Typography variant="caption">
-                                            {currentRevisionResponse?.commitId}
+                                            {response?.commitId}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Helm Release ID : &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.helmReleaseId}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Helm Release Version : &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.helmReleaseVersion}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Deployment Status: &nbsp;
                                         <Typography variant="caption">
-                                            {currentRevisionResponse?.status}
+                                            {response?.status}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Is Rollback: &nbsp;
                                         <Typography variant="caption">
-                                            {currentRevisionResponse?.rollback ? "Yes (To: " + currentRevisionResponse?.originalRevisionVersionId + ")" : "No"}
+                                            {response?.rollback ? "Yes (To: " + response?.originalRevisionVersionId + ")" : "No"}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Trigger Type: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentTriggerType}
                                         </Typography>
                                     </Typography>
                                     <br/>
@@ -432,11 +269,13 @@ function ViewApplication() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        URL: &nbsp;
+                                        Required Replicas: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.replicas}
+                                        </Typography>
                                     </Typography>
                                     <br/>
                                     <Grid container>
-
                                     </Grid>
                                 </Box>
                                 <Box width="10%">
@@ -447,7 +286,6 @@ function ViewApplication() {
                                     {/*        </Typography>*/}
                                     {/*    </Typography>*/}
                                 </Box>
-
                             </Box>
                         </Paper>
                     </Box>
@@ -458,4 +296,4 @@ function ViewApplication() {
 
 }
 
-export default ViewApplication;
+export default ViewApplicationRevision;

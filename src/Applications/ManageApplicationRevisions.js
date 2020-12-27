@@ -14,6 +14,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import LaunchIcon from "@material-ui/icons/Launch";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -146,11 +147,13 @@ function ManageApplicationRevisions() {
                         {
                             title: 'ID',
                             field: 'id.revisionResourceId',
-                            width: 280},
+                            width: 280
+                        },
                         {
                             title: 'Version',
                             field: 'version',
-                            width: 50},
+                            width: 50
+                        },
                         {
                             title: 'Commit',
                             field: 'commitId',
@@ -161,7 +164,8 @@ function ManageApplicationRevisions() {
                             title: 'Status',
                             field: 'status',
                             width: 120,
-                            render: (rowData) => renderStatus(rowData)},
+                            render: (rowData) => renderStatus(rowData)
+                        },
                         {
                             title: 'Rollback',
                             field: 'rollback',
@@ -255,6 +259,15 @@ function ActionMenu(props) {
     const classes = useStyles();
     return (
         <div style={{display: "flex"}}>
+            <Tooltip title="View Details">
+                <IconButton
+                    className={classes.actionIcon}
+                    onClick={() => history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}/view`)}
+                >
+                    <LaunchIcon color="action"/>
+                </IconButton>
+            </Tooltip>
+            &nbsp; &nbsp;
             <IconButton onClick={handleClick} className={classes.actionIcon}>
                 <MoreVertIcon/>
             </IconButton>
@@ -282,16 +295,19 @@ function ActionMenu(props) {
                             history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/revision/${props.rowData.id.revisionResourceId}`);
                         }}>
                         View Pipeline
-                    </MenuItem>}
-                <MenuItem
-                    style={{fontSize: 12}}
-                    key="rollback"
-                    onClick={() => {
-                        setAnchorEl(null);
-                        props.rollbackRevision(props.rowData.id.revisionResourceId);
-                    }}>
-                    Rollback
-                </MenuItem>
+                    </MenuItem>
+                }
+                {props.rowData?.status === "SUCCESS" ?
+                    <MenuItem
+                        style={{fontSize: 12}}
+                        key="rollback"
+                        onClick={() => {
+                            setAnchorEl(null);
+                            props.rollbackRevision(props.rowData.id.revisionResourceId);
+                        }}>
+                        Rollback
+                    </MenuItem> : null
+                }
                 {(props.rowData?.status === "SUCCESS" || props.rowData?.status === "FAILED" || props?.rowData?.rollback) ? null :
                     <MenuItem
                         style={{fontSize: 12}}
@@ -301,7 +317,8 @@ function ActionMenu(props) {
                             props.refreshRevisionStatus(props.rowData.id.revisionResourceId);
                         }}>
                         Refresh Status
-                    </MenuItem>}
+                    </MenuItem>
+                }
             </Menu>
         </div>
     );

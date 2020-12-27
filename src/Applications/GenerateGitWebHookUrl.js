@@ -121,6 +121,7 @@ function GenerateGitWebHookUrl() {
                                     helperText={errors.type?.message}
                                 >
                                     <MenuItem key="gitlab" value="gitlab">Gitlab</MenuItem>
+                                    <MenuItem key="github" value="github">Github</MenuItem>
                                 </TextField>}
                             />
                             <Grid container>

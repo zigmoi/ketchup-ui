@@ -66,7 +66,7 @@ export default function ApplicationsActionMenu(props) {
     const classes = useStyles();
     return (
         <div style={{display: "flex"}}>
-            <Tooltip title="View Application">
+            <Tooltip title="View Details">
                 <IconButton
                     className={classes.actionIcon}
                     onClick={() => history.push(`/app/project/${props.rowData.id.projectResourceId}/application/${props.rowData.id.applicationResourceId}/view`)}

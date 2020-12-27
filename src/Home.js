@@ -49,6 +49,7 @@ import LineWeightIcon from '@material-ui/icons/LineWeight';
 import MemoryIcon from '@material-ui/icons/Memory';
 import LoopIcon from '@material-ui/icons/Loop';
 import SettingsIcon from '@material-ui/icons/Settings';
+import WifiOffIcon from '@material-ui/icons/WifiOff';
 
 import CreateUser from './Users/CreateUser';
 import EditUser from './Users/EditUser';
@@ -75,6 +76,7 @@ import ViewApplication from './Applications/ViewApplication';
 import ViewApplicationLogs from './Applications/ViewApplicationLogs';
 import ManageApplications from './Applications/ManageApplications';
 import ManageApplicationRevisions from './Applications/ManageApplicationRevisions';
+import ViewApplicationRevision from "./Applications/ViewApplicationRevision";
 
 import CreateProject from './Projects/CreateProject';
 import EditProject from "./Projects/EditProject";
@@ -300,7 +302,13 @@ function Home() {
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
-
+                        {/*{ navigator.onLine ? null :*/}
+                        {/*    <Button*/}
+                        {/*        startIcon={<WifiOffIcon/>}*/}
+                        {/*        className={classes.button}*/}
+                        {/*    >*/}
+                        {/*        OFFLINE*/}
+                        {/*    </Button>}*/}
                         <Button
                             color="inherit"
                             startIcon={<AccountCircle/>}
@@ -510,6 +518,9 @@ function Home() {
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/revisions"
                        render={() => <ProtectedRoute component={ManageApplicationRevisions}
+                                                     roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
+                <Route path="/app/project/:projectResourceId/application/:applicationResourceId/revision/:revisionResourceId/view"
+                       render={() => <ProtectedRoute component={ViewApplicationRevision}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/application/:applicationResourceId/edit"
                        render={() => <ProtectedRoute component={EditApplication}
