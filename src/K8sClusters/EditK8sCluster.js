@@ -183,12 +183,13 @@ function EditK8sCluster() {
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
-                        <DeleteDialog
-                            isOpen={open}
-                            title={"Confirm Delete"}
-                            description={`Do you want to delete this setting (${settingResourceId}) ?`}
-                            onDelete={deleteSetting}
-                            onClose={closeDeleteDialog}/>
+                        {open ?
+                            <DeleteDialog
+                                isOpen={open}
+                                title={"Confirm Delete"}
+                                description={`Do you want to delete this setting (${settingResourceId}) ?`}
+                                onDelete={deleteSetting}
+                                onClose={closeDeleteDialog}/> : null}
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"

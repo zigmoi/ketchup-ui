@@ -189,12 +189,13 @@ function EditProject() {
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
-                        <DeleteDialog
-                            isOpen={open}
-                            title={"Confirm Delete"}
-                            description={`Do you want to delete this project (${projectResourceId}) and all its content (applications, settings etc)?`}
-                            onDelete={deleteProject}
-                            onClose={closeDeleteDialog}/>
+                        {open ?
+                            <DeleteDialog
+                                isOpen={open}
+                                title={"Confirm Delete"}
+                                description={`Do you want to delete this project (${projectResourceId}) and all its content (applications, settings etc)?`}
+                                onDelete={deleteProject}
+                                onClose={closeDeleteDialog}/> : null}
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"

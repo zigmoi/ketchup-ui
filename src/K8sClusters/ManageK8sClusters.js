@@ -91,12 +91,13 @@ function ManageK8sCusters() {
     return (
         <Container maxWidth="xl" className={classes.container}>
             <Grid>
-                <DeleteDialog
-                    isOpen={open}
-                    title={"Confirm Delete"}
-                    description={`Do you want to delete this setting (${selectedRow.settingResourceId}) ?`}
-                    onDelete={deleteSetting}
-                    onClose={closeDeleteDialog}/>
+                {open ?
+                    <DeleteDialog
+                        isOpen={open}
+                        title={"Confirm Delete"}
+                        description={`Do you want to delete this setting (${selectedRow.settingResourceId}) ?`}
+                        onDelete={deleteSetting}
+                        onClose={closeDeleteDialog}/> : null}
                 <MaterialTable
                     title="Kubernetes Clusters"
                     icons={tableIcons}

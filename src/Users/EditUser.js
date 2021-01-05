@@ -1,17 +1,38 @@
-import { AppBar, Box, Button, Checkbox, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel, InputAdornment, useScrollTrigger, Chip, FormControlLabel, Switch } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+    AppBar,
+    Box,
+    Button,
+    Checkbox,
+    CircularProgress,
+    Container,
+    Grid,
+    TextField,
+    Toolbar,
+    Typography,
+    MenuItem,
+    Select,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    InputAdornment,
+    useScrollTrigger,
+    Chip,
+    FormControlLabel,
+    Switch
+} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
-import React, { useState, useEffect, useContext } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import {useSnackbar} from 'notistack';
+import React, {useState, useEffect, useContext} from 'react';
+import {useHistory, useParams} from 'react-router-dom';
+import {useForm, Controller} from "react-hook-form";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteDialog from "../Applications/DeleteDialog";
 
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
+const icon = <CheckBoxOutlineBlankIcon fontSize="small"/>;
+const checkedIcon = <CheckBoxIcon fontSize="small"/>;
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -48,20 +69,30 @@ const useStyles = makeStyles((theme) => ({
 function EditUser() {
     document.title = "Edit User";
     const classes = useStyles();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const { control, register, handleSubmit, watch, reset, getValues, setValue, errors, trigger } = useForm({ mode: 'onBlur' });
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const {
+        control,
+        register,
+        handleSubmit,
+        watch,
+        reset,
+        getValues,
+        setValue,
+        errors,
+        trigger
+    } = useForm({mode: 'onBlur'});
 
     let history = useHistory();
-    let { userName } = useParams();
+    let {userName} = useParams();
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
     const roleOptions = [
-        { 'value': 'ROLE_USER', 'label': 'USER' },
-        { 'value': 'ROLE_USER_READER', 'label': 'USER READER' },
-        { 'value': 'ROLE_USER_ADMIN', 'label': 'USER ADMIN' },
-        { 'value': 'ROLE_TENANT_ADMIN', 'label': 'TENANT ADMIN' }
+        {'value': 'ROLE_USER', 'label': 'USER'},
+        {'value': 'ROLE_USER_READER', 'label': 'USER READER'},
+        {'value': 'ROLE_USER_ADMIN', 'label': 'USER ADMIN'},
+        {'value': 'ROLE_TENANT_ADMIN', 'label': 'TENANT ADMIN'}
     ];
 
 
@@ -69,7 +100,7 @@ function EditUser() {
         loadDetails();
     }, [userName]);
 
-    const { roles } = watch();
+    const {roles} = watch();
 
     useEffect(() => {
         console.log(roles);
@@ -118,7 +149,7 @@ function EditUser() {
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('User updated successfully.', { variant: 'success' });
+                enqueueSnackbar('User updated successfully.', {variant: 'success'});
                 history.push("/app/manage-users");
             })
             .catch(() => {
@@ -151,11 +182,11 @@ function EditUser() {
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Edit User
-                    <Typography variant="caption" >
+                        <Typography variant="caption">
                             &nbsp; {userName}
                         </Typography>
                     </Typography>
-                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
                     <div style={{flexGrow: 1}}/>
                     <Button
                         className={classes.button}
@@ -169,18 +200,19 @@ function EditUser() {
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
-                        <DeleteDialog
-                            isOpen={open}
-                            title={"Confirm Delete"}
-                            description={`Do you want to delete this user (${userName}) ?`}
-                            onDelete={deleteUser}
-                            onClose={closeDeleteDialog}/>
+                        {open ?
+                            <DeleteDialog
+                                isOpen={open}
+                                title={"Confirm Delete"}
+                                description={`Do you want to delete this user (${userName}) ?`}
+                                onDelete={deleteUser}
+                                onClose={closeDeleteDialog}/> : null}
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="displayName"
                                 label="Display Name"
@@ -191,53 +223,56 @@ function EditUser() {
                                         value: /^[a-z0-9- ]+$/i,
                                         message: "Only alphabets, numbers, space and dash (-) are allowed."
                                     },
-                                    maxLength: { value: 50, message: "Maximum 50 characters are allowed." }
+                                    maxLength: {value: 50, message: "Maximum 50 characters are allowed."}
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="firstName"
                                 label="First Name"
                                 required
                                 inputRef={register({
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.firstName ? true : false}
                                 helperText={errors.firstName?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="lastName"
                                 label="Last Name"
                                 required
                                 inputRef={register({
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.lastName ? true : false}
                                 helperText={errors.lastName?.message}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="email"
                                 label="Email"
                                 required
                                 inputRef={register({
-                                    pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Invalid email address" },
-                                    maxLength: { value: 100, message: "Maximum 100 characters are allowed." }
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: "Invalid email address"
+                                    },
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.email ? true : false}
                                 helperText={errors.email?.message}
@@ -251,9 +286,9 @@ function EditUser() {
                                 }}
                                 as={<TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{ shrink: true, }}
+                                    InputLabelProps={{shrink: true,}}
                                     InputProps={{
-                                        classes: { input: classes.textField },
+                                        classes: {input: classes.textField},
                                     }}
                                     label="Status"
                                     required
@@ -275,10 +310,12 @@ function EditUser() {
                                         return value.length > 0 || "Required."
                                     },
                                 }}
-                                render={({ onChange, onBlur, name, value }) => {
+                                render={({onChange, onBlur, name, value}) => {
                                     return <Autocomplete
                                         name={name}
-                                        onChange={(event, value) => { onChange(value) }}
+                                        onChange={(event, value) => {
+                                            onChange(value)
+                                        }}
                                         onBlur={() => onBlur()}
                                         // onBlur={() => {trigger('roles')}} 
                                         // onblur doesnt work when value is removed using chip close button, because focus is already lost.
@@ -290,12 +327,12 @@ function EditUser() {
                                         options={roleOptions}
                                         getOptionLabel={(option) => option.label}
                                         getOptionSelected={(option, value) => option.value === value.value}
-                                        renderOption={(option, { selected }) => (
+                                        renderOption={(option, {selected}) => (
                                             <React.Fragment>
                                                 <Checkbox
                                                     icon={icon}
                                                     checkedIcon={checkedIcon}
-                                                    style={{ marginRight: 8 }}
+                                                    style={{marginRight: 8}}
                                                     checked={selected}
                                                 />
                                                 {option.label}
@@ -303,7 +340,7 @@ function EditUser() {
                                         )}
                                         renderTags={(value, getTagProps) =>
                                             value.map((option, index) => (
-                                                <Chip size="small" label={option.label} />
+                                                <Chip size="small" label={option.label}/>
                                             ))
                                         }
                                         renderInput={(params) => (
@@ -311,7 +348,7 @@ function EditUser() {
                                                 {...params}
                                                 variant="outlined"
                                                 margin="normal"
-                                                InputLabelProps={{ shrink: true, }}
+                                                InputLabelProps={{shrink: true,}}
                                                 label="Roles"
                                                 error={errors.roles ? true : false}
                                                 helperText={errors.roles?.message}
@@ -340,8 +377,9 @@ function EditUser() {
                     </Box>
                 </Grid>
             </Grid>
-        </Container >
+        </Container>
     )
 
 }
+
 export default EditUser;

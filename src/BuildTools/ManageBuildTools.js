@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import MaterialTable from 'material-table';
-import { Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {Grid} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
-import { useHistory, useParams } from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import {format} from "date-fns";
 import {useSnackbar} from "notistack";
 import DeleteDialog from "../Applications/DeleteDialog";
@@ -35,10 +35,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 function ManageBuildTools() {
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const classes = useStyles();
     let history = useHistory();
-    let { projectResourceId } = useParams();
+    let {projectResourceId} = useParams();
 
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
@@ -72,7 +72,7 @@ function ManageBuildTools() {
         axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
-                enqueueSnackbar('Setting deleted successfully.', { variant: 'success' });
+                enqueueSnackbar('Setting deleted successfully.', {variant: 'success'});
                 reloadTabularData();
             })
             .catch((error) => {
@@ -89,65 +89,76 @@ function ManageBuildTools() {
     }
 
     return (
-            <Container maxWidth="xl" className={classes.container}>
-                    <Grid>
-                        <DeleteDialog
-                            isOpen={open}
-                            title={"Confirm Delete"}
-                            description={`Do you want to delete this setting (${selectedRow.settingResourceId}) ?`}
-                            onDelete={deleteSetting}
-                            onClose={closeDeleteDialog}/>
-                        <MaterialTable
-                            title="Build Tools"
-                            icons={tableIcons}
-                            isLoading={loading}
-                            components={{ Container: props => props.children }}
-                            columns={[
-                                { title: 'Name', field: 'displayName' },
-                                { title: 'ID', field: 'settingResourceId' , width: 280 },
-                                { title: 'Type', field: 'type' },
-                                { title: 'Updated On', field: 'lastUpdatedOn', render: (rowData)=> format(new Date(rowData.lastUpdatedOn), "PPpp")}
-                            ]}
-                            data={dataSource}
-                            actions={[
-                                {
-                                    icon: () => <EditIcon color="action" fontSize="small" />,
-                                    tooltip: 'Edit Build Tool',
-                                    onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/build-tool/${rowData.settingResourceId}/edit`)
-                                },
-                                {
-                                    icon: () => <DeleteIcon color="action" fontSize="small" />,
-                                    tooltip: 'Delete Build Tool',
-                                    onClick: (event, rowData) => {
-                                        setSelectedRow(rowData);
-                                        openDeleteDialog()
-                                    }
-                                },
-                                {
-                                    icon: () => <AddIcon color="action" fontSize="small" />,
-                                    tooltip: 'Add Build Tool',
-                                    isFreeAction: true,
-                                    onClick: () => history.push(`/app/project/${projectResourceId}/build-tool/add`)
-                                },
-                                {
-                                    icon: () => <RefreshIcon color="action" fontSize="small" />,
-                                    tooltip: 'Refresh',
-                                    isFreeAction: true,
-                                    onClick: loadAll
-                                }
-                            ]}
-                            options={{
-                                actionsColumnIndex: -1,
-                                padding: "dense",
-                                headerStyle: { fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee', },
-                                cellStyle: {fontSize: '12px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 100},
-                                pageSize: 20,
-                                pageSizeOptions: [20, 30, 40, 50],
-                            }}
-                        />
+        <Container maxWidth="xl" className={classes.container}>
+            <Grid>
+                {open ?
+                    <DeleteDialog
+                        isOpen={open}
+                        title={"Confirm Delete"}
+                        description={`Do you want to delete this setting (${selectedRow.settingResourceId}) ?`}
+                        onDelete={deleteSetting}
+                        onClose={closeDeleteDialog}/> : null}
+                <MaterialTable
+                    title="Build Tools"
+                    icons={tableIcons}
+                    isLoading={loading}
+                    components={{Container: props => props.children}}
+                    columns={[
+                        {title: 'Name', field: 'displayName'},
+                        {title: 'ID', field: 'settingResourceId', width: 280},
+                        {title: 'Type', field: 'type'},
+                        {
+                            title: 'Updated On',
+                            field: 'lastUpdatedOn',
+                            render: (rowData) => format(new Date(rowData.lastUpdatedOn), "PPpp")
+                        }
+                    ]}
+                    data={dataSource}
+                    actions={[
+                        {
+                            icon: () => <EditIcon color="action" fontSize="small"/>,
+                            tooltip: 'Edit Build Tool',
+                            onClick: (event, rowData) => history.push(`/app/project/${projectResourceId}/build-tool/${rowData.settingResourceId}/edit`)
+                        },
+                        {
+                            icon: () => <DeleteIcon color="action" fontSize="small"/>,
+                            tooltip: 'Delete Build Tool',
+                            onClick: (event, rowData) => {
+                                setSelectedRow(rowData);
+                                openDeleteDialog()
+                            }
+                        },
+                        {
+                            icon: () => <AddIcon color="action" fontSize="small"/>,
+                            tooltip: 'Add Build Tool',
+                            isFreeAction: true,
+                            onClick: () => history.push(`/app/project/${projectResourceId}/build-tool/add`)
+                        },
+                        {
+                            icon: () => <RefreshIcon color="action" fontSize="small"/>,
+                            tooltip: 'Refresh',
+                            isFreeAction: true,
+                            onClick: loadAll
+                        }
+                    ]}
+                    options={{
+                        actionsColumnIndex: -1,
+                        padding: "dense",
+                        headerStyle: {fontSize: '12px', fontWeight: 'bold', backgroundColor: '#eeeeee',},
+                        cellStyle: {
+                            fontSize: '12px',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            maxWidth: 100
+                        },
+                        pageSize: 20,
+                        pageSizeOptions: [20, 30, 40, 50],
+                    }}
+                />
 
-                    </Grid>
-            </Container>
+            </Grid>
+        </Container>
     );
 }
 

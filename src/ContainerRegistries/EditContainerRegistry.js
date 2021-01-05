@@ -1,10 +1,25 @@
-import { AppBar, Box, Button, CircularProgress, Container, Grid, TextField, Toolbar, Typography, MenuItem, Select, FormControl, FormHelperText, InputLabel } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+    AppBar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    TextField,
+    Toolbar,
+    Typography,
+    MenuItem,
+    Select,
+    FormControl,
+    FormHelperText,
+    InputLabel
+} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
-import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import {useSnackbar} from 'notistack';
+import React, {useState, useEffect} from 'react';
+import {useHistory, useParams} from 'react-router-dom';
+import {useForm, Controller} from "react-hook-form";
 import DeleteDialog from "../Applications/DeleteDialog";
 
 
@@ -43,15 +58,15 @@ const useStyles = makeStyles((theme) => ({
 function EditContainerRegistry() {
     document.title = "Edit Container Registry";
     const classes = useStyles();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const { control, register, handleSubmit, watch, reset, setValue, errors } = useForm({ mode: 'onBlur' });
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar();
+    const {control, register, handleSubmit, watch, reset, setValue, errors} = useForm({mode: 'onBlur'});
 
     let history = useHistory();
-    let { projectResourceId, settingResourceId } = useParams();
+    let {projectResourceId, settingResourceId} = useParams();
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-    const { type } = watch();
+    const {type} = watch();
 
     useEffect(() => {
         loadDetails();
@@ -63,12 +78,12 @@ function EditContainerRegistry() {
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`)
             .then((response) => {
                 setLoading(false);
-                setValue("displayName",response.data.displayName);
-                setValue("type",response.data.type);
-                setValue("registryUrl",response.data.registryUrl);
-                setValue("repository",response.data.repository);
-                setValue("username",response.data.registryUsername);
-                setValue("password",response.data.registryPassword);
+                setValue("displayName", response.data.displayName);
+                setValue("type", response.data.type);
+                setValue("registryUrl", response.data.registryUrl);
+                setValue("repository", response.data.repository);
+                setValue("username", response.data.registryUsername);
+                setValue("password", response.data.registryPassword);
                 // setLastUpdatedBy(response.data.lastUpdatedBy);
                 // setLastUpdatedOn(response.data.lastUpdatedOn);
             })
@@ -81,12 +96,12 @@ function EditContainerRegistry() {
         setValue("repository", "");
         setValue("username", "");
         setValue("password", "");
-        if(type === "docker-hub"){
+        if (type === "docker-hub") {
             setValue("registryUrl", "index.docker.io");
 
-        }else if(type === "gcr"){
+        } else if (type === "gcr") {
             setValue("registryUrl", "gcr.io");
-        }else{
+        } else {
             setValue("registryUrl", "");
         }
     }, [type]);
@@ -99,30 +114,30 @@ function EditContainerRegistry() {
                 <Controller
                     name="registryUrl"
                     label="Registry URL"
-                    as={<TextField />}
+                    as={<TextField/>}
                     control={control}
                     defaultValue=""
                     required
-                    rules={{ 
+                    rules={{
                         required: "Required.",
-                        maxLength: {value: 250, message: "Maximum 250 characters are allowed." } 
+                        maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
                     }}
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
-                    InputProps={{ classes: { input: classes.textField } }}
+                    InputLabelProps={{shrink: true,}}
+                    InputProps={{classes: {input: classes.textField}}}
                     error={errors.registryUrl ? true : false}
                     helperText={errors.registryUrl?.message}
                 >
                 </Controller>
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
-                    InputProps={{ classes: { input: classes.textField } }}
+                    InputLabelProps={{shrink: true,}}
+                    InputProps={{classes: {input: classes.textField}}}
                     name="repository"
                     label="Repository"
-                    inputRef={register({ 
+                    inputRef={register({
                         required: "Required.",
-                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                     })}
                     error={errors.repository ? true : false}
                     helperText={errors.repository?.message}
@@ -134,18 +149,18 @@ function EditContainerRegistry() {
                 <Controller
                     name="registryUrl"
                     label="Registry URL"
-                    as={<TextField />}
+                    as={<TextField/>}
                     control={control}
                     defaultValue=""
                     required
-                    rules={{ 
+                    rules={{
                         required: "Required.",
-                        maxLength: {value: 250, message: "Maximum 250 characters are allowed." }
-                     }}
+                        maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                    }}
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
+                    InputLabelProps={{shrink: true,}}
                     InputProps={{
-                        classes: { input: classes.textField },
+                        classes: {input: classes.textField},
                         readOnly: true,
                     }}
                     error={errors.registryUrl ? true : false}
@@ -153,29 +168,29 @@ function EditContainerRegistry() {
                 ></Controller>
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
-                    InputProps={{ classes: { input: classes.textField } }}
+                    InputLabelProps={{shrink: true,}}
+                    InputProps={{classes: {input: classes.textField}}}
                     name="username"
                     label="User Name"
                     required
-                    inputRef={register({ 
+                    inputRef={register({
                         required: "Required.",
-                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                     })}
                     error={errors.username ? true : false}
                     helperText={errors.username?.message}
                 />
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
-                    InputProps={{ classes: { input: classes.textField } }}
+                    InputLabelProps={{shrink: true,}}
+                    InputProps={{classes: {input: classes.textField}}}
                     name="password"
                     label="Password"
                     required
                     type="password"
-                    inputRef={register({ 
+                    inputRef={register({
                         required: "Required.",
-                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                     })}
                     error={errors.password ? true : false}
                     helperText={errors.password?.message}
@@ -187,18 +202,18 @@ function EditContainerRegistry() {
                 <Controller
                     name="registryUrl"
                     label="Registry URL"
-                    as={<TextField />}
+                    as={<TextField/>}
                     control={control}
                     defaultValue=""
                     required
-                    rules={{ 
+                    rules={{
                         required: "Required.",
-                        maxLength: {value: 250, message: "Maximum 250 characters are allowed." }
-                     }}
+                        maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                    }}
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
+                    InputLabelProps={{shrink: true,}}
                     InputProps={{
-                        classes: { input: classes.textField },
+                        classes: {input: classes.textField},
                         readOnly: true,
                     }}
                     error={errors.registryUrl ? true : false}
@@ -206,43 +221,43 @@ function EditContainerRegistry() {
                 ></Controller>
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
-                    InputProps={{ classes: { input: classes.textField } }}
+                    InputLabelProps={{shrink: true,}}
+                    InputProps={{classes: {input: classes.textField}}}
                     name="repository"
                     label="Project ID"
                     required
-                    inputRef={register({ 
+                    inputRef={register({
                         required: "Required.",
-                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                     })}
                     error={errors.repository ? true : false}
                     helperText={errors.repository?.message}
                 />
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
-                    InputProps={{ classes: { input: classes.textField } }}
+                    InputLabelProps={{shrink: true,}}
+                    InputProps={{classes: {input: classes.textField}}}
                     name="username"
                     label="User Name"
                     required
-                    inputRef={register({ 
+                    inputRef={register({
                         required: "Required.",
-                        maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                        maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                     })}
                     error={errors.username ? true : false}
                     helperText={errors.username?.message}
                 />
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
-                    InputLabelProps={{ shrink: true, }}
-                    InputProps={{ classes: { input: classes.textField } }}
+                    InputLabelProps={{shrink: true,}}
+                    InputProps={{classes: {input: classes.textField}}}
                     name="password"
                     label="Password"
                     required
                     type="password"
-                    inputRef={register({ 
+                    inputRef={register({
                         required: "Required.",
-                        maxLength: {value: 5000, message: "Maximum 5000 characters are allowed." }
+                        maxLength: {value: 5000, message: "Maximum 5000 characters are allowed."}
                     })}
                     error={errors.password ? true : false}
                     helperText={errors.password?.message}
@@ -269,7 +284,7 @@ function EditContainerRegistry() {
             .then((response) => {
                 console.log(response);
                 setLoading(false);
-                enqueueSnackbar('Container registry updated successfully.', { variant: 'success' });
+                enqueueSnackbar('Container registry updated successfully.', {variant: 'success'});
                 history.push(`/app/project/${projectResourceId}/container-registries`);
             })
             .catch(() => {
@@ -302,11 +317,11 @@ function EditContainerRegistry() {
             <AppBar position="static" color="transparent" elevation={0} className={classes.appBar}>
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit">Edit Container Registry
-                    <Typography variant="caption" >
+                        <Typography variant="caption">
                             &nbsp; {settingResourceId}
                         </Typography>
                     </Typography>
-                    {loading ? <CircularProgress size={15} className={classes.circularProgress} /> : null}
+                    {loading ? <CircularProgress size={15} className={classes.circularProgress}/> : null}
                     <div style={{flexGrow: 1}}/>
                     <Button
                         className={classes.button}
@@ -320,29 +335,30 @@ function EditContainerRegistry() {
             <Grid container>
                 <Grid item md={9} lg={6} xl={5}>
                     <Box m={2}>
-                        <DeleteDialog
-                            isOpen={open}
-                            title={"Confirm Delete"}
-                            description={`Do you want to delete this setting (${settingResourceId}) ?`}
-                            onDelete={deleteSetting}
-                            onClose={closeDeleteDialog}/>
+                        {open ?
+                            <DeleteDialog
+                                isOpen={open}
+                                title={"Confirm Delete"}
+                                description={`Do you want to delete this setting (${settingResourceId}) ?`}
+                                onDelete={deleteSetting}
+                                onClose={closeDeleteDialog}/> : null}
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{ shrink: true, }}
+                                InputLabelProps={{shrink: true,}}
                                 InputProps={{
-                                    classes: { input: classes.textField },
+                                    classes: {input: classes.textField},
                                 }}
                                 name="displayName"
                                 label="Display Name"
                                 required
-                                inputRef={register({ 
+                                inputRef={register({
                                     required: "Required.",
                                     pattern: {
                                         value: /^[a-z0-9- ]+$/i,
                                         message: "Only alphabets, numbers, space and dash (-) are allowed."
                                     },
-                                    maxLength: {value: 50, message: "Maximum 50 characters are allowed." }
+                                    maxLength: {value: 50, message: "Maximum 50 characters are allowed."}
                                 })}
                                 error={errors.displayName ? true : false}
                                 helperText={errors.displayName?.message}
@@ -356,7 +372,7 @@ function EditContainerRegistry() {
                                 <InputLabel shrink>Type</InputLabel>
                                 <Controller
                                     name="type"
-                                    rules={{ required: "this is required" }}
+                                    rules={{required: "this is required"}}
                                     defaultValue="local"
                                     label="Type"
                                     control={control}
@@ -393,8 +409,9 @@ function EditContainerRegistry() {
                     </Box>
                 </Grid>
             </Grid>
-        </Container >
+        </Container>
     )
 
 }
+
 export default EditContainerRegistry;

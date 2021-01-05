@@ -156,12 +156,13 @@ export default function ApplicationsActionMenu(props) {
                     Delete
                 </MenuItem>
             </Menu>
-            <DeleteDialog
-                isOpen={dialogOpen}
-                title={"Confirm Delete"}
-                description={`Do you want to delete this application (${props.rowData.id.applicationResourceId}) ?`}
-                onDelete={deleteApplication}
-                onClose={closeDeleteDialog}/>
+            {dialogOpen ?
+                <DeleteDialog
+                    isOpen={dialogOpen}
+                    title={"Confirm Delete"}
+                    description={`Do you want to delete this application (${props.rowData.id.applicationResourceId}) ?`}
+                    onDelete={deleteApplication}
+                    onClose={closeDeleteDialog}/> : null}
         </div>
     );
 }

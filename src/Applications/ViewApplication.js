@@ -210,12 +210,13 @@ function ViewApplication() {
             </AppBar>
             <Grid container>
                 <Grid item md={9} lg={12} xl={5}>
-                    <DeleteDialog
-                        isOpen={open}
-                        title={"Confirm Delete"}
-                        description={`Do you want to delete this application (${applicationResourceId}) ?`}
-                        onDelete={deleteApplication}
-                        onClose={closeDeleteDialog}/>
+                    {open ?
+                        <DeleteDialog
+                            isOpen={open}
+                            title={"Confirm Delete"}
+                            description={`Do you want to delete this application (${applicationResourceId}) ?`}
+                            onDelete={deleteApplication}
+                            onClose={closeDeleteDialog}/> : null}
                     <Box m={1}>
                         <Paper>
                             <Box width="100%" display="flex" alignItems="center">
