@@ -429,14 +429,20 @@ function ViewApplication() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
+                                        Service Type: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.serviceType}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
                                         Port: &nbsp;
                                         <Typography variant="caption">
                                             {response?.appServerPort}
                                         </Typography>
                                     </Typography>
-                                    <Typography variant="subtitle2">
-                                        URL: &nbsp;
-                                    </Typography>
+                                    {/*<Typography variant="subtitle2">*/}
+                                    {/*    URL: &nbsp;*/}
+                                    {/*</Typography>*/}
                                     <br/>
                                     <Grid container>
 

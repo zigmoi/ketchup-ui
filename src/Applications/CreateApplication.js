@@ -117,6 +117,7 @@ function CreateApplication() {
             "displayName": formValues.displayName,
             "description": formValues.description,
             "serviceName": formValues.serviceName,
+            "serviceType": formValues.serviceType,
             "appServerPort": formValues.applicationPort,
             "replicas": formValues.replicas,
             "deploymentStrategy": formValues.deploymentStrategy,
@@ -241,7 +242,6 @@ function CreateApplication() {
                                 error={errors.serviceName ? true : false}
                                 helperText={errors.serviceName?.message}
                             />
-
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
                                 InputLabelProps={{shrink: true,}}
@@ -504,6 +504,29 @@ function CreateApplication() {
                                     {buildTools.map(buildTool =>
                                         <MenuItem key={buildTool.settingResourceId}
                                                   value={buildTool.settingResourceId}> {`${buildTool.displayName} (${buildTool.settingResourceId})`} </MenuItem>)}
+                                </TextField>}
+                            />
+                            <Controller
+                                name="serviceType"
+                                control={control}
+                                defaultValue={'ClusterIP'}
+                                rules={{
+                                    required: "Required"
+                                }}
+                                as={<TextField
+                                    variant="outlined" size="small" fullWidth margin="normal"
+                                    InputLabelProps={{shrink: true,}}
+                                    InputProps={{
+                                        classes: {input: classes.textField},
+                                    }}
+                                    label="Service Type"
+                                    required
+                                    select
+                                    error={errors.serviceType ? true : false}
+                                    helperText={errors.serviceType?.message}
+                                >
+                                    <MenuItem key="ClusterIP" value="ClusterIP"> ClusterIP </MenuItem>
+                                    <MenuItem key="NodePort" value="NodePort"> NodePort </MenuItem>
                                 </TextField>}
                             />
                             <TextField

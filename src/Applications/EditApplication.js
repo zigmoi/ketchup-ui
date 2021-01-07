@@ -83,6 +83,7 @@ function EditApplication() {
                 setValue("displayName", response.data.displayName);
                 setValue("description", response.data.description);
                 setValue("serviceName", response.data.serviceName);
+                setValue("serviceType", response.data.serviceType);
                 setValue("applicationPort", response.data.appServerPort);
                 setValue("replicas", response.data.replicas);
                 setValue("deploymentStrategy", response.data.deploymentStrategy);
@@ -153,6 +154,7 @@ function EditApplication() {
             "displayName": formValues.displayName,
             "description": formValues.description,
             "serviceName": formValues.serviceName,
+            "serviceType": formValues.serviceType,
             "appServerPort": formValues.applicationPort,
             "replicas": formValues.replicas,
             "deploymentStrategy": formValues.deploymentStrategy,
@@ -580,6 +582,29 @@ function EditApplication() {
                                     {buildTools.map(buildTool =>
                                         <MenuItem key={buildTool.settingResourceId}
                                                   value={buildTool.settingResourceId}> {`${buildTool.displayName} (${buildTool.settingResourceId})`} </MenuItem>)}
+                                </TextField>}
+                            />
+                            <Controller
+                                name="serviceType"
+                                control={control}
+                                defaultValue={'ClusterIP'}
+                                rules={{
+                                    required: "Required"
+                                }}
+                                as={<TextField
+                                    variant="outlined" size="small" fullWidth margin="normal"
+                                    InputLabelProps={{shrink: true,}}
+                                    InputProps={{
+                                        classes: {input: classes.textField},
+                                    }}
+                                    label="Service Type"
+                                    required
+                                    select
+                                    error={errors.serviceType ? true : false}
+                                    helperText={errors.serviceType?.message}
+                                >
+                                    <MenuItem key="ClusterIP" value="ClusterIP"> ClusterIP </MenuItem>
+                                    <MenuItem key="NodePort" value="NodePort"> NodePort </MenuItem>
                                 </TextField>}
                             />
                             <TextField

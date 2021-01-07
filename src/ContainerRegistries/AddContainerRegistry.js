@@ -123,7 +123,7 @@ function AddContainerRegistry() {
                     }}
                     error={errors.registryUrl ? true : false}
                     helperText={errors.registryUrl?.message}
-                ></Controller>
+                />
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
                     InputLabelProps={{ shrink: true, }}
@@ -176,7 +176,7 @@ function AddContainerRegistry() {
                     }}
                     error={errors.registryUrl ? true : false}
                     helperText={errors.registryUrl?.message}
-                ></Controller>
+                />
                 <TextField
                     variant="outlined" size="small" fullWidth margin="normal"
                     InputLabelProps={{ shrink: true, }}
@@ -236,6 +236,8 @@ function AddContainerRegistry() {
             'repository': formValues.repository ? formValues.repository : "",
             'registryUsername': formValues.username ? formValues.username : "",
             'registryPassword': formValues.password ? formValues.password : "",
+            'redisUrl': formValues.redisUrl,
+            'redisPassword': formValues.redisPassword,
         };
         //alert(JSON.stringify(data, null, 2));
         axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`, data)
@@ -309,6 +311,35 @@ function AddContainerRegistry() {
                                 </FormHelperText>
                             </FormControl>
                             {dependentFields}
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="redisUrl"
+                                label="Redis Url (Cache)"
+                                inputRef={register({
+                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed." }
+                                })}
+                                error={errors.redisUrl ? true : false}
+                                helperText={errors.redisUrl?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{ shrink: true, }}
+                                InputProps={{
+                                    classes: { input: classes.textField },
+                                }}
+                                name="redisPassword"
+                                label="Redis Password"
+                                type="password"
+                                inputRef={register({
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed." }
+                                })}
+                                error={errors.redisPassword ? true : false}
+                                helperText={errors.redisPassword?.message}
+                            />
                             <Grid container>
                                 <Button
                                     className={classes.button}

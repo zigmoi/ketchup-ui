@@ -221,6 +221,12 @@ function ViewApplicationRevision() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
+                                        Container Registry Redis URL: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.containerRegistryRedisUrl}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
                                         Platform: &nbsp;
                                         <Typography variant="caption">
                                             {response?.platform}
@@ -290,6 +296,12 @@ function ViewApplicationRevision() {
                                         Service Name: &nbsp;
                                         <Typography variant="caption">
                                             {response?.serviceName}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Service Type: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.serviceType}
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
