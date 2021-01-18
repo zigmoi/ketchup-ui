@@ -6,4 +6,4 @@ metadata:
     {{- include "ketchup-ui.labels" . | nindent 4 }}
 data:
   config.js: |-
-    {{- .Values.applicationProperties | nindent 4}}
+    {{- required "Please provide a valid application configuration file by setting property applicationProperties." .Values.applicationProperties | nindent 4}}
