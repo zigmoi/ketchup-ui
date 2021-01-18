@@ -1,5 +1,6 @@
-FROM node:15.5.1-alpine3.10
-WORKDIR /app
-COPY build /app
-RUN npm install -g serve
-CMD ["/bin/sh", "-c", "serve . -l 3000"]
+FROM nginx:1.16.0-alpine
+COPY build/ /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
