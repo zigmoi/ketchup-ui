@@ -75,7 +75,7 @@ function EditContainerRegistry() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -284,7 +284,7 @@ function EditContainerRegistry() {
             'redisPassword': formValues.redisPassword,
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -297,7 +297,7 @@ function EditContainerRegistry() {
     }
 
     function deleteSetting() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings/${settingResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Setting deleted successfully!', {variant: 'success'});

@@ -90,7 +90,7 @@ function EditProject() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("description", response.data.description);
@@ -108,7 +108,7 @@ function EditProject() {
         let data = {
             'description': formValues.description,
         };
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -120,7 +120,7 @@ function EditProject() {
     }
 
     function deleteProject() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Project deleted successfully!', {variant: 'success'});

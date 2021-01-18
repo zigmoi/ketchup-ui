@@ -74,7 +74,7 @@ function CreateApplication() {
 
     function loadAllK8sClusters() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
             .then((response) => {
                 setLoading(false);
                 setK8sClusters(response.data);
@@ -86,7 +86,7 @@ function CreateApplication() {
 
     function loadAllContainerRegistries() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`)
             .then((response) => {
                 setLoading(false);
                 setContainerRegistries(response.data);
@@ -98,7 +98,7 @@ function CreateApplication() {
 
     function loadAllBuildTools() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings`)
             .then((response) => {
                 setLoading(false);
                 setBuildTools(response.data);
@@ -141,7 +141,7 @@ function CreateApplication() {
             "prodKubernetesNamespace": ""
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`, data)
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -163,7 +163,7 @@ function CreateApplication() {
             password: formValues.gitRepoPassword
         }
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/git-repo/test-connection`, data)
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/git-repo/test-connection`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);

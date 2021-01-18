@@ -57,7 +57,7 @@ function ManageApplicationRevisions() {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -69,7 +69,7 @@ function ManageApplicationRevisions() {
 
     function deployApplication() {
         setLoading(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions?commit-id=latest`, null, {timeout: 60000})
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions?commit-id=latest`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -84,7 +84,7 @@ function ManageApplicationRevisions() {
 
     function refreshRevisionStatus(revisionResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
             .then((response) => {
                 setLoading(false);
                 reloadTabularData();
@@ -96,7 +96,7 @@ function ManageApplicationRevisions() {
 
     function rollbackRevision(revisionResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/rollback`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/rollback`)
             .then((response) => {
                 setLoading(false);
                 enqueueSnackbar('Rollback successful!', {variant: 'success'});

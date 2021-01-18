@@ -71,7 +71,7 @@ function GenerateGitWebHookUrl() {
         setLoading(true);
 
         // alert(JSON.stringify(data, null, 2));
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/git-webhook/generate/listener-url?vendor=${formValues.vendor}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/git-webhook/generate/listener-url?vendor=${formValues.vendor}`)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

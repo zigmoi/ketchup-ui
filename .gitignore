@@ -24,3 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /.idea/
+/helm-chart/ketchup-ui-0.1.0.tgz

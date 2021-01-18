@@ -48,7 +48,7 @@ export default function LoadProject(props) {
 
   function loadAll() {
     setLoading(true);
-    axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects`)
+    axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects`)
       .then((response) => {
         setLoading(false);
         setDataSource(response.data);

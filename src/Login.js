@@ -127,7 +127,7 @@ function Login() {
         axios.request({
             url: "/oauth/token",
             method: "post",
-            baseURL: `${process.env.REACT_APP_API_BASE_URL}`,
+            baseURL: `${window.REACT_APP_API_BASE_URL}`,
             auth: authHeader,
             data: qs.stringify(params),
             headers: {"content-type": "application/x-www-form-urlencoded"}
@@ -207,7 +207,7 @@ function Login() {
                 "Authorization": "Bearer " + accessToken
             }
         }
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/my/profile`, config)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/users/my/profile`, config)
             .then((response) => {
                 console.log("getUserInfo", response);
                 setLoading(false);

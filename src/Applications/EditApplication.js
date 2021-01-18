@@ -77,7 +77,7 @@ function EditApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -111,7 +111,7 @@ function EditApplication() {
 
     function loadAllK8sClusters() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
             .then((response) => {
                 setLoading(false);
                 setK8sClusters(response.data);
@@ -123,7 +123,7 @@ function EditApplication() {
 
     function loadAllContainerRegistries() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`)
             .then((response) => {
                 setLoading(false);
                 setContainerRegistries(response.data);
@@ -135,7 +135,7 @@ function EditApplication() {
 
     function loadAllBuildTools() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings`)
             .then((response) => {
                 setLoading(false);
                 setBuildTools(response.data);
@@ -178,7 +178,7 @@ function EditApplication() {
             "prodKubernetesNamespace": ""
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -200,7 +200,7 @@ function EditApplication() {
             password: formValues.gitRepoPassword
         }
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/git-repo/test-connection`, data)
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/git-repo/test-connection`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
@@ -216,7 +216,7 @@ function EditApplication() {
     }
 
     function deleteApplication() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Application deleted successfully!', {variant: 'success'});

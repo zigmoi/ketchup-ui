@@ -44,7 +44,7 @@ export default function ApplicationsActionMenu(props) {
     function deleteApplication() {
         const applicationResourceId = props.rowData.id.applicationResourceId;
         const projectResourceId = props.rowData.id.projectResourceId;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Application deleted successfully!', {variant: 'success'});

@@ -50,7 +50,7 @@ function ManageApplications() {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);

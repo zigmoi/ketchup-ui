@@ -83,7 +83,7 @@ function ViewApplicationLogs() {
     function getAllInstances(selectedApplicationResourceId) {
         setLoading(true);
         setSelectedInstance('');
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplicationResourceId}/instances`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplicationResourceId}/instances`)
             .then((response) => {
                 setLoading(false);
                 setInstances(response.data);
@@ -98,7 +98,7 @@ function ViewApplicationLogs() {
 
     function getAllApplications() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`)
             .then((response) => {
                 setLoading(false);
                 setApplications(response.data);
@@ -121,9 +121,9 @@ function ViewApplicationLogs() {
     function startStreaming() {
         let url;
         if (applicationResourceId) {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/current/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/current/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         } else {
-            url = `${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplication}/revisions/current/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
+            url = `${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${selectedApplication}/revisions/current/application-logs/stream?podName=${selectedInstance}&containerName=1&access_token=${userContext?.currentUser?.accessToken}`
         }
         setLogUrl(url);
     }

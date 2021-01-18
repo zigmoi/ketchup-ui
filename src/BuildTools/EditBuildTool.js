@@ -74,7 +74,7 @@ function EditBuildTool() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -99,7 +99,7 @@ function EditBuildTool() {
             'fileData': btoa(formValues.buildconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -112,7 +112,7 @@ function EditBuildTool() {
     }
 
     function deleteSetting() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/build-tool-settings/${settingResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Setting deleted successfully!', {variant: 'success'});

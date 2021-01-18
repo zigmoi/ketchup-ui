@@ -47,7 +47,7 @@ function ManageTenants() {
 
     function loadAll() {
         setIconLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/tenants`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/tenants`)
             .then((response) => {
                 setIconLoading(false);
                 setDataSource(response.data);

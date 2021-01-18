@@ -101,7 +101,7 @@ function ViewRevisionPipeline() {
 
     function fetchRevisionData() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setVersion(response.data.version);
@@ -120,7 +120,7 @@ function ViewRevisionPipeline() {
             return;
         }
         setLoading(true);
-        statusSource = new EventSource(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/stream?access_token=${access_token}`);
+        statusSource = new EventSource(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/stream?access_token=${access_token}`);
 
         statusSource.addEventListener('data', function (e) {
             streamPipelineStatus(e);
@@ -166,7 +166,7 @@ function ViewRevisionPipeline() {
 
     function stopPipeline() {
         setCancellingPipeline(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/stop`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/stop`)
             .then((response) => {
                 setCancellingPipeline(false);
                 enqueueSnackbar('Pipeline cancelled successfully.', {variant: 'success'});
@@ -178,7 +178,7 @@ function ViewRevisionPipeline() {
     }
 
     function refreshRevisionStatus(revisionResourceId) {
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
             .then((response) => {
             })
             .catch(() => {

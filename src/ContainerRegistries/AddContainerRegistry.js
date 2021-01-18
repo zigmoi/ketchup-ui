@@ -240,7 +240,7 @@ function AddContainerRegistry() {
             'redisPassword': formValues.redisPassword,
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`, data)
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/container-registry-settings`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);

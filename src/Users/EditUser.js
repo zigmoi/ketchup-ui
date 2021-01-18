@@ -109,7 +109,7 @@ function EditUser() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -145,7 +145,7 @@ function EditUser() {
             'roles': selectedRoles,
         };
         //alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -158,7 +158,7 @@ function EditUser() {
     }
 
     function deleteUser() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('User deleted successfully!', {variant: 'success'});

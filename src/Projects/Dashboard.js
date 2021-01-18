@@ -67,7 +67,7 @@ export default function Dashboard(props) {
 
     function loadDashboardDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectId}/dashboard-data`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectId}/dashboard-data`)
             .then((response) => {
                 setLoading(false);
                 setTotalApplications(response.data.totalApplicationsCount);

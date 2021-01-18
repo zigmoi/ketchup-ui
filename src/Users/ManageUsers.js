@@ -59,7 +59,7 @@ function ManageUsers() {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/users`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -71,7 +71,7 @@ function ManageUsers() {
 
     function deleteUser() {
         const userName = selectedRow.userName;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/users/${userName}`)
             .then((response) => {
                 closeDeleteDialog();
                 reloadTabularData();

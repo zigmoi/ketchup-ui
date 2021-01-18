@@ -57,7 +57,7 @@ function ManageK8sCusters() {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -69,7 +69,7 @@ function ManageK8sCusters() {
 
     function deleteSetting() {
         const settingResourceId = selectedRow.settingResourceId;
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Setting deleted successfully.', {variant: 'success'});

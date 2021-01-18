@@ -76,7 +76,7 @@ function ViewApplication() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}?live-status=true`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}?live-status=true`)
             .then((response) => {
                 setLoading(false);
                 setResponse(response.data);
@@ -88,7 +88,7 @@ function ViewApplication() {
 
     function getCurrentRevision() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/current-revision`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/current-revision`)
             .then((response) => {
                 setLoading(false);
                 setCurrentRevisionResponse(response.data);
@@ -100,7 +100,7 @@ function ViewApplication() {
 
     function getLastSuccessfulRevision() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/last-successful-revision`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/last-successful-revision`)
             .then((response) => {
                 setLoading(false);
                 setLastSuccessfulRevisionResponse(response.data);
@@ -112,7 +112,7 @@ function ViewApplication() {
 
     function deployApplication() {
         setDeploying(true);
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions?commit-id=latest`, null, {timeout: 60000})
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions?commit-id=latest`, null, {timeout: 60000})
             .then((response) => {
                 console.log(response);
                 setDeploying(false);
@@ -126,7 +126,7 @@ function ViewApplication() {
     }
 
     function deleteApplication() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Application deleted successfully!', {variant: 'success'});

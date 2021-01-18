@@ -80,7 +80,7 @@ function EditK8sCluster() {
 
     function loadDetails() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
             .then((response) => {
                 setLoading(false);
                 setValue("displayName", response.data.displayName);
@@ -103,7 +103,7 @@ function EditK8sCluster() {
             'kubeconfig': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -124,7 +124,7 @@ function EditK8sCluster() {
             'kubeconfig': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/test-connection`, data)
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/test-connection`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);
@@ -140,7 +140,7 @@ function EditK8sCluster() {
     }
 
     function deleteSetting() {
-        axios.delete(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
+        axios.delete(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/${settingResourceId}`)
             .then((response) => {
                 closeDeleteDialog();
                 enqueueSnackbar('Setting deleted successfully!', {variant: 'success'});

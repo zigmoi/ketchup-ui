@@ -66,7 +66,7 @@ function ManageProjectPermissions() {
             return;
         }
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/${userName}`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/${userName}`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -102,7 +102,7 @@ function ManageProjectPermissions() {
             permissions: selectedPermissions.map(p => p.permission)
         };
         console.log(data);
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/assign`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/assign`, data)
             .then((response) => {
                 setLoading(false);
                 loadPermissions();
@@ -138,7 +138,7 @@ function ManageProjectPermissions() {
             permissions: selectedPermissions.map(p => p.permission)
         };
         console.log(data);
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/revoke`, data)
+        axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceIdentifier}/permissions/revoke`, data)
             .then((response) => {
                 setLoading(false);
                 loadPermissions();
@@ -151,7 +151,7 @@ function ManageProjectPermissions() {
 
     function loadAllUsers() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/users`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/users`)
             .then((response) => {
                 setLoading(false);
                 setUsers(response.data);
@@ -163,7 +163,7 @@ function ManageProjectPermissions() {
 
     function loadAllProjects() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects`)
             .then((response) => {
                 setLoading(false);
                 let allProjects = response.data;

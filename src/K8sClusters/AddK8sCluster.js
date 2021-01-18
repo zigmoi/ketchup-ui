@@ -76,7 +76,7 @@ function AddK8sCluster() {
             'kubeconfig': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`, data)
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings`, data)
             .then((response) => {
                 console.log(response);
                 setLoading(false);
@@ -97,7 +97,7 @@ function AddK8sCluster() {
             'kubeconfig': btoa(formValues.kubeconfig),
         };
         // alert(JSON.stringify(data, null, 2));
-        axios.post(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/test-connection`, data)
+        axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/kubernetes-cluster-settings/test-connection`, data)
             .then((response) => {
                 console.log(response);
                 setTestConnectionLoading(false);

@@ -22,7 +22,7 @@ function RecentDeployments(props) {
 
     function loadAll() {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/pipelines/recent`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/pipelines/recent`)
             .then((response) => {
                 setLoading(false);
                 setDataSource(response.data);
@@ -60,7 +60,7 @@ function RecentDeployments(props) {
 
     function refreshRevisionStatus(applicationResourceId, revisionResourceId) {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}/revisions/${revisionResourceId}/pipeline/status/refresh`)
             .then((response) => {
                 setLoading(false);
                 reloadTabularData();
