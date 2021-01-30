@@ -1,68 +1,81 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Ketchup UI
+Web User Interface for [Ketchup Core](https://github.com/zigmoi/ketchup-core) application.
 
-## Available Scripts
+## Install:
 
-In the project directory, you can run:
+#### Prerequisites:
+1. Kubernetes cluster, version >= v1.16.0 and <= v1.19.0.
+2. [Helm CLI client](https://helm.sh/docs/intro/install/), version >= 3
+4. [Kubectl Client](https://kubernetes.io/docs/tasks/tools/install-kubectl/), version >= v1.16.0 and <= v1.19.0.
 
-### `npm start`
+#### Install via Helm:
+1. Create UI configuration file config.js in the current directory. Here is sample below:
+```
+window.REACT_APP_API_BASE_URL="http://localhost:8097";
+```
+2. Update window.REACT_APP_API_BASE_URL property to API server URL accessible outside kubernetes cluster.
+3. Run following helm commands to install ketchup API server:
+   applicationProperties variable is set to location of config.js file.
+```
+helm repo add ketchup https://zigmoi.github.io/ketchup-helm-repo
+helm repo list
+helm repo update
+helm install ketchup-ui ketchup/ketchup-ui --set-file applicationProperties=./config.js
+```  
+3. Check installation:
+    1. Run the following command, it should list ketchup-ui as one of the releases.
+    ```
+    helm list
+    ```
+    2. Run the following command, it should show one pod for ketchup-ui.
+    ```
+    kubectl get pods
+    ```
+4. Run following commands to expose ketchup UI outside cluster.
+```
+export KETCHUP_UI_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=ketchup-ui,app.kubernetes.io/instance=ketchup-ui" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $KETCHUP_UI_POD_NAME 8080:80
+```
+5. Access UI in the browser using following URL.
+   `http://localhost:8080`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Build source.
 
-### `npm test`
+#### Prerequisites:
+1. NodeJs, version >= 10.7.0
+2. NPM, version >= 6.2.0
+3. Git, version >= 2.6.0
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+#### Compile and Run:
+1. Clone the code repo.
+```
+git clone https://github.com/zigmoi/ketchup-ui.git
+```
+2. Update window.REACT_APP_API_BASE_URL property to Ketchup Core API server URL in config.js
+   in public/config root directory of project.
+3. Install dependencies, run following command inside the root directory of project.
+```
+npm install
+```
+4. Run application, run following command inside the root directory of project.
+```
+npm start
+```
+5. Access UI in the browser using following URL.
+   `http://localhost:3000`
+6. Create production build, run following command inside the root directory of project.
+```
+npm run build
+```
+7. Run production build, run following commands inside the root directory of project.
+   1. Install serve.
+   ```
+    npm install -g serve
+   ```
+   2. Use serve to run the production build.
+   ```
+   serve -s build -l 3000
+   ```
+   3. Access UI in the browser using following URL.
+      `http://localhost:3000`
