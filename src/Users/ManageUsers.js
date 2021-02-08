@@ -10,8 +10,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import tableIcons from '../tableIcons';
 import {useHistory} from 'react-router-dom';
-import VpnKey from "@material-ui/icons/VpnKey";
-import useCurrentProject from "../useCurrentProject";
 import {format} from "date-fns";
 import {useSnackbar} from "notistack";
 import DeleteDialog from "../Applications/DeleteDialog";
@@ -41,7 +39,6 @@ function ManageUsers() {
     const classes = useStyles();
     let history = useHistory();
 
-    const currentProject = useCurrentProject();
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
     const [open, setOpen] = useState(false);
@@ -124,11 +121,6 @@ function ManageUsers() {
                     ]}
                     data={dataSource}
                     actions={[
-                        {
-                            icon: () => <VpnKey color="action" fontSize="small"/>,
-                            tooltip: 'User Permissions',
-                            onClick: (event, rowData) => history.push(`/app/project/${currentProject}/permissions/${rowData.userName}`)
-                        },
                         {
                             icon: () => <EditIcon color="action" fontSize="small"/>,
                             tooltip: 'Edit User',

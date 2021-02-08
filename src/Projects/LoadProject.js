@@ -62,7 +62,7 @@ export default function LoadProject(props) {
     console.log("View project details selectedRecord", selectedRecord);
     let projectName = selectedRecord.id.resourceId;
     projectContext.setCurrentProject(currentUser?.id, projectName);
-    history.push(`/app/dashboard`);
+    history.push(`/app/project/${projectName}/dashboard`);
     handleClose();
   }
 

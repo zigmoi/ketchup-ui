@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import RecentDeployments from "../Applications/RecentDeployments";
 import {Box, Button, CircularProgress} from "@material-ui/core";
-import {useHistory, Link as RouterLink} from "react-router-dom";
+import {useHistory, Link as RouterLink, useParams} from "react-router-dom";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -40,15 +40,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Dashboard(props) {
+export default function Dashboard() {
     document.title = "Dashboard"
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-    const fixedHeightChart = clsx(classes.paper, classes.fixedHeightChart);
-    const fixedHeightGetStarted = clsx(classes.paper, classes.fixedHeightGetStarted);
-    let history = useHistory();
-    const {projectId} = props;
-    console.log("Project ID:", projectId);
+
+    let {projectResourceId} = useParams();
+    console.log("Project ID:", projectResourceId);
     const [loading, setLoading] = useState(false);
     const [totalApplications, setTotalApplications] = useState(0);
     const [totalDeployments, setTotalDeployments] = useState(0);
@@ -57,17 +55,13 @@ export default function Dashboard(props) {
 
 
     useEffect(() => {
-        if (projectId) {
-            document.title = "Dashboard"
-            loadDashboardDetails();
-        }else{
-            document.title = "Get Started"
-        }
-    }, [projectId]);
+        document.title = "Dashboard"
+        loadDashboardDetails(projectResourceId);
+    }, [projectResourceId]);
 
-    function loadDashboardDetails() {
+    function loadDashboardDetails(projectResourceId) {
         setLoading(true);
-        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectId}/dashboard-data`)
+        axios.get(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/dashboard-data`)
             .then((response) => {
                 setLoading(false);
                 setTotalApplications(response.data.totalApplicationsCount);
@@ -82,161 +76,85 @@ export default function Dashboard(props) {
 
     return (
         <main className={classes.content}>
-            {projectId ?
-                <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={4} lg={3}>
-                            <Paper className={fixedHeightPaper}>
-                                <React.Fragment>
-                                    <Title>Applications</Title>
-                                    <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30}
-                                                                     className={classes.circularProgress}/> : totalApplications}
-                                    </Typography>
-                                    <div>
-                                        <Link color="primary" component={RouterLink} to="/app/project/a1/applications">
-                                            View
-                                        </Link>
-                                    </div>
-                                </React.Fragment>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={4} lg={3}>
-                            <Paper className={fixedHeightPaper}>
-                                <React.Fragment>
-                                    <Title>Clusters</Title>
-                                    <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30}
-                                                                     className={classes.circularProgress}/> : totalClusters}
-                                    </Typography>
-                                    <div>
-                                        <Link color="primary" component={RouterLink}
-                                              to="/app/project/a1/kubernetes-clusters">
-                                            View
-                                        </Link>
-                                    </div>
-                                </React.Fragment>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={4} lg={3}>
-                            <Paper className={fixedHeightPaper}>
-                                <React.Fragment>
-                                    <Title>Registries</Title>
-                                    <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30}
-                                                                     className={classes.circularProgress}/> : totalRegistries}
-                                    </Typography>
-                                    <div>
-                                        <Link color="primary" component={RouterLink}
-                                              to="/app/project/a1/container-registries">
-                                            View
-                                        </Link>
-                                    </div>
-                                </React.Fragment>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={4} lg={3}>
-                            <Paper className={fixedHeightPaper}>
-                                <React.Fragment>
-                                    <Title>Deployments</Title>
-                                    <Typography variant="h4">
-                                        {loading ? <CircularProgress size={30}
-                                                                     className={classes.circularProgress}/> : totalDeployments}
-                                    </Typography>
-                                    {/*<div>*/}
-                                    {/*    <Link color="primary" component={RouterLink} to="/app/project/a1/deployments">*/}
-                                    {/*        View*/}
-                                    {/*    </Link>*/}
-                                    {/*</div>*/}
-                                </React.Fragment>
-                            </Paper>
-                        </Grid>
 
-                        <Grid item xs={12}>
-                            <Paper className={classes.paper}>
-                                <Title>Recent Deployments</Title>
-                                <RecentDeployments projectResourceId={projectId}/>
-                            </Paper>
-                        </Grid>
+            <Container maxWidth="lg" className={classes.container}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={4} lg={3}>
+                        <Paper className={fixedHeightPaper}>
+                            <React.Fragment>
+                                <Title>Applications</Title>
+                                <Typography variant="h4">
+                                    {loading ? <CircularProgress size={30}
+                                                                 className={classes.circularProgress}/> : totalApplications}
+                                </Typography>
+                                <div>
+                                    <Link color="primary" component={RouterLink}
+                                          to={`/app/project/${projectResourceId}/applications`}>
+                                        View
+                                    </Link>
+                                </div>
+                            </React.Fragment>
+                        </Paper>
                     </Grid>
-                </Container> :
-                <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={6} lg={4}>
-                            <Paper className={fixedHeightGetStarted}>
-                                <React.Fragment>
-                                    <Title>Get Started</Title>
-                                    <Typography variant="body1">
-                                        Create a new project or select a existing project in menu bar.
-                                    </Typography>
-                                    <div>
-                                        <br/>
-                                        <br/>
-                                        <br/>
-                                        <br/>
-                                        <br/>
-                                        <Button
-                                            className={classes.button}
-                                            size="small"
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={() => history.push("/app/project/create")}
-                                        >Create Project</Button>
-                                    </div>
-                                </React.Fragment>
-                            </Paper>
-                        </Grid>
-                        {/*<Grid item xs={12} md={6} lg={4}>*/}
-                        {/*    <Paper className={fixedHeightGetStarted}>*/}
-                        {/*        <React.Fragment>*/}
-                        {/*            <Title>Documentation</Title>*/}
-                        {/*            <Typography variant="body1">*/}
-                        {/*                For more information refer to documentation.*/}
-                        {/*            </Typography>*/}
-                        {/*            <Box textAlign={"left"}>*/}
-                        {/*                <ul>*/}
-                        {/*                    <li>*/}
-                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
-                        {/*                              rel="noopener" rel="noreferrer">*/}
-                        {/*                            Create User.*/}
-                        {/*                        </Link>*/}
-                        {/*                    </li>*/}
-                        {/*                    <li>*/}
-                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
-                        {/*                              rel="noopener" rel="noreferrer">*/}
-                        {/*                            Create Project.*/}
-                        {/*                        </Link>*/}
-                        {/*                    </li>*/}
-                        {/*                    <li>*/}
-                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
-                        {/*                              rel="noopener" rel="noreferrer">*/}
-                        {/*                            Create Application.*/}
-                        {/*                        </Link>*/}
-                        {/*                    </li>*/}
-                        {/*                    <li>*/}
-                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
-                        {/*                              rel="noopener" rel="noreferrer">*/}
-                        {/*                            Manage Permissions.*/}
-                        {/*                        </Link>*/}
-                        {/*                    </li>*/}
-                        {/*                    <li>*/}
-                        {/*                        <Link color="inherit" href="http://google.com" target="_blank"*/}
-                        {/*                              rel="noopener" rel="noreferrer">*/}
-                        {/*                            Check Application Logs.*/}
-                        {/*                        </Link>*/}
-                        {/*                    </li>*/}
-                        {/*                </ul>*/}
-                        {/*            </Box>*/}
-                        {/*            <Link color="primary" href="http://google.com" target="_blank" rel="noopener"*/}
-                        {/*                  rel="noreferrer">*/}
-                        {/*                More...*/}
-                        {/*            </Link>*/}
-                        {/*        </React.Fragment>*/}
-                        {/*    </Paper>*/}
-                        {/*</Grid>*/}
+                    <Grid item xs={12} md={4} lg={3}>
+                        <Paper className={fixedHeightPaper}>
+                            <React.Fragment>
+                                <Title>Clusters</Title>
+                                <Typography variant="h4">
+                                    {loading ? <CircularProgress size={30}
+                                                                 className={classes.circularProgress}/> : totalClusters}
+                                </Typography>
+                                <div>
+                                    <Link color="primary" component={RouterLink}
+                                          to={`/app/project/${projectResourceId}/kubernetes-clusters`}>
+                                        View
+                                    </Link>
+                                </div>
+                            </React.Fragment>
+                        </Paper>
                     </Grid>
-                </Container>
-            }
+                    <Grid item xs={12} md={4} lg={3}>
+                        <Paper className={fixedHeightPaper}>
+                            <React.Fragment>
+                                <Title>Registries</Title>
+                                <Typography variant="h4">
+                                    {loading ? <CircularProgress size={30}
+                                                                 className={classes.circularProgress}/> : totalRegistries}
+                                </Typography>
+                                <div>
+                                    <Link color="primary" component={RouterLink}
+                                          to={`/app/project/${projectResourceId}/container-registries`}>
+                                        View
+                                    </Link>
+                                </div>
+                            </React.Fragment>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={4} lg={3}>
+                        <Paper className={fixedHeightPaper}>
+                            <React.Fragment>
+                                <Title>Deployments</Title>
+                                <Typography variant="h4">
+                                    {loading ? <CircularProgress size={30}
+                                                                 className={classes.circularProgress}/> : totalDeployments}
+                                </Typography>
+                                {/*<div>*/}
+                                {/*    <Link color="primary" component={RouterLink} to={`/app/project/${projectResourceId}/deployments`}>*/}
+                                {/*        View*/}
+                                {/*    </Link>*/}
+                                {/*</div>*/}
+                            </React.Fragment>
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Paper className={classes.paper}>
+                            <Title>Recent Deployments</Title>
+                            <RecentDeployments projectResourceId={projectResourceId}/>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Container>
         </main>
     );
 }

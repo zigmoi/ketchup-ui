@@ -76,7 +76,7 @@ function CreateProject() {
                 setLoading(false);
                 enqueueSnackbar('Project created successfully.', {variant: 'success'});
                 projectContext.setCurrentProject(currentUser?.id, formValues.projectName);
-                history.push(`/app/dashboard`);
+                history.push(`/app/project/${formValues.projectName}/dashboard`);
             })
             .catch(() => {
                 setLoading(false);

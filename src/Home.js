@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import './App.css';
-import {Switch, useHistory, Route, Link} from 'react-router-dom';
+import {Switch, useHistory, Route, Link, useLocation, Redirect} from 'react-router-dom';
 
 import UserContext from './UserContext';
 import useCurrentProject from './useCurrentProject';
@@ -86,6 +86,7 @@ import ManageProjectPermissions from "./Users/ManageProjectPermissions";
 import ViewRevisionPipeline from './Applications/ViewRevisionPipeline';
 import ManageDeployments from "./Applications/ManageDeployments";
 import GenerateGitWebHookUrl from "./Applications/GenerateGitWebHookUrl";
+import GetStarted from "./Projects/GetStarted";
 
 
 const drawerWidth = 220;
@@ -342,7 +343,7 @@ function Home() {
                         <React.Fragment>
                             {projectId ?
                                 <React.Fragment>
-                                    <ListItem button component={Link} to="/app/dashboard">
+                                    <ListItem button component={Link} to={`/app/project/${projectId}/dashboard`}>
                                         <ListItemIcon>
                                             <AssessmentIcon className={classes.drawerMenuIcon}/>
                                         </ListItemIcon>
@@ -393,7 +394,7 @@ function Home() {
                                         <ListItemText primary="Permissions"/>
                                     </ListItem>
                                 </React.Fragment> :
-                                <ListItem button component={Link} to="/app/dashboard">
+                                <ListItem button component={Link} to="/app/get-started">
                                     <ListItemIcon>
                                         <AssessmentIcon className={classes.drawerMenuIcon}/>
                                     </ListItemIcon>
@@ -462,11 +463,9 @@ function Home() {
                 </List>
             </Drawer>
             <Switch>
-                <Route path="/" exact render={() => <ProtectedRoute component={Dashboard} projectId={projectId}
-                                                                    roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app" exact render={() => <ProtectedRoute component={Dashboard} projectId={projectId}
-                                                                       roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
-                <Route path="/app/dashboard" render={() => <ProtectedRoute component={Dashboard} projectId={projectId}
+                <Route path="/" exact><Redirect to={projectId ? `/app/project/${projectId}/dashboard` : `/app/get-started`} /></Route>
+                <Route path="/app" exact><Redirect to={projectId ? `/app/project/${projectId}/dashboard` : `/app/get-started`} /></Route>
+                <Route path="/app/get-started" render={() => <ProtectedRoute component={GetStarted}
                                                                            roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/create-tenant"
                        render={() => <ProtectedRoute component={CreateTenant} roles={['ROLE_SUPER_ADMIN']}/>}/>
@@ -480,6 +479,8 @@ function Home() {
                                                                               roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN']}/>}/>
                 <Route path="/app/project/create" render={() => <ProtectedRoute component={CreateProject}
                                                                                 roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
+                <Route path="/app/project/:projectResourceId/dashboard" render={() => <ProtectedRoute component={Dashboard}
+                                                                           roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>
                 <Route path="/app/project/:projectResourceId/settings"
                        render={() => <ProtectedRoute component={EditProject}
                                                      roles={['ROLE_TENANT_ADMIN', 'ROLE_USER_ADMIN', 'ROLE_USER_READER', 'ROLE_USER']}/>}/>

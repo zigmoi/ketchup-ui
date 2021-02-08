@@ -125,7 +125,7 @@ function EditProject() {
                 closeDeleteDialog();
                 enqueueSnackbar('Project deleted successfully!', {variant: 'success'});
                 projectContext.setCurrentProject(currentUser?.id, null);
-                history.push(`/app/dashboard`);
+                history.push(`/app/get-started`);
             })
             .catch((error) => {
                 closeDeleteDialog();

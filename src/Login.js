@@ -47,7 +47,7 @@ function Login() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
     const [loading, setLoading] = useState(false);
     const [loggedIn, setLoggedIn] = useState(true);
-    const defaultRoute = "/app/dashboard";
+    const defaultRoute = "/";
     const rootTenantDefaultRoute = "/app/manage-tenants";
 
     let history = useHistory();
