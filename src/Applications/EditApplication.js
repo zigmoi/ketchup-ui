@@ -449,6 +449,7 @@ function EditApplication() {
                                     helperText={errors.buildTool?.message}
                                 >
                                     <MenuItem key="maven-3.3" value="maven-3.3"> Maven 3 </MenuItem>
+                                    <MenuItem key="pip-3" value="pip-3"> Pip 3 </MenuItem>
                                     {/* <MenuItem key="gradle-5.5" value="gradle-5.5"> Gradle 5 </MenuItem> */}
                                 </TextField>}
                             />
@@ -541,6 +542,7 @@ function EditApplication() {
                                 >
                                     <MenuItem key="java-8" value="java-8"> Java 8 </MenuItem>
                                     <MenuItem key="java-11" value="java-11"> Java 11 </MenuItem>
+                                    <MenuItem key="python-3.8" value="python-3.8"> Python 3.8 </MenuItem>
                                 </TextField>}
                             />
                             <TextField

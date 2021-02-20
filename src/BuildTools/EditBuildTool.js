@@ -202,7 +202,8 @@ function EditBuildTool() {
                                     helperText={errors.type?.message}
                                 >
                                     <MenuItem key="maven-3.3" value="maven-3.3">Maven 3.3</MenuItem>
-                                    <MenuItem key="gradle-5.5" value="gradle-5.5">Gradle 5.5</MenuItem>
+                                    {/*<MenuItem key="gradle-5.5" value="gradle-5.5">Gradle 5.5</MenuItem>*/}
+                                    <MenuItem key="pip-3" value="pip-3">Pip 3</MenuItem>
                                 </TextField>}
                             />
                             <TextField
