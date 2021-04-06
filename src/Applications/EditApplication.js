@@ -450,6 +450,7 @@ function EditApplication() {
                                 >
                                     <MenuItem key="maven-3.3" value="maven-3.3"> Maven 3 </MenuItem>
                                     <MenuItem key="npm-6.14.12" value="npm-6.14.11"> NPM 6 </MenuItem>
+                                    <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
                                     {/* <MenuItem key="gradle-5.5" value="gradle-5.5"> Gradle 5 </MenuItem> */}
                                 </TextField>}
                             />
@@ -543,6 +544,7 @@ function EditApplication() {
                                     <MenuItem key="java-8" value="java-8"> Java 8 </MenuItem>
                                     <MenuItem key="java-11" value="java-11"> Java 11 </MenuItem>
                                     <MenuItem key="node-14.16.0" value="node-14.16.0"> Node 14 </MenuItem>
+                                    <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
                                 </TextField>}
                             />
                             <TextField
