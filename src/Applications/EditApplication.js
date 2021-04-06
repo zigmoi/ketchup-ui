@@ -378,7 +378,6 @@ function EditApplication() {
                                 name="gitRepoBranchName"
                                 label="Git Repository Branch Name"
                                 required
-                                defaultValue="master"
                                 inputRef={register({
                                     required: "Required.",
                                     maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
@@ -449,7 +448,7 @@ function EditApplication() {
                                     helperText={errors.buildTool?.message}
                                 >
                                     <MenuItem key="maven-3.3" value="maven-3.3"> Maven 3 </MenuItem>
-                                    <MenuItem key="npm-6.14.12" value="npm-6.14.11"> NPM 6 </MenuItem>
+                                    <MenuItem key="npm-6.14.11" value="npm-6.14.11"> NPM 6 </MenuItem>
                                     <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
                                     {/* <MenuItem key="gradle-5.5" value="gradle-5.5"> Gradle 5 </MenuItem> */}
                                 </TextField>}
