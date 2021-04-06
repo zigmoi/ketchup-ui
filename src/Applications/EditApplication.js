@@ -344,9 +344,7 @@ function EditApplication() {
                                 }}
                                 name="gitRepoUsername"
                                 label="Git Repository User Name"
-                                required
                                 inputRef={register({
-                                    required: "Required.",
                                     maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.gitRepoUsername ? true : false}
@@ -360,10 +358,8 @@ function EditApplication() {
                                 }}
                                 name="gitRepoPassword"
                                 label="Git Repository Token / Password"
-                                required
                                 type="password"
                                 inputRef={register({
-                                    required: "Required.",
                                     maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
                                 error={errors.gitRepoPassword ? true : false}
