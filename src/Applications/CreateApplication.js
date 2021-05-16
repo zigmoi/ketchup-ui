@@ -138,7 +138,8 @@ function CreateApplication() {
             "devKubernetesClusterSettingId": formValues.devKubernetesClusterSettingId,
             "devKubernetesNamespace": formValues.devKubernetesNamespace,
             "prodKubernetesClusterSettingId": "",
-            "prodKubernetesNamespace": ""
+            "prodKubernetesNamespace": "",
+            "gunicornAppLocation": formValues.gunicornAppLocation
         };
         // alert(JSON.stringify(data, null, 2));
         axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`, data)
@@ -372,6 +373,7 @@ function CreateApplication() {
                                     <MenuItem key="npm-6.14.11" value="npm-6.14.11"> NPM 6 </MenuItem>
                                     <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
                                     <MenuItem key="dot-net-core5" value="dot-net-core5"> Dot Net Core 5 </MenuItem>
+                                    <MenuItem key="pip-3" value="pip-3"> Pip 3 </MenuItem>
                                     {/* <MenuItem key="gradle-5.5" value="gradle-5.5"> Gradle 5 </MenuItem> */}
                                 </TextField>}
                             />
@@ -467,6 +469,7 @@ function CreateApplication() {
                                     <MenuItem key="node-14.16.0" value="node-14.16.0"> Node 14 </MenuItem>
                                     <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
                                     <MenuItem key="dot-net-core5" value="dot-net-core5"> Dot Net Core 5 </MenuItem>
+                                    <MenuItem key="python-3.8" value="python-3.8"> Python 3 </MenuItem>
                                 </TextField>}
                             />
                             <TextField
@@ -485,6 +488,21 @@ function CreateApplication() {
                                 })}
                                 error={errors.baseBuildPath ? true : false}
                                 helperText={errors.baseBuildPath?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{shrink: true,}}
+                                InputProps={{
+                                    classes: {input: classes.textField},
+                                }}
+                                name="gunicornAppLocation"
+                                label="Gunicorn App Location"
+                                defaultValue="app:app"
+                                inputRef={register({
+                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                                })}
+                                error={errors.gunicornAppLocation ? true : false}
+                                helperText={errors.gunicornAppLocation?.message}
                             />
                             <Controller
                                 name="buildToolSettingId"
