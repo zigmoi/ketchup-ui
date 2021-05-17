@@ -102,6 +102,7 @@ function EditApplication() {
                 setValue("devKubernetesClusterSettingId", response.data.devKubernetesClusterSettingId);
                 setValue("devKubernetesNamespace", response.data.devKubernetesNamespace);
                 setValue("gunicornAppLocation", response.data.gunicornAppLocation);
+                setValue("dotnetcoreProjectLocation", response.data.dotnetcoreProjectLocation);
 
 
             })
@@ -177,7 +178,8 @@ function EditApplication() {
             "devKubernetesNamespace": formValues.devKubernetesNamespace,
             "prodKubernetesClusterSettingId": "",
             "prodKubernetesNamespace": "",
-            "gunicornAppLocation": formValues.gunicornAppLocation
+            "gunicornAppLocation": formValues.gunicornAppLocation,
+            "dotnetcoreProjectLocation": formValues.dotnetcoreProjectLocation
         };
         // alert(JSON.stringify(data, null, 2));
         axios.put(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications/${applicationResourceId}`, data)
@@ -579,6 +581,21 @@ function EditApplication() {
                                 })}
                                 error={errors.gunicornAppLocation ? true : false}
                                 helperText={errors.gunicornAppLocation?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{shrink: true,}}
+                                InputProps={{
+                                    classes: {input: classes.textField},
+                                }}
+                                name="dotnetcoreProjectLocation"
+                                label="Dot Net Core Project Location"
+                                defaultValue="/"
+                                inputRef={register({
+                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                                })}
+                                error={errors.dotnetcoreProjectLocation ? true : false}
+                                helperText={errors.dotnetcoreProjectLocation?.message}
                             />
                             <Controller
                                 name="buildToolSettingId"

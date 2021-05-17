@@ -139,7 +139,8 @@ function CreateApplication() {
             "devKubernetesNamespace": formValues.devKubernetesNamespace,
             "prodKubernetesClusterSettingId": "",
             "prodKubernetesNamespace": "",
-            "gunicornAppLocation": formValues.gunicornAppLocation
+            "gunicornAppLocation": formValues.gunicornAppLocation,
+            "dotnetcoreProjectLocation": formValues.dotnetcoreProjectLocation
         };
         // alert(JSON.stringify(data, null, 2));
         axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`, data)
@@ -503,6 +504,21 @@ function CreateApplication() {
                                 })}
                                 error={errors.gunicornAppLocation ? true : false}
                                 helperText={errors.gunicornAppLocation?.message}
+                            />
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{shrink: true,}}
+                                InputProps={{
+                                    classes: {input: classes.textField},
+                                }}
+                                name="dotnetcoreProjectLocation"
+                                label="Dot Net Core Project Location"
+                                defaultValue="app"
+                                inputRef={register({
+                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                                })}
+                                error={errors.dotnetcoreProjectLocation ? true : false}
+                                helperText={errors.dotnetcoreProjectLocation?.message}
                             />
                             <Controller
                                 name="buildToolSettingId"

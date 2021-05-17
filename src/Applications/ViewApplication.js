@@ -375,6 +375,18 @@ function ViewApplication() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
+                                        Gunicorn App Location: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.gunicornAppLocation}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Dot Net Core Project Location: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.dotnetcoreProjectLocation}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
                                         Build Settings: &nbsp;
                                         {response?.buildToolSettingId ?
                                             <Link
