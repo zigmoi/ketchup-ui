@@ -548,6 +548,7 @@ function EditApplication() {
                                     <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
                                     <MenuItem key="dot-net-core5" value="dot-net-core5"> Dot Net Core 5 </MenuItem>
                                     <MenuItem key="python-3.8" value="python-3.8"> Python 3 </MenuItem>
+                                    <MenuItem key="react" value="react"> ReactJS </MenuItem>
                                 </TextField>}
                             />
                             <TextField
