@@ -115,6 +115,18 @@ function ViewApplicationRevision() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
+                                        Platform: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.platform}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Pipeline: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentPipelineType}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
                                         Version Number: &nbsp;
                                         <Typography variant="caption">
                                             {response?.version}
@@ -158,6 +170,26 @@ function ViewApplicationRevision() {
                                     </Typography>
                                     <br/>
                                     <label style={{fontWeight: 'bold'}}>Build Details</label>
+                                    <Typography variant="subtitle2">
+                                        Build Tool: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.buildTool}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Build Settings: &nbsp;
+                                        {response?.buildToolSettingId ?
+                                            <Link
+                                                component="button"
+                                                variant="caption"
+                                                color="inherit"
+                                                onClick={() => {
+                                                    history.push(`/app/project/${projectResourceId}/build-tool/${response?.buildToolSettingId}/edit`)
+                                                }}
+                                            >
+                                                {response?.buildToolSettingId}
+                                            </Link> : null}
+                                    </Typography>
                                     <Typography variant="subtitle2">
                                         Git Repository URL: &nbsp;
                                         <Typography variant="caption">
@@ -227,57 +259,27 @@ function ViewApplicationRevision() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        Platform: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.platform}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Build Tool: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.buildTool}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Base Build Path: &nbsp;
+                                        Container Image Base Build Path: &nbsp;
                                         <Typography variant="caption">
                                             {response?.baseBuildPath}
                                         </Typography>
                                     </Typography>
-                                    <Typography variant="subtitle2">
-                                        Gunicorn App Location: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.gunicornAppLocation}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Dot Net Core Project Location: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.dotnetcoreProjectLocation}
-                                        </Typography>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Build Settings: &nbsp;
-                                        {response?.buildToolSettingId ?
-                                            <Link
-                                                component="button"
-                                                variant="caption"
-                                                color="inherit"
-                                                onClick={() => {
-                                                    history.push(`/app/project/${projectResourceId}/build-tool/${response?.buildToolSettingId}/edit`)
-                                                }}
-                                            >
-                                                {response?.buildToolSettingId}
-                                            </Link> : null}
-                                    </Typography>
+                                    {response?.platform === "python-3.8" ?
+                                        <Typography variant="subtitle2">
+                                            Gunicorn App Location: &nbsp;
+                                            <Typography variant="caption">
+                                                {response?.gunicornAppLocation}
+                                            </Typography>
+                                        </Typography> : null}
+                                    {response?.platform === "dot-net-core5" ?
+                                        <Typography variant="subtitle2">
+                                            Dot Net Core Project Location: &nbsp;
+                                            <Typography variant="caption">
+                                                {response?.dotnetcoreProjectLocation}
+                                            </Typography>
+                                        </Typography> : null}
                                     <br/>
                                     <label style={{fontWeight: 'bold'}}>Deployment Details</label>
-                                    <Typography variant="subtitle2">
-                                        Pipeline: &nbsp;
-                                        <Typography variant="caption">
-                                            {response?.deploymentPipelineType}
-                                        </Typography>
-                                    </Typography>
                                     <Typography variant="subtitle2">
                                         Cluster Settings: &nbsp;
                                         {response?.devKubernetesClusterSettingId ?
@@ -323,7 +325,13 @@ function ViewApplicationRevision() {
                                         </Typography>
                                     </Typography>
                                     <Typography variant="subtitle2">
-                                        Required Replicas: &nbsp;
+                                        Deployment Strategy: &nbsp;
+                                        <Typography variant="caption">
+                                            {response?.deploymentStrategy}
+                                        </Typography>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Replicas: &nbsp;
                                         <Typography variant="caption">
                                             {response?.replicas}
                                         </Typography>

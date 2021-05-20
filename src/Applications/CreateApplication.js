@@ -66,6 +66,8 @@ function CreateApplication() {
     const [buildTools, setBuildTools] = useState([]);
     const [testConnectionLoading, setTestConnectionLoading] = useState(false);
 
+    const {platform: watchPlatform} = watch();
+
     useEffect(() => {
         loadAllK8sClusters();
         loadAllContainerRegistries();
@@ -139,8 +141,8 @@ function CreateApplication() {
             "devKubernetesNamespace": formValues.devKubernetesNamespace,
             "prodKubernetesClusterSettingId": "",
             "prodKubernetesNamespace": "",
-            "gunicornAppLocation": formValues.gunicornAppLocation,
-            "dotnetcoreProjectLocation": formValues.dotnetcoreProjectLocation
+            "gunicornAppLocation": formValues.gunicornAppLocation ? formValues.gunicornAppLocation : "",
+            "dotnetcoreProjectLocation": formValues.dotnetcoreProjectLocation ? formValues.dotnetcoreProjectLocation : ""
         };
         // alert(JSON.stringify(data, null, 2));
         axios.post(`${window.REACT_APP_API_BASE_URL}/v1-alpha/projects/${projectResourceId}/applications`, data)
@@ -228,21 +230,113 @@ function CreateApplication() {
                                 error={errors.description ? true : false}
                                 helperText={errors.description?.message}
                             />
-                            <TextField
-                                variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{shrink: true,}}
-                                InputProps={{
-                                    classes: {input: classes.textField},
+                            <Controller
+                                name="platform"
+                                control={control}
+                                defaultValue={'java-8'}
+                                rules={{
+                                    required: "Required"
                                 }}
-                                name="serviceName"
-                                label="Service Name"
-                                required
-                                inputRef={register({
-                                    required: "Required.",
-                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
-                                })}
-                                error={errors.serviceName ? true : false}
-                                helperText={errors.serviceName?.message}
+                                as={<TextField
+                                    variant="outlined" size="small" fullWidth margin="normal"
+                                    InputLabelProps={{shrink: true,}}
+                                    InputProps={{
+                                        classes: {input: classes.textField},
+                                    }}
+                                    label="Platform"
+                                    required
+                                    select
+                                    error={errors.platform ? true : false}
+                                    helperText={errors.platform?.message}
+                                >
+                                    <MenuItem key="java-8" value="java-8"> Java 8 </MenuItem>
+                                    {/*<MenuItem key="java-11" value="java-11"> Java 11 </MenuItem>*/}
+                                    <MenuItem key="node-14.16.0" value="node-14.16.0"> Node 14 </MenuItem>
+                                    <MenuItem key="react" value="react"> ReactJS </MenuItem>
+                                    <MenuItem key="python-3.8" value="python-3.8"> Python 3 </MenuItem>
+                                    <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
+                                    <MenuItem key="dot-net-core5" value="dot-net-core5"> Dot Net Core 5 </MenuItem>
+                                </TextField>}
+                            />
+                            <Controller
+                                name="buildTool"
+                                control={control}
+                                defaultValue={'maven-3.3'}
+                                rules={{
+                                    required: "Required"
+                                }}
+                                as={<TextField
+                                    variant="outlined" size="small" fullWidth margin="normal"
+                                    InputLabelProps={{shrink: true,}}
+                                    InputProps={{
+                                        classes: {input: classes.textField},
+                                    }}
+                                    label="Build Tool"
+                                    required
+                                    select
+                                    error={errors.buildTool ? true : false}
+                                    helperText={errors.buildTool?.message}
+                                >
+                                    {watchPlatform === "java-8" || watchPlatform === "java-11" ?
+                                        <MenuItem key="maven-3.3" value="maven-3.3"> Maven 3 </MenuItem> : null}
+                                    {watchPlatform === "node-14.16.0" || watchPlatform === "react" ?
+                                        <MenuItem key="npm-6.14.11" value="npm-6.14.11"> NPM 6 </MenuItem> : null}
+                                    {watchPlatform === "python-3.8" ?
+                                        <MenuItem key="pip-3" value="pip-3"> Pip 3 </MenuItem> : null }
+                                    {watchPlatform === "golang-1.16" ?
+                                    <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem> : null}
+                                    {watchPlatform === "dot-net-core5" ?
+                                    <MenuItem key="dot-net-core5" value="dot-net-core5"> Dot Net Core 5 </MenuItem> : null}
+                                    {/* <MenuItem key="gradle-5.5" value="gradle-5.5"> Gradle 5 </MenuItem> */}
+                                </TextField>}
+                            />
+                            <Controller
+                                name="buildToolSettingId"
+                                control={control}
+                                defaultValue={''}
+                                // rules={{
+                                //     required: "Required"
+                                // }}
+                                as={<TextField
+                                    variant="outlined" size="small" fullWidth margin="normal"
+                                    InputLabelProps={{shrink: true,}}
+                                    InputProps={{
+                                        classes: {input: classes.textField},
+                                    }}
+                                    label="Build Tool Settings"
+                                    // required
+                                    select
+                                    error={errors.buildToolSettingId ? true : false}
+                                    helperText={errors.buildToolSettingId?.message}
+                                >
+                                    {buildTools.map(buildTool =>
+                                        <MenuItem key={buildTool.settingResourceId}
+                                                  value={buildTool.settingResourceId}> {`${buildTool.displayName} (${buildTool.settingResourceId})`} </MenuItem>)}
+                                </TextField>}
+                            />
+                            <Controller
+                                name="deploymentPipelineType"
+                                control={control}
+                                defaultValue={'standard-dev-1.0'}
+                                rules={{
+                                    required: "Required"
+                                }}
+                                as={<TextField
+                                    variant="outlined" size="small" fullWidth margin="normal"
+                                    InputLabelProps={{shrink: true,}}
+                                    InputProps={{
+                                        classes: {input: classes.textField},
+                                    }}
+                                    label="Deployment Pipeline Type"
+                                    required
+                                    select
+                                    error={errors.deploymentPipelineType ? true : false}
+                                    helperText={errors.deploymentPipelineType?.message}
+                                >
+                                    <MenuItem key="standard-dev-1.0" value="standard-dev-1.0"> Standard Dev Pipeline
+                                        1.0 (Fetch-Build-Deploy)</MenuItem>
+                                    {/* <MenuItem key="standard-prod-1.0" value="standard-prod-1.0"> Standard Prod Pipeline 1.0 </MenuItem> */}
+                                </TextField>}
                             />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
@@ -310,7 +404,6 @@ function CreateApplication() {
                             />
                             {/* continuous deployment */}
                             {/* polling interval */}
-
                             <Controller
                                 name="containerRegistrySettingId"
                                 control={control}
@@ -351,57 +444,55 @@ function CreateApplication() {
                                 error={errors.containerImageName ? true : false}
                                 helperText={errors.containerImageName?.message}
                             />
-                            <Controller
-                                name="buildTool"
-                                control={control}
-                                defaultValue={'maven-3.3'}
-                                rules={{
-                                    required: "Required"
+                            <TextField
+                                variant="outlined" size="small" fullWidth margin="normal"
+                                InputLabelProps={{shrink: true,}}
+                                InputProps={{
+                                    classes: {input: classes.textField},
                                 }}
-                                as={<TextField
+                                name="baseBuildPath"
+                                label="Container Image Base Build Path"
+                                required
+                                defaultValue="."
+                                inputRef={register({
+                                    required: "Required.",
+                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                                })}
+                                error={errors.baseBuildPath ? true : false}
+                                helperText={errors.baseBuildPath?.message}
+                            />
+                            {watchPlatform === "python-3.8" ?
+                                <TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
                                     InputLabelProps={{shrink: true,}}
                                     InputProps={{
                                         classes: {input: classes.textField},
                                     }}
-                                    label="Build Tool"
-                                    required
-                                    select
-                                    error={errors.buildTool ? true : false}
-                                    helperText={errors.buildTool?.message}
-                                >
-                                    <MenuItem key="maven-3.3" value="maven-3.3"> Maven 3 </MenuItem>
-                                    <MenuItem key="npm-6.14.11" value="npm-6.14.11"> NPM 6 </MenuItem>
-                                    <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
-                                    <MenuItem key="dot-net-core5" value="dot-net-core5"> Dot Net Core 5 </MenuItem>
-                                    <MenuItem key="pip-3" value="pip-3"> Pip 3 </MenuItem>
-                                    {/* <MenuItem key="gradle-5.5" value="gradle-5.5"> Gradle 5 </MenuItem> */}
-                                </TextField>}
-                            />
-                            <Controller
-                                name="deploymentPipelineType"
-                                control={control}
-                                defaultValue={'standard-dev-1.0'}
-                                rules={{
-                                    required: "Required"
-                                }}
-                                as={<TextField
+                                    name="gunicornAppLocation"
+                                    label="Gunicorn App Location"
+                                    defaultValue="app:app"
+                                    inputRef={register({
+                                        maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                                    })}
+                                    error={errors.gunicornAppLocation ? true : false}
+                                    helperText={errors.gunicornAppLocation?.message}
+                                /> : null}
+                            {watchPlatform === "dot-net-core5" ?
+                                <TextField
                                     variant="outlined" size="small" fullWidth margin="normal"
                                     InputLabelProps={{shrink: true,}}
                                     InputProps={{
                                         classes: {input: classes.textField},
                                     }}
-                                    label="Deployment Pipeline Type"
-                                    required
-                                    select
-                                    error={errors.deploymentPipelineType ? true : false}
-                                    helperText={errors.deploymentPipelineType?.message}
-                                >
-                                    <MenuItem key="standard-dev-1.0" value="standard-dev-1.0"> Standard Dev Pipeline
-                                        1.0 </MenuItem>
-                                    {/* <MenuItem key="standard-prod-1.0" value="standard-prod-1.0"> Standard Prod Pipeline 1.0 </MenuItem> */}
-                                </TextField>}
-                            />
+                                    name="dotnetcoreProjectLocation"
+                                    label="Dot Net Core Project Location"
+                                    defaultValue="app"
+                                    inputRef={register({
+                                        maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                                    })}
+                                    error={errors.dotnetcoreProjectLocation ? true : false}
+                                    helperText={errors.dotnetcoreProjectLocation?.message}
+                                /> : null}
                             <Controller
                                 name="devKubernetesClusterSettingId"
                                 control={control}
@@ -445,105 +536,21 @@ function CreateApplication() {
                             />
                             {/* prod cluster */}
                             {/* prod namespace */}
-
-                            <Controller
-                                name="platform"
-                                control={control}
-                                defaultValue={'java-8'}
-                                rules={{
-                                    required: "Required"
-                                }}
-                                as={<TextField
-                                    variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{shrink: true,}}
-                                    InputProps={{
-                                        classes: {input: classes.textField},
-                                    }}
-                                    label="Platform"
-                                    required
-                                    select
-                                    error={errors.platform ? true : false}
-                                    helperText={errors.platform?.message}
-                                >
-                                    <MenuItem key="java-8" value="java-8"> Java 8 </MenuItem>
-                                    <MenuItem key="java-11" value="java-11"> Java 11 </MenuItem>
-                                    <MenuItem key="node-14.16.0" value="node-14.16.0"> Node 14 </MenuItem>
-                                    <MenuItem key="golang-1.16" value="golang-1.16"> Golang 1.16 </MenuItem>
-                                    <MenuItem key="dot-net-core5" value="dot-net-core5"> Dot Net Core 5 </MenuItem>
-                                    <MenuItem key="python-3.8" value="python-3.8"> Python 3 </MenuItem>
-                                    <MenuItem key="react" value="react"> ReactJS </MenuItem>
-                                </TextField>}
-                            />
                             <TextField
                                 variant="outlined" size="small" fullWidth margin="normal"
                                 InputLabelProps={{shrink: true,}}
                                 InputProps={{
                                     classes: {input: classes.textField},
                                 }}
-                                name="baseBuildPath"
-                                label="Container Image Base Build Path"
+                                name="serviceName"
+                                label="Service Name"
                                 required
-                                defaultValue="/"
                                 inputRef={register({
                                     required: "Required.",
-                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
+                                    maxLength: {value: 100, message: "Maximum 100 characters are allowed."}
                                 })}
-                                error={errors.baseBuildPath ? true : false}
-                                helperText={errors.baseBuildPath?.message}
-                            />
-                            <TextField
-                                variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{shrink: true,}}
-                                InputProps={{
-                                    classes: {input: classes.textField},
-                                }}
-                                name="gunicornAppLocation"
-                                label="Gunicorn App Location"
-                                defaultValue="app:app"
-                                inputRef={register({
-                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
-                                })}
-                                error={errors.gunicornAppLocation ? true : false}
-                                helperText={errors.gunicornAppLocation?.message}
-                            />
-                            <TextField
-                                variant="outlined" size="small" fullWidth margin="normal"
-                                InputLabelProps={{shrink: true,}}
-                                InputProps={{
-                                    classes: {input: classes.textField},
-                                }}
-                                name="dotnetcoreProjectLocation"
-                                label="Dot Net Core Project Location"
-                                defaultValue="app"
-                                inputRef={register({
-                                    maxLength: {value: 250, message: "Maximum 250 characters are allowed."}
-                                })}
-                                error={errors.dotnetcoreProjectLocation ? true : false}
-                                helperText={errors.dotnetcoreProjectLocation?.message}
-                            />
-                            <Controller
-                                name="buildToolSettingId"
-                                control={control}
-                                defaultValue={''}
-                                // rules={{
-                                //     required: "Required"
-                                // }}
-                                as={<TextField
-                                    variant="outlined" size="small" fullWidth margin="normal"
-                                    InputLabelProps={{shrink: true,}}
-                                    InputProps={{
-                                        classes: {input: classes.textField},
-                                    }}
-                                    label="Build Tool Settings"
-                                    // required
-                                    select
-                                    error={errors.buildToolSettingId ? true : false}
-                                    helperText={errors.buildToolSettingId?.message}
-                                >
-                                    {buildTools.map(buildTool =>
-                                        <MenuItem key={buildTool.settingResourceId}
-                                                  value={buildTool.settingResourceId}> {`${buildTool.displayName} (${buildTool.settingResourceId})`} </MenuItem>)}
-                                </TextField>}
+                                error={errors.serviceName ? true : false}
+                                helperText={errors.serviceName?.message}
                             />
                             <Controller
                                 name="serviceType"
