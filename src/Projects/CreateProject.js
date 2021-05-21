@@ -107,8 +107,8 @@ function CreateProject() {
                                 inputRef={register({
                                     required: "Required.",
                                     pattern: {
-                                        value: /^[a-z0-9]+$/i,
-                                        message: "Only alphabets and numbers are allowed."
+                                        value: /^[a-z0-9-_]+$/i,
+                                        message: "Only alphabets, numbers, dashes and underscores are allowed."
                                     },
                                     minLength: {value: 2, message: "Minimum 2 characters are required."},
                                     maxLength: {value: 20, message: "Maximum 20 characters are allowed."}
